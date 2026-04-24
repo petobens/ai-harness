@@ -17,6 +17,8 @@ with information that is likely to matter again in future conversations.
 ## Coding Preferences
 
 - Do not preserve backward compatibility unless I explicitly request it.
+- Prefer minimal diffs that solve the stated problem directly.
+- Do not make unrelated cleanup or refactors unless explicitly requested.
 - Do not add abstractions unless they are clearly needed.
 - Avoid defensive coding unless it adds clear practical value.
 - Prefer inline code over single-use helper functions.
