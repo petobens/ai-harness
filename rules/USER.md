@@ -27,13 +27,9 @@ with information that is likely to matter again in future conversations.
 ## Agent Memory
 
 > [!NOTE]
-> Add only durable preferences, recurring constraints, or stable facts that are
-> likely to matter in future work.
->
-> Do not add temporary task details, transient project state, or vague
-> personality descriptions.
->
-> Prefer specific observations that can directly improve future responses.
+> Update this section only with durable information likely to matter again.
+> Include stable preferences, recurring constraints, and long-term facts.
+> Exclude temporary task details, transient project state, and vague traits.
 
 - For externally facing prose, avoid recognizably AI-written style; prefer
   direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
