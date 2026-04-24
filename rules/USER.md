@@ -32,3 +32,7 @@ with information that is likely to matter again in future conversations.
 > personality descriptions.
 >
 > Prefer specific observations that can directly improve future responses.
+
+- For externally facing prose, avoid recognizably AI-written style; prefer
+  direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
+  teaser phrasing, and content-marketing cliches.
