@@ -10,6 +10,9 @@ correctness and spreadsheet polish.
 
 - Inspect the target sheet before editing so you understand existing tabs,
   named ranges, table layout, and formatting.
+- Ensure every worksheet has at least 1,000 rows and at least columns A:Z before
+  finishing. When creating new tabs, create or resize them to that minimum
+  grid size immediately instead of leaving the default small grid.
 - Before making changes in a target area, clear lingering formatting issues in
   that area, including stale formatting and incorrect merged or unmerged cell
   state, so you start from a clean baseline. Preserve the intended underlying
@@ -24,6 +27,8 @@ correctness and spreadsheet polish.
   ranges are aligned as intended, and fix any off-by-one or shifted-cell issues
   introduced during the edit.
 - Name every worksheet/tab descriptively. Never leave a tab as `Sheet1`.
+- Do not freeze rows or columns by default. Freeze panes only when the user
+  explicitly asks for frozen rows or columns.
 - Prefer named ranges for repeated parameters so formulas stay readable.
 - When editing an existing narrative text block, preserve its structure and
   rich-text styling unless the user asks for a redesign.
@@ -96,10 +101,12 @@ Use the corresponding Google Sheets variants consistently.
 - **Light gray 1** (`#d9d9d9`) for **total rows**, which should appear at
   the top of each table rather than at the bottom.
 - **Light green 2** (`#b6d7a8`) for **field-style headers** and, in wider
-  data tables, typically for the first column or first two columns.
+  data tables, typically for the first column or first two columns. In compact
+  two-column tables, use it only for the field/metric column header.
 - **Light cornflower blue 2** (`#a4c2f4`) for **value-style headers**,
   **info subsection headers**, and most remaining header columns in wider
-  data tables.
+  data tables. In compact two-column tables, use it for the value column
+  header, for example `Value`.
 - **Light cyan 2** (`#a2c4c9`) for **specific highlighted headers** in
   wider data tables, usually the last column or other special-purpose
   columns, not as the default color for all wide-table headers.
@@ -117,8 +124,9 @@ asks for them.
 
 ### Text formatting
 
-- Use **10 pt font** throughout the workbook. Do not increase font size for
-  titles, headers, totals, or emphasis.
+- Use **10 pt font** throughout the workbook, except README tabs, which should
+  use **11 pt font**. Do not increase font size for titles, headers, totals, or
+  emphasis unless the user explicitly asks.
 - Table titles and column headers must always be **bold**.
 - Column headers should use human-readable **Title Case** labels such as
   `Foo Bar`, not snake_case, lower case, or sentence case.
@@ -157,16 +165,24 @@ asks for them.
 
 ### Structure
 
+- For compact two-column tables, use `Metric` or another field label as the
+  first column header with light green 2 (`#b6d7a8`), and `Value` as the
+  second column header with light cornflower blue 2 (`#a4c2f4`). Do not make
+  both headers green.
 - Group related tables on the same tab, each with its own dark gray title
   banner on top.
 - Table title background fill should extend only across the actual width of
   the table, ending at the last populated column, never beyond it.
-- If a table has a total row, place the table title above the first column,
-  not merged across the full table width.
+- If a table has a total row, place the table title in the first cell of the
+  total row, not merged across the full table width. Put the total values on
+  that same row, starting in the value columns to the right of the title cell.
+  This keeps compact tables visually aligned, for example a P&L table with the
+  title in column A and totals across columns B:E on the same row.
 - If a table has no total row, the table title may extend across the full
-  width of the table.
-- Whenever a table has a total row, the required row order is: table title,
-  then total row, then column headers, then body rows.
+  width of the table. The column header row must immediately follow the title
+  row, with no blank row between them.
+- Whenever a table has a total row, the required row order is: title and total
+  values on the same row, then column headers, then body rows.
 - Total rows must always be placed above the column headers, never below
   them and never at the bottom of the table, unless the user explicitly asks
   for a different layout.
@@ -182,11 +198,20 @@ asks for them.
   content.
 - Leave exactly one empty spacer between distinct subtables on the same tab,
   either one blank column for side-by-side tables or one blank row for stacked
-  tables.
+  tables. Do not add blank rows inside a table, for example between a title or
+  total row and its column headers.
+- When a user specifies that a table should start on a given row, place the
+  table title on that row. If the table has totals, put the title and total
+  values on that same row, then put column headers on the next row and body
+  rows below.
 
 ## What to avoid
 
+- Compact two-column tables where both `Metric` and `Value` headers are green.
+  The field/metric header should be light green 2 (`#b6d7a8`) and the value
+  header should be light cornflower blue 2 (`#a4c2f4`).
 - Leaving any tab named `Sheet1` or other auto-generated names.
+- Leaving any worksheet with fewer than 1,000 rows or fewer than columns A:Z.
 - Breaking a README-style paragraph or narrative block across multiple cells
   when it should remain a single merged multi-column, multi-row text block.
 - Reflowing or rewriting an existing long text block in a way that loses its
@@ -216,8 +241,8 @@ asks for them.
   data that is not a manual parameter input.
 - Total rows placed at the bottom of a table instead of at the top.
 - Total rows placed below the column headers instead of above them.
-- Any table layout that does not follow the required order: title, total,
-  headers, body, when a total row exists.
+- Any table layout that does not follow the required order: title and total
+  values on the same row, headers, body, when a total row exists.
 - Adding a `Total` label in the total row when it is not needed.
 - Table titles that do not use dark gray 1 (`#b7b7b7`).
 - Table titles placed across the full table width when the table has a total
@@ -235,7 +260,8 @@ asks for them.
 - Numeric columns not right-aligned.
 - Total-row values not right-aligned.
 - Total rows that do not use light gray 1 (`#d9d9d9`).
-- Any use of font sizes other than 10 pt unless the user explicitly asks.
+- Any use of font sizes other than 10 pt, except README tabs which should use
+  11 pt, unless the user explicitly asks.
 - Wide-table headers colored as all light cyan 2 by default instead of
   using light green 2 for the first one or two columns, light cornflower
   blue 2 for most columns, and light cyan 2 only for specific highlighted
@@ -248,3 +274,5 @@ asks for them.
   reused via copy/paste formatting.
 - Placing subtables directly adjacent to each other without exactly one blank
   separating row or column.
+- Adding blank rows inside a table, especially between a table title and its
+  column headers, or between a table title and its total row.
