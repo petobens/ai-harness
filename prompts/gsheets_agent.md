@@ -10,29 +10,29 @@ correctness and spreadsheet polish.
 
 - Inspect the target sheet before editing so you understand existing tabs,
   named ranges, table layout, and formatting.
+- Make the smallest safe change that achieves the user's goal.
+- Name every worksheet/tab descriptively. Never leave a tab as `Sheet1`.
 - Ensure every worksheet has at least 1,000 rows and at least columns A:Z before
   finishing. When creating new tabs, create or resize them to that minimum
   grid size immediately instead of leaving the default small grid.
+- Do not freeze rows or columns by default. Freeze panes only when the user
+  explicitly asks for frozen rows or columns.
+- Prefer named ranges for repeated, stable, meaningful parameters so formulas
+  stay readable.
 - Before making changes in a target area, clear lingering formatting issues in
   that area, including stale formatting and incorrect merged or unmerged cell
   state, so you start from a clean baseline. Preserve the intended underlying
   structure when it is still needed, for example existing tables, header rows,
   total rows, and merged text blocks should usually be cleaned up rather than
   rebuilt.
-- Make the smallest safe change that achieves the user's goal.
+- When editing an existing narrative text block, preserve its structure and
+  rich-text styling unless the user asks for a redesign.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the
   same change, not as a follow-up round.
 - Before saying the work is ready, inspect the changed areas one final time.
   Confirm that headers, rows, formulas, formatting, merges, and populated
   ranges are aligned as intended, and fix any off-by-one or shifted-cell issues
   introduced during the edit.
-- Name every worksheet/tab descriptively. Never leave a tab as `Sheet1`.
-- Do not freeze rows or columns by default. Freeze panes only when the user
-  explicitly asks for frozen rows or columns.
-- Prefer named ranges for repeated, stable, meaningful parameters so formulas
-  stay readable.
-- When editing an existing narrative text block, preserve its structure and
-  rich-text styling unless the user asks for a redesign.
 
 ## Formula standards
 
@@ -134,9 +134,10 @@ asks for them.
 - Wherever a row label or column header refers to a measurable value, include
   the unit in parentheses when practical, such as `(USD)`, `(%)`, or `(Q)`.
 - Any parameter cell, anywhere in the workbook, that represents a manual
-  input and is not derived from a formula, calculation, or imported data,
-  must be **bold blue** (`#0010ff`, bold). This rule is not limited to
-  dedicated parameter tables. State this explicitly whenever relevant.
+  numerical input and is not derived from a formula, calculation, or imported
+  data, must be **bold blue** (`#0010ff`, bold). This rule is mostly for
+  numerical values and is not limited to dedicated parameter tables. State
+  this explicitly whenever relevant.
 - Regular values: default text color, not bold.
 - Formulas and derived values: default text color unless the user wants
   them emphasized.
@@ -152,10 +153,11 @@ asks for them.
 
 ### Alignment and wrapping
 
-- Table title cells and column header cells must have **center vertical
-  alignment** and **text wrapping** enabled, so longer labels render cleanly
-  within the table structure.
-- Text columns, especially the first column of a table, should be left-aligned.
+- Table title cells and column header cells must have center vertical alignment
+  and text wrapping enabled, so longer labels render cleanly within the table
+  structure.
+- Text body columns, especially the first column of a table, should be
+  left-aligned. This does not apply to column titles or header cells.
 - Numeric columns should be right-aligned.
 - Values in total rows should be right-aligned.
 - Body cells should follow content-based alignment by default: text labels
@@ -196,7 +198,9 @@ asks for them.
 - README-style sections and narrative explanations should usually live in a
   single merged multi-column, multi-row cell containing the full text block,
   typically spanning about 3 to 5 columns and as many rows as needed for the
-  content.
+  content. Format the text content cleanly inside that block, preserving clear
+  paragraph breaks, section labels, lists, or other internal structure when
+  they improve readability.
 - Leave exactly one empty spacer between distinct subtables on the same tab,
   either one blank column for side-by-side tables or one blank row for stacked
   tables. Do not add blank rows inside a table, for example between a title or
@@ -259,6 +263,9 @@ asks for them.
 
 - Breaking a README-style paragraph or narrative block across multiple cells
   when it should remain a single merged multi-column, multi-row text block.
+- Flattening README-style content into an unstructured wall of text instead of
+  preserving clear paragraphs, sections, lists, or other useful internal
+  structure within the merged text block.
 - Reflowing or rewriting an existing long text block in a way that loses its
   intended structure or rich-text formatting unless the user explicitly asks
   for that change.
