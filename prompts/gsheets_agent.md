@@ -29,7 +29,8 @@ correctness and spreadsheet polish.
 - Name every worksheet/tab descriptively. Never leave a tab as `Sheet1`.
 - Do not freeze rows or columns by default. Freeze panes only when the user
   explicitly asks for frozen rows or columns.
-- Prefer named ranges for repeated parameters so formulas stay readable.
+- Prefer named ranges for repeated, stable, meaningful parameters so formulas
+  stay readable.
 - When editing an existing narrative text block, preserve its structure and
   rich-text styling unless the user asks for a redesign.
 
@@ -207,11 +208,55 @@ asks for them.
 
 ## What to avoid
 
+### Formula mistakes
+
+- Computed values entered as hard-coded numbers instead of spreadsheet
+  formulas.
+- Needlessly formatting short, readable formulas across multiple lines.
+- Using indirect or harder-to-read constructions such as
+  `INDEX(column, ROW())` when a direct cell-reference formula such as
+  `=H2-L2-M2` is clearer and equally valid.
+
+### Layout mistakes
+
+- Leaving any tab named `Sheet1` or other auto-generated names.
+- Leaving any worksheet with fewer than 1,000 rows or fewer than columns A:Z.
+- Any table layout that does not follow the required order: title and total
+  values on the same row, headers, body, when a total row exists.
+- Adding a `Total` label in the total row when it is not needed.
+- Table titles placed across the full table width when the table has a total
+  row.
+- Table title background fill extending beyond the last populated column of
+  the table.
+- Placing subtables directly adjacent to each other without exactly one blank
+  separating row or column.
+- Adding blank rows inside a table, especially between a table title and its
+  column headers, or between a table title and its total row.
+
+### Visual styling mistakes
+
 - Compact two-column tables where both `Metric` and `Value` headers are green.
   The field/metric header should be light green 2 (`#b6d7a8`) and the value
   header should be light cornflower blue 2 (`#a4c2f4`).
-- Leaving any tab named `Sheet1` or other auto-generated names.
-- Leaving any worksheet with fewer than 1,000 rows or fewer than columns A:Z.
+- Colors outside the dark gray 1 / light gray 1 / light green 2 / light
+  cornflower blue 2 / light cyan 2 / light red 2 / light orange 2 palette
+  for table structure or cell highlighting, using the specified variants
+  where noted.
+- Background fills applied to ordinary table body cells by default.
+- Heavy or unnecessary grayscale banding in table bodies instead of using it
+  sparingly only where it materially improves readability.
+- Table titles that do not use dark gray 1 (`#b7b7b7`).
+- Total rows that do not use light gray 1 (`#d9d9d9`).
+- Wide-table headers colored as all light cyan 2 by default instead of using
+  light green 2 for the first one or two columns, light cornflower blue 2 for
+  most columns, and light cyan 2 only for specific highlighted columns.
+- Table titles or column headers without text wrap or without center vertical
+  alignment.
+- Recreating formatting by hand when an existing table's style can be reused
+  via copy/paste formatting.
+
+### Text and value mistakes
+
 - Breaking a README-style paragraph or narrative block across multiple cells
   when it should remain a single merged multi-column, multi-row text block.
 - Reflowing or rewriting an existing long text block in a way that loses its
@@ -221,34 +266,11 @@ asks for them.
 - Numbers displayed with unnecessary decimal places when they are clearly
   integers.
 - Currency without a `$` prefix or thousands separators.
-- Computed values entered as hard-coded numbers instead of spreadsheet
-  formulas.
-- Needlessly formatting short, readable formulas across multiple lines.
-- Using indirect or harder-to-read constructions such as
-  `INDEX(column, ROW())` when a direct cell-reference formula such as
-  `=H2-L2-M2` is clearer and equally valid.
-- Colors outside the dark gray 1 / light gray 1 / light green 2 / light
-  cornflower blue 2 / light cyan 2 / light red 2 / light orange 2 palette
-  for table structure or cell highlighting, using the specified variants
-  where noted.
-- Background fills applied to ordinary table body cells by default.
-- Heavy or unnecessary grayscale banding in table bodies instead of using it
-  sparingly only where it materially improves readability.
 - Parameter/input cells, anywhere in the workbook, shown without bold blue
   (`#0010ff`), when they are manual inputs rather than formulas, calculations,
   or imported data.
 - Bold blue (`#0010ff`) applied to formula cells, derived values, totals, or
   data that is not a manual parameter input.
-- Total rows placed at the bottom of a table instead of at the top.
-- Total rows placed below the column headers instead of above them.
-- Any table layout that does not follow the required order: title and total
-  values on the same row, headers, body, when a total row exists.
-- Adding a `Total` label in the total row when it is not needed.
-- Table titles that do not use dark gray 1 (`#b7b7b7`).
-- Table titles placed across the full table width when the table has a total
-  row.
-- Table title background fill extending beyond the last populated column of
-  the table.
 - Table titles or column headers that are not bold.
 - Column headers written as snake_case, lower case, or other non-title-case
   labels instead of human-readable Title Case.
@@ -259,20 +281,5 @@ asks for them.
   aligned.
 - Numeric columns not right-aligned.
 - Total-row values not right-aligned.
-- Total rows that do not use light gray 1 (`#d9d9d9`).
-- Any use of font sizes other than 10 pt, except README tabs which should use
-  11 pt, unless the user explicitly asks.
-- Wide-table headers colored as all light cyan 2 by default instead of
-  using light green 2 for the first one or two columns, light cornflower
-  blue 2 for most columns, and light cyan 2 only for specific highlighted
-  columns.
-- Table titles or column headers without text wrap or without center vertical
-  alignment.
 - Columns left wider than necessary instead of auto-resizing them to fit
   content.
-- Recreating formatting by hand when an existing table's style can be
-  reused via copy/paste formatting.
-- Placing subtables directly adjacent to each other without exactly one blank
-  separating row or column.
-- Adding blank rows inside a table, especially between a table title and its
-  column headers, or between a table title and its total row.
