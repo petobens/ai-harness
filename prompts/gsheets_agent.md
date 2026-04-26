@@ -20,11 +20,11 @@ correctness and spreadsheet polish.
 - Prefer named ranges for repeated, stable, meaningful parameters so formulas
   stay readable.
 - Before making changes in a target area, clear lingering formatting issues in
-  that area, including stale formatting and incorrect merged or unmerged cell
-  state, so you start from a clean baseline. Preserve the intended underlying
-  structure when it is still needed, for example existing tables, header rows,
-  total rows, and merged text blocks should usually be cleaned up rather than
-  rebuilt.
+  that area, including stale formatting, accidental fills, incorrect text
+  color, and incorrect merged or unmerged cell state, so you start from a clean
+  baseline. Preserve the intended underlying structure when it is still needed,
+  for example existing tables, header rows, total rows, and merged text blocks
+  should usually be cleaned up rather than rebuilt.
 - When editing an existing narrative text block, preserve its structure and
   rich-text styling unless the user asks for a redesign.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the
@@ -153,9 +153,9 @@ asks for them.
 
 ### Alignment and wrapping
 
-- Table title cells and column header cells must have center vertical alignment
-  and text wrapping enabled, so longer labels render cleanly within the table
-  structure.
+- Table title cells and column header cells must be horizontally centered,
+  vertically centered, and wrapped, so longer labels render cleanly within the
+  table structure.
 - Text body columns, especially the first column of a table, should be
   left-aligned. This does not apply to column titles or header cells.
 - Numeric columns should be right-aligned.
@@ -195,12 +195,16 @@ asks for them.
   `Unit Cost`, `Salary Bands`, `P&L`, `README`, `ToDos`).
 - Prefer one table per logical concept. Split across tabs when a tab
   becomes too dense.
-- README-style sections and narrative explanations should usually live in a
-  single merged multi-column, multi-row cell containing the full text block,
-  typically spanning about 3 to 5 columns and as many rows as needed for the
-  content. Format the text content cleanly inside that block, preserving clear
-  paragraph breaks, section labels, lists, or other internal structure when
-  they improve readability.
+- README-style tabs must have a separate title row and a separate narrative
+  body block. Put the README title in its own merged row across the content
+  width, styled like a table title with dark gray 1 (`#b7b7b7`), bold text,
+  horizontal center alignment, vertical center alignment, and wrap enabled.
+- README-style sections and narrative explanations should usually live below
+  the title row in a single merged multi-column, multi-row cell containing the
+  full text block, typically spanning about 3 to 5 columns and enough rows for
+  the content to be fully visible without clipping. Format the text content
+  cleanly inside that block, preserving clear paragraph breaks, section labels,
+  lists, or other internal structure when they improve readability.
 - Leave exactly one empty spacer between distinct subtables on the same tab,
   either one blank column for side-by-side tables or one blank row for stacked
   tables. Do not add blank rows inside a table, for example between a title or
@@ -254,8 +258,8 @@ asks for them.
 - Wide-table headers colored as all light cyan 2 by default instead of using
   light green 2 for the first one or two columns, light cornflower blue 2 for
   most columns, and light cyan 2 only for specific highlighted columns.
-- Table titles or column headers without text wrap or without center vertical
-  alignment.
+- Table titles or column headers without text wrap, without horizontal center
+  alignment, or without center vertical alignment.
 - Recreating formatting by hand when an existing table's style can be reused
   via copy/paste formatting.
 
@@ -263,6 +267,10 @@ asks for them.
 
 - Breaking a README-style paragraph or narrative block across multiple cells
   when it should remain a single merged multi-column, multi-row text block.
+- README tabs where the title and body are placed in the same merged cell
+  instead of using a separate title row and separate merged body block.
+- README body merged ranges that are too short, causing wrapped content to be
+  clipped or hidden.
 - Flattening README-style content into an unstructured wall of text instead of
   preserving clear paragraphs, sections, lists, or other useful internal
   structure within the merged text block.
