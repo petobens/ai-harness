@@ -73,6 +73,10 @@ tips.
 - Keep readable one-line formulas on a single line.
 - Use multi-line formatting only for longer formulas where line breaks improve
   readability.
+- Any formula that uses `QUERY` with a non-trivial query string must format the
+  query text like readable SQL: put `select`, `where`, `group by`, `order by`,
+  `label`, and similar clauses on separate lines inside the string. Keep very
+  short, simple queries on one line only when that is genuinely clearer.
 - Prefer direct cell references in readable formulas when possible. For
   example, prefer `=H2-L2-M2` over
   `=INDEX($H:$H, ROW()) - INDEX($L:$L, ROW()) - INDEX($M:$M, ROW())` when
@@ -133,11 +137,18 @@ asks for them.
   `Foo Bar`, not snake_case, lower case, or sentence case.
 - Wherever a row label or column header refers to a measurable value, include
   the unit in parentheses when practical, such as `(USD)`, `(%)`, or `(Q)`.
-- Any parameter cell, anywhere in the workbook, that represents a manual
-  numerical input and is not derived from a formula, calculation, or imported
-  data, must be **bold blue** (`#0010ff`, bold). This rule is mostly for
-  numerical values and is not limited to dedicated parameter tables. State
-  this explicitly whenever relevant.
+  Put the unit on the label that names the measured metric, not on a purely
+  categorical or time-period header. For example, in a P&L with months across
+  columns, use row labels like `Revenue (USD)`, `COGS (USD)`, and
+  `Gross Profit (USD)`, while month headers should remain `Jan 2026`,
+  `Feb 2026`, etc. Only put units in column headers when the column itself is
+  the measured field, such as `Amount (USD)`, `Margin (%)`, or `Units (Q)`.
+- Style manual model inputs and configuration parameters as **bold blue**
+  (`#0010ff`, bold). This applies to manual numerical assumptions anywhere in
+  the workbook, not just dedicated parameter tables.
+- Do not use bold blue for ordinary data-entry or imported records, including
+  transaction amounts, dates, quantities, and row-level facts. Those are data,
+  not parameters.
 - Regular values: default text color, not bold.
 - Formulas and derived values: default text color unless the user wants
   them emphasized.
@@ -165,6 +176,8 @@ asks for them.
   centered when that clearly improves readability.
 - Auto-resize columns so they are as narrow as possible while still fitting
   their contents, like double-clicking the column boundary in Google Sheets.
+  Make columns wide enough that header words are not split awkwardly across
+  lines, for example avoid wrapping `Transaction` as `Transactio` / `n`.
 
 ### Structure
 
@@ -199,12 +212,13 @@ asks for them.
   body block. Put the README title in its own merged row across the content
   width, styled like a table title with dark gray 1 (`#b7b7b7`), bold text,
   horizontal center alignment, vertical center alignment, and wrap enabled.
-- README-style sections and narrative explanations should usually live below
-  the title row in a single merged multi-column, multi-row cell containing the
-  full text block, typically spanning about 3 to 5 columns and enough rows for
-  the content to be fully visible without clipping. Format the text content
-  cleanly inside that block, preserving clear paragraph breaks, section labels,
-  lists, or other internal structure when they improve readability.
+- README-style sections and narrative explanations should usually live directly
+  below the title row, with no blank spacer row between the title and the body,
+  in a single merged multi-column, multi-row cell containing the full text
+  block, typically spanning about 3 to 5 columns and enough rows for the
+  content to be fully visible without clipping. Format the text content cleanly
+  inside that block, preserving clear paragraph breaks, section labels, lists,
+  or other internal structure when they improve readability.
 - Leave exactly one empty spacer between distinct subtables on the same tab,
   either one blank column for side-by-side tables or one blank row for stacked
   tables. Do not add blank rows inside a table, for example between a title or
@@ -240,6 +254,7 @@ asks for them.
   separating row or column.
 - Adding blank rows inside a table, especially between a table title and its
   column headers, or between a table title and its total row.
+- Adding a blank row between a README title row and the README body block.
 
 ### Visual styling mistakes
 
@@ -289,9 +304,14 @@ asks for them.
 - Table titles or column headers that are not bold.
 - Column headers written as snake_case, lower case, or other non-title-case
   labels instead of human-readable Title Case.
-- Omitting units in row labels or column headers when the values represent
-  measurable quantities and the unit can be stated clearly, such as `(USD)`,
-  `(%)`, or `(Q)`.
+- Omitting units from the metric label when the values represent measurable
+  quantities and the unit can be stated clearly, such as `(USD)`, `(%)`, or
+  `(Q)`. Attach the unit to the row label when rows are metrics and columns are
+  periods or categories, for example `Revenue (USD)` under monthly columns.
+- Adding units to period or category headers that do not themselves name the
+  measured value, such as `Jan 2026 (USD)`, `Q1 2026 (USD)`, or
+  `Region (USD)`, when the metric row or field label should carry the unit
+  instead.
 - Text-heavy columns, especially first columns used for labels, not left-
   aligned.
 - Numeric columns not right-aligned.
