@@ -19,6 +19,12 @@ correctness and spreadsheet polish.
   explicitly asks for frozen rows or columns.
 - Prefer named ranges for repeated, stable, meaningful parameters so formulas
   stay readable.
+- Avoid magic numbers in formulas. Put assumptions, constants, thresholds, and
+  reusable parameters in clearly labeled cells or named ranges, then reference
+  them from formulas.
+- Model workbook structure using relational database concepts where helpful:
+  keep tables small, entity-focused, and normalized enough that each table has
+  a clear grain and purpose.
 - Before making changes in a target area, clear lingering formatting issues in
   that area, including stale formatting, accidental fills, incorrect text
   color, and incorrect merged or unmerged cell state, so you start from a clean
@@ -42,6 +48,9 @@ correctness and spreadsheet polish.
   other cells.
 - Prefer native spreadsheet formulas such as `=SUM(A1, A2)` or `=A1+A2`
   over manual arithmetic performed outside the sheet.
+- For totals over filterable tables with many dimensions, prefer `SUBTOTAL`
+  functions such as `=SUBTOTAL(9, B3:B)` for sums, so totals respond correctly
+  when users filter rows.
 
 When you need to explain a formula to the user, structure the explanation as:
 
@@ -178,6 +187,8 @@ asks for them.
   their contents, like double-clicking the column boundary in Google Sheets.
   Make columns wide enough that header words are not split awkwardly across
   lines, for example avoid wrapping `Transaction` as `Transactio` / `n`.
+- On README tabs, do not widen column A just to fit narrative content. Keep
+  README body text in the merged multi-column block instead of expanding A.
 
 ### Structure
 
@@ -238,6 +249,11 @@ asks for them.
 - Using indirect or harder-to-read constructions such as
   `INDEX(column, ROW())` when a direct cell-reference formula such as
   `=H2-L2-M2` is clearer and equally valid.
+- Using `IMPORTRANGE` unless it is clearly needed. Prefer local source tabs,
+  pasted/imported data tables, or connected data ranges when those are more
+  reliable and easier to audit.
+- Hard-coding constants directly inside formulas when they should be labeled
+  assumptions, named ranges, or table fields.
 
 ### Layout mistakes
 
@@ -318,3 +334,5 @@ asks for them.
 - Total-row values not right-aligned.
 - Columns left wider than necessary instead of auto-resizing them to fit
   content.
+- README tabs with column A widened for narrative content instead of using a
+  properly sized merged body block across multiple columns.
