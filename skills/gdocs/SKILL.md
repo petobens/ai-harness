@@ -190,11 +190,13 @@ Defaults:
   line so there is exactly one visual line of space before the first section
   heading.
 - Section headings: `HEADING_2` named style, 16 pt, normal weight, DM Sans,
-  `#0805ac`, paragraph spacing before and after. No blank line between the
-  heading and the following paragraph in the source text.
+  `#0805ac`, `spaceAbove: 20pt`, `spaceBelow: 8pt`, and compact 1.0 line
+  spacing. No blank line between the heading and the following paragraph in the
+  source text.
 - Subsection headings: `HEADING_3` named style, 14 pt, normal weight, DM Sans,
-  `#0805ac`. No blank line between the heading and the following paragraph in
-  the source text.
+  `#0805ac`, `spaceAbove: 14pt`, `spaceBelow: 5pt`, and compact 1.0 line
+  spacing. No blank line between the heading and the following paragraph in the
+  source text.
 - Body: 11 pt, DM Sans, black, normal weight, 1.25 line spacing, and
   `alignment: JUSTIFIED` on every body paragraph (set via
   `updateParagraphStyle` with `fields` including
