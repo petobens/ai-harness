@@ -16,12 +16,12 @@ with information that is likely to matter again in future conversations.
 
 ## Coding Preferences
 
+- Make the smallest practical code change that solves the stated problem directly.
 - Do not preserve backward compatibility unless I explicitly request it.
-- Prefer minimal diffs that solve the stated problem directly.
 - Do not make unrelated cleanup or refactors unless explicitly requested.
 - Do not add abstractions unless they are clearly needed.
 - Avoid defensive coding unless it adds clear practical value.
-- Prefer inline code over single-use helper functions.
+- Use inline code for single-use logic instead of extracting helper functions.
 - Optimize for clarity and directness over extensibility.
 
 ## Agent Memory
