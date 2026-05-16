@@ -69,6 +69,8 @@ tips.
 - Prefer `LET` whenever a formula references the same sub-expression more
   than once, or is complex enough that named intermediate values make the
   logic clearer.
+- Do not use `LET` just to make formulas look structured. Use it only when it
+  materially reduces repetition or clarifies non-trivial logic.
 - Skip `LET` for short, single-step formulas where it would only add noise.
 
 ### Naming conventions
@@ -90,6 +92,10 @@ tips.
   example, prefer `=H2-L2-M2` over
   `=INDEX($H:$H, ROW()) - INDEX($L:$L, ROW()) - INDEX($M:$M, ROW())` when
   both are valid for the situation.
+- Prefer the simplest formula that is clear and auditable. Do not introduce
+  `LET`, helper variables, `XLOOKUP`, `INDEX` / `MATCH`, `ARRAYFORMULA`, or
+  other more complex constructs when direct arithmetic or a short native
+  formula is easier to read.
 
 For multi-line formulas, indent to show nesting, for example:
 
