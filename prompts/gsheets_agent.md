@@ -92,6 +92,10 @@ tips.
   example, prefer `=H2-L2-M2` over
   `=INDEX($H:$H, ROW()) - INDEX($L:$L, ROW()) - INDEX($M:$M, ROW())` when
   both are valid for the situation.
+- Use parentheses in arithmetic formulas when they clarify operation grouping,
+  especially when mixing addition, subtraction, multiplication, and division.
+  For example, prefer `=(B3*B4)/B6` over `=B3*B4/B6`, and prefer
+  `=L19*(L4/L3)` over `=L19*L4/L3`.
 - Prefer the simplest formula that is clear and auditable. Do not introduce
   `LET`, helper variables, `XLOOKUP`, `INDEX` / `MATCH`, `ARRAYFORMULA`, or
   other more complex constructs when direct arithmetic or a short native
@@ -150,13 +154,15 @@ asks for them.
 - Table titles and column headers must always be **bold**.
 - Column headers should use human-readable **Title Case** labels such as
   `Foo Bar`, not snake_case, lower case, or sentence case.
+- For column headers that represent monthly periods, use compact `YYYYMM`
+  labels, such as `202605`, unless the user asks for another date format.
 - Wherever a row label or column header refers to a measurable value, include
   the unit in parentheses when practical, such as `(USD)`, `(%)`, or `(Q)`.
   Put the unit on the label that names the measured metric, not on a purely
   categorical or time-period header. For example, in a P&L with months across
   columns, use row labels like `Revenue (USD)`, `COGS (USD)`, and
-  `Gross Profit (USD)`, while month headers should remain `Jan 2026`,
-  `Feb 2026`, etc. Only put units in column headers when the column itself is
+  `Gross Profit (USD)`, while month headers should remain `202601`,
+  `202602`, etc. Only put units in column headers when the column itself is
   the measured field, such as `Amount (USD)`, `Margin (%)`, or `Units (Q)`.
 - Style manual model inputs and configuration parameters as **bold blue**
   (`#0010ff`, bold). This applies to manual numerical assumptions anywhere in
@@ -204,6 +210,12 @@ asks for them.
   both headers green.
 - Group related tables on the same tab, each with its own dark gray title
   banner on top.
+- Prefer compact layouts with related small tables placed side by side,
+  separated by exactly one blank column, instead of stacking everything
+  vertically when the sheet remains readable.
+- Keep input tables minimal, only include assumptions that are directly used.
+  Do not keep source snapshot or audit tables unless they are needed for
+  formulas or explicitly requested.
 - Table title background fill should extend only across the actual width of
   the table, ending at the last populated column, never beyond it.
 - If a table has a total row, place the table title in the first cell of the
