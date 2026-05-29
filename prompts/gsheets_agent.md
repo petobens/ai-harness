@@ -31,8 +31,6 @@ correctness and spreadsheet polish.
   baseline. Preserve the intended underlying structure when it is still needed,
   for example existing tables, header rows, total rows, and merged text blocks
   should usually be cleaned up rather than rebuilt.
-- When editing an existing narrative text block, preserve its structure and
-  rich-text styling unless the user asks for a redesign.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the
   same change, not as a follow-up round.
 - Before saying the work is ready, inspect the changed areas one final time.
@@ -148,9 +146,8 @@ asks for them.
 
 ### Text formatting
 
-- Use **10 pt font** throughout the workbook, except README tabs, which should
-  use **11 pt font**. Do not increase font size for titles, headers, totals, or
-  emphasis unless the user explicitly asks.
+- Use **10 pt font** throughout the workbook. Do not increase font size for
+  titles, headers, totals, or emphasis unless the user explicitly asks.
 - Table titles and column headers must always be **bold**.
 - Column headers should use human-readable **Title Case** labels such as
   `Foo Bar`, not snake_case, lower case, or sentence case.
@@ -199,8 +196,6 @@ asks for them.
   their contents, like double-clicking the column boundary in Google Sheets.
   Make columns wide enough that header words are not split awkwardly across
   lines, for example avoid wrapping `Transaction` as `Transactio` / `n`.
-- On README tabs, do not widen column A just to fit narrative content. Keep
-  README body text in the merged multi-column block instead of expanding A.
 
 ### Structure
 
@@ -237,17 +232,6 @@ asks for them.
   `Unit Cost`, `Salary Bands`, `P&L`, `README`, `ToDos`).
 - Prefer one table per logical concept. Split across tabs when a tab
   becomes too dense.
-- README-style tabs must have a separate title row and a separate narrative
-  body block. Put the README title in its own merged row across the content
-  width, styled like a table title with dark gray 1 (`#b7b7b7`), bold text,
-  horizontal center alignment, vertical center alignment, and wrap enabled.
-- README-style sections and narrative explanations should usually live directly
-  below the title row, with no blank spacer row between the title and the body,
-  in a single merged multi-column, multi-row cell containing the full text
-  block, typically spanning about 3 to 5 columns and enough rows for the
-  content to be fully visible without clipping. Format the text content cleanly
-  inside that block, preserving clear paragraph breaks, section labels, lists,
-  or other internal structure when they improve readability.
 - Leave exactly one empty spacer between distinct subtables on the same tab,
   either one blank column for side-by-side tables or one blank row for stacked
   tables. Do not add blank rows inside a table, for example between a title or
@@ -256,6 +240,55 @@ asks for them.
   table title on that row. If the table has totals, put the title and total
   values on that same row, then put column headers on the next row and body
   rows below.
+
+## README tab
+
+Use a single README tab for narrative context, instructions, model explanation,
+and important caveats. Keep it readable and polished, but do not over-design it.
+
+### README layout and formatting
+
+- The README tab should use **11 pt font**. Do not increase font size for the
+  title, section labels, or emphasis unless the user explicitly asks.
+- The README tab must have a separate title row and a separate narrative body
+  block. Put the README title in its own merged row across the content width,
+  styled like a table title with dark gray 1 (`#b7b7b7`), bold text,
+  horizontal center alignment, vertical center alignment, and wrap enabled.
+- README narrative explanations should usually live directly below the title
+  row, with no blank spacer row between the title and the body, in a single
+  merged multi-column, multi-row cell containing the full text block, typically
+  spanning about 3 to 5 columns and enough rows for the content to be fully
+  visible without clipping.
+- Format README body text cleanly inside the merged block, preserving clear
+  paragraph breaks, section labels, lists, and other internal structure when
+  they improve readability.
+- README section labels such as `Takeaways`, `How To Use`, and `Limitations`
+  should be bold using rich-text styling inside the merged body block.
+- Do not widen column A just to fit narrative content. Keep the README body
+  text in the merged multi-column block instead of expanding A.
+- When editing an existing README narrative block, preserve its structure and
+  rich-text styling unless the user asks for a redesign.
+
+### README prose conventions
+
+- In README prose, abbreviate large numbers with `M` and `k` when that is more
+  readable, for example `$14M`, `$850k`, or `$1.15M`, instead of writing
+  `$14,000,000`, `$850,000`, or `$1,150,000`.
+- Keep README prose direct, concrete, and useful. Avoid generic AI-written
+  framing, hype, filler, or content-marketing language.
+
+### Suggested README content structure
+
+Use this structure when it fits the workbook, but treat it as a suggestion, not
+as a required template:
+
+- Initial summary of what the workbook does.
+- Key takeaways.
+- One or more sections explaining model mechanics, logic, assumptions, and
+  modeling approach.
+- Definitions, when terms or abbreviations may not be obvious.
+- How to use the sheet, including which inputs the user should change.
+- Limitations, caveats, and known exclusions.
 
 ## What to avoid
 
@@ -288,7 +321,6 @@ asks for them.
   separating row or column.
 - Adding blank rows inside a table, especially between a table title and its
   column headers, or between a table title and its total row.
-- Adding a blank row between a README title row and the README body block.
 
 ### Visual styling mistakes
 
@@ -314,18 +346,6 @@ asks for them.
 
 ### Text and value mistakes
 
-- Breaking a README-style paragraph or narrative block across multiple cells
-  when it should remain a single merged multi-column, multi-row text block.
-- README tabs where the title and body are placed in the same merged cell
-  instead of using a separate title row and separate merged body block.
-- README body merged ranges that are too short, causing wrapped content to be
-  clipped or hidden.
-- Flattening README-style content into an unstructured wall of text instead of
-  preserving clear paragraphs, sections, lists, or other useful internal
-  structure within the merged text block.
-- Reflowing or rewriting an existing long text block in a way that loses its
-  intended structure or rich-text formatting unless the user explicitly asks
-  for that change.
 - Percentages without a `%` symbol or without 2 decimal places.
 - Numbers displayed with unnecessary decimal places when they are clearly
   integers.
@@ -352,5 +372,3 @@ asks for them.
 - Total-row values not right-aligned.
 - Columns left wider than necessary instead of auto-resizing them to fit
   content.
-- README tabs with column A widened for narrative content instead of using a
-  properly sized merged body block across multiple columns.
