@@ -102,10 +102,10 @@ Bullet defaults:
 
 Heading hierarchy:
 
-- the file uses two `#` (H1) headings: the first is `# Slides Plan`, which
-  introduces the planning header (a scaffolding artifact, not a rendered
-  slide); the second `#` is the rendered cover slide itself, and its heading
-  text is the actual cover-slide title
+- the file uses two `#` (H1) headings: the first is `# Slides Plan (Internal)`,
+  which introduces the planning header (a scaffolding artifact, not a rendered
+  slide); the second `#` is the rendered cover slide itself, and its heading text
+  is the actual cover-slide title
 - the cover-slide H1 is Slide 1; place a single `**Subtitle:**` line below
   it when a subtitle is needed (no separate `**Title:**` line, since the H1
   text serves as the title)
@@ -113,16 +113,17 @@ Heading hierarchy:
   single plain sentence beneath it states the section sub-answer (no
   `**Subtitle:**` label); used only in sectioned decks, and each divider
   occupies its own slide slot in the numbering
-- `###` (H3) is a content slide: action title as the heading, with the slide
-  body below
+- content-slide heading level depends on whether the deck uses section dividers:
+  use `###` (H3) for content slides in sectioned decks, because `##` (H2)
+  is reserved for section dividers; use `##` (H2) for content slides in
+  unsectioned decks, where no section dividers are rendered
 - slide numbering is global and continuous across the whole deck, counting
   the cover slide first, then each section divider and content slide in
-  order of appearance; only `###` content slides carry an explicit
-  `Slide N:` label in their heading, while the cover and section dividers
-  occupy their slot implicitly; for example, in a sectioned deck the cover
-  is Slide 1, the Executive Summary is `### Slide 2:`, the first section
-  divider is Slide 3, and the first content slide inside Section 1 is
-  `### Slide 4:`
+  order of appearance; content slides carry an explicit `Slide N:` label in
+  their heading, while the cover and section dividers occupy their slot
+  implicitly; for example, in a sectioned deck the cover is Slide 1, the
+  Executive Summary is `### Slide 2:`, the first section divider is Slide 3,
+  and the first content slide inside Section 1 is `### Slide 4:`
 - in sectioned decks, append a section-relative locator in parentheses after
   the global number on content slides that sit inside a section, using
   `(S.I)` where `S` is the section number and `I` is the content-slide
@@ -131,24 +132,24 @@ Heading hierarchy:
   Summary and on any pre-section context slide, and omit it entirely in
   unsectioned decks
 
-Always include the `# Slides Plan` header and its planning block above the
-cover-slide H1, regardless of deck size. The planning header is for
+Always include the `# Slides Plan (Internal)` header and its planning block
+above the cover-slide H1, regardless of deck size. The planning header is for
 horizontal-logic review, not a rendered slide, and can be stripped from the
-final file. For sectioned decks, group the storyline under section headings
-and give each section its own sub-governing question and sub-answer inside
-the plan block.
+final file. For sectioned decks, group the storyline under section headings and
+give each section its own sub-governing question and sub-answer inside the plan
+block.
 
 For unsectioned decks, list the storyline as a flat numbered list with no
 section groupings, starting from the cover slide as item 1, and skip the
 `##` section dividers in the rendered output: the cover slide is Slide 1
-and content slides begin at `### Slide 2:`, numbered continuously.
+and content slides begin at `## Slide 2:`, numbered continuously.
 
 Output in this format, omitting optional lines when unneeded.
 
 ```md
 <!-- markdownlint-disable MD013 -->
 
-# Slides Plan
+# Slides Plan (Internal)
 
 **Governing question:** One-sentence question the deck answers
 
