@@ -51,27 +51,16 @@ structure, formatting, and final polish.
 # Create blank doc; content in create requests is ignored by the API
 gws docs documents create --json '{"title":"Document title"}'
 
-# Copy
-gws drive files copy \
-    --params '{"fileId":"DOC_ID","supportsAllDrives":true}' \
-    --json '{"name":"Copied document title"}'
-
-# Rename
-gws drive files update \
-    --params '{"fileId":"DOC_ID","supportsAllDrives":true}' \
-    --json '{"name":"New document title"}'
-
-# Trash
-gws drive files update \
-    --params '{"fileId":"DOC_ID","supportsAllDrives":true}' \
-    --json '{"trashed":true}'
-
 # Read / inspect
 gws docs documents get --params '{"documentId":"DOC_ID"}'
 
 # Plain append (text only, no formatting)
 gws docs +write --document DOC_ID --text 'Text to append'
 ```
+
+For copy, rename, trash, and Drive search/listing, use the `gdrive` skill. A
+Google Doc's mimeType is `application/vnd.google-apps.document`; confirm the
+target matches it before copy, rename, or trash.
 
 For non-trivial JSON bodies, write `/tmp/gdoc-requests.json` and pass it with
 `--json "$(cat /tmp/gdoc-requests.json)"` to avoid shell quoting mistakes.
