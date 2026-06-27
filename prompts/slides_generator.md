@@ -29,13 +29,13 @@ Storyline rules:
   (SCR) pattern: the first content slide states the governing answer up
   front; if situation or complication setup is genuinely needed before the
   audience can absorb the answer, place a single tight context slide ahead
-  of it, but prefer the cover subtitle to carry framing when possible
+  of it, but prefer the cover title or chip to carry scope framing when
+  possible
 - in sectioned decks, an Executive Summary content slide immediately after
   the cover is recommended for longer decks (roughly ten-plus slides) or
-  when the key message is too nuanced to fit the cover subtitle; otherwise
-  let the cover subtitle carry the key message and go straight into the
-  first section; any optional context slide sits between the cover and
-  whichever slide carries the key message
+  when the key message is too nuanced to fit the cover title or first content
+  slide; otherwise go straight into the first section; any optional context
+  slide sits between the cover and whichever slide carries the key message
 - for short decks (three or fewer slides), always lead with the answer on
   the first content slide
 - organize slides as a pyramid: answer, reasons, proof, implications, execution
@@ -71,10 +71,11 @@ Slide rules:
   for the cover-slide title and for short label-style titles of two or three
   words such as "Executive Summary"
 - keep titles self-sufficient and concise; allow them to run longer when
-  needed to carry the full takeaway without a subtitle, and push nuance into
-  bullets rather than splitting meaning across title and subtitle
-- add a subtitle only when it clarifies scope, relevance, or ambiguity the
-  title alone cannot carry, and keep it short
+  needed to carry the full takeaway, and push nuance into bullets rather than
+  splitting meaning across title and chip
+- use a chip instead of a subtitle when a slide needs a short context label,
+  such as "Overall Outlook", "Q3 mandate", or "Retention"; the chip should
+  classify the slide, not complete the title's argument
 - include only content that proves, explains, qualifies, or operationalizes the
   takeaway
 - use MECE grouping where possible; lean on decision buckets such as why it
@@ -106,12 +107,12 @@ Heading hierarchy:
   which introduces the planning header (a scaffolding artifact, not a rendered
   slide); the second `#` is the rendered cover slide itself, and its heading text
   is the actual cover-slide title
-- the cover-slide H1 is Slide 1; place a single `**Subtitle:**` line below
-  it when a subtitle is needed (no separate `**Title:**` line, since the H1
-  text serves as the title)
+- the cover-slide H1 is Slide 1; place a single `**Chip:**` line below it
+  when a short scope or context label is useful (no separate `**Title:**`
+  line, since the H1 text serves as the title); do not use subtitles
 - `##` (H2) is a section divider slide: the heading is the section name and a
   single plain sentence beneath it states the section sub-answer (no
-  `**Subtitle:**` label); used only in sectioned decks, and each divider
+  `**Chip:**` label); used only in sectioned decks, and each divider
   occupies its own slide slot in the numbering
 - content-slide heading level depends on whether the deck uses section dividers:
   use `###` (H3) for content slides in sectioned decks, because `##` (H2)
@@ -174,12 +175,14 @@ Output in this format, omitting optional lines when unneeded.
 
 # Cover-Slide Title in Title Case
 
-**Subtitle:** Cover-slide subtitle
+**Chip:** Short context label
 
 ### Slide 2: Executive Summary
 
 <!-- optional; include for longer sectioned decks or when the key message
-is too nuanced for the cover subtitle -->
+is too nuanced for the cover title or first content slide -->
+
+**Chip:** Executive Summary
 
 - **Top-level point stating the key message**
   - Supporting bullet
@@ -193,7 +196,7 @@ One-sentence section sub-answer
 ### Slide 4 (1.1): Action title in sentence case
 
 [Optional, omit entirely if unneeded]
-**Subtitle:** One-sentence clarifying line when needed
+**Chip:** Short context label such as "Overall Outlook"
 
 - **Top-level point**
   - Supporting bullet
@@ -221,8 +224,8 @@ One-sentence section sub-answer
 
 Avoid:
 
-- long subtitles, bullets, or closing takeaway lines
-- repetition across title, subtitle, bullets, and any closing takeaway line
+- long chips, bullets, or closing takeaway lines
+- repetition across title, chip, bullets, and any closing takeaway line
 - vague verbs like "improve", "support", "enable", or "leverage"
 - generic phrases like "drive alignment" or "unlock value"
 - laundry lists, overlapping bullets, or mixed levels of abstraction
