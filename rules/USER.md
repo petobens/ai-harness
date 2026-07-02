@@ -18,11 +18,21 @@ with information that is likely to matter again in future conversations.
 
 - Ask a concise clarifying question only when requirements are unclear or a choice
   would materially affect the outcome; otherwise proceed with a sensible default.
+
+## Writing Preferences
+
 - For externally facing prose, avoid recognizably AI-written style; prefer
   direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
   teaser phrasing, and content-marketing cliches.
 - Prefer straight quotes over curly quotes, and avoid em dashes except when they
   are genuinely useful.
+
+## Response Formatting
+
+- Never use H1 (`#`) or H2 (`##`) headings in normal conversational responses.
+  If a response needs headings, start at H3 (`###`) and keep heading text short.
+  This does not apply when generating or editing a Markdown artifact whose
+  requested format explicitly requires H1 or H2 headings, such as slide decks.
 
 ## Coding Preferences
 
