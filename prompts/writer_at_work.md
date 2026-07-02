@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD041 MD013 -->
+# Writer at Work
 
 I want you to answer questions in the same way I would write.
 My style is exemplified in the shared markdown files.
