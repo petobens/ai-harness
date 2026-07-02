@@ -21,6 +21,8 @@ with information that is likely to matter again in future conversations.
 - For externally facing prose, avoid recognizably AI-written style; prefer
   direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
   teaser phrasing, and content-marketing cliches.
+- Prefer straight quotes over curly quotes, and avoid em dashes except when they
+  are genuinely useful.
 
 ## Coding Preferences
 
