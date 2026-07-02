@@ -14,6 +14,14 @@ with information that is likely to matter again in future conversations.
 - I have a background in Economics.
 - I'm the Co-Founder and COO of Muttdata, a Data + AI services company.
 
+## General Preferences
+
+- Ask a concise clarifying question only when requirements are unclear or a choice
+  would materially affect the outcome; otherwise proceed with a sensible default.
+- For externally facing prose, avoid recognizably AI-written style; prefer
+  direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
+  teaser phrasing, and content-marketing cliches.
+
 ## Coding Preferences
 
 - Make the smallest practical code change that solves the stated problem directly.
@@ -23,6 +31,8 @@ with information that is likely to matter again in future conversations.
 - Avoid defensive coding unless it adds clear practical value.
 - Use inline code for single-use logic instead of extracting helper functions.
 - Optimize for clarity and directness over extensibility.
+- Add comments only when truly necessary, and keep them as short and compact as
+  possible.
 
 ## Agent Memory
 
@@ -30,7 +40,3 @@ with information that is likely to matter again in future conversations.
 > Update this section only with durable information likely to matter again.
 > Include stable preferences, recurring constraints, and long-term facts.
 > Exclude temporary task details, transient project state, and vague traits.
-
-- For externally facing prose, avoid recognizably AI-written style; prefer
-  direct, concrete, natural writing, and avoid hype, jargon, formulaic structure,
-  teaser phrasing, and content-marketing cliches.
