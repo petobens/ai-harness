@@ -52,3 +52,5 @@ with information that is likely to matter again in future conversations.
 > Update this section only with durable information likely to matter again.
 > Include stable preferences, recurring constraints, and long-term facts.
 > Exclude temporary task details, transient project state, and vague traits.
+
+- Before code changes, find the repository root and read its AGENTS.md.
