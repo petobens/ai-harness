@@ -1,13 +1,13 @@
 ---
 name: gslides
 description: >-
-    Create and edit Google Slides with gws, reusing the Muttdata template deck
-    and preserving its visual design. Use when the user asks to build, update,
-    inspect, or render slides from provided content, copy a template slide,
-    replace slide text, or restyle slide text. Visual execution, not content
-    strategy.
+    Read, inspect, edit, and build Google Slides with gws. Use when the user
+    asks to read or inspect a deck, replace or restyle slide text, add,
+    duplicate, or delete slides, copy a template slide, or render slides to
+    check them. New slides are built template-first from the Muttdata deck,
+    preserving its visual design. Visual execution, not content strategy.
 metadata:
-    short-description: Build and edit Muttdata Google Slides with gws
+    short-description: Read, edit, and build Google Slides with gws
     category: productivity
     requires:
         bins:
@@ -17,15 +17,20 @@ metadata:
             - pass
 ---
 
+<!-- markdownlint-disable MD013 -->
+
 # Google Slides
 
-You are a Muttdata Slides visual execution agent. You create and edit Google
-Slides by reusing slides from the Muttdata template deck and preserving their
-visual design exactly. This is visual-only work.
+You interact with Google Slides through `gws`: reading and inspecting decks,
+editing text and styling, adding, duplicating, and deleting slides, and
+rendering slides to check their fit. Reads and edits work on any deck. When you
+create or add a slide, do it template-first — start from a slide in the Muttdata
+template deck and preserve its visual design, rather than building a layout from
+scratch.
 
-Content — storyline, titles, chips, bullets, template recommendations — may
-already be decided upstream. Do not invent the argument. Render the provided
-content by starting from existing template slides and changing only the text
+The work is visual execution, not content strategy. Content — storyline, titles,
+chips, bullets, template recommendations — may already be decided upstream. Do
+not invent the argument; render the provided content by changing only the text
 needed. When the content names a recommended template slide, treat that as a
 visual hint, not a content instruction.
 
@@ -35,10 +40,9 @@ Muttdata template deck:
 
 ## Role boundaries
 
-- You own visual execution, not content strategy. Assume titles, chips, and
-  bullets may already be final.
-- Treat a `**Chip:**` field as a short pill-style context label (e.g. "Overall
-  Outlook"), not a subtitle or second title.
+- These boundaries govern how you create and edit slides; plain reads and
+  inspections have no such limits. When editing, you own visual execution, not
+  content strategy — assume titles, chips, and bullets may already be final.
 - Do not rewrite content unless necessary for visual fit. Prefer layout
   adaptation over wording changes.
 - If content is too dense, preserve readability and suggest splitting the slide
@@ -60,10 +64,10 @@ Muttdata template deck:
   sandboxes, if a `gws` command fails with a DNS, discovery, or other
   network-access error, rerun the same command with escalated tool permissions;
   do not treat it as a presentation or API-shape failure.
-- When reading or inspecting a deck, keep the content in agent context and
-  return only a brief confirmation with the title, ID, URL, and inspected slides
-  by default. Do not paste slide text, a full extraction, or a summary unless the
-  user explicitly asks for one.
+- When reading a deck, keep the content in agent context and return only a brief
+  confirmation with the title, ID, URL, and inspected slides by default. Do not
+  paste slide text, a full extraction, or a summary unless the user explicitly
+  asks for one.
 - Always inspect the target presentation before editing, and review every edited
   or created slide for visual fit before reporting done.
 - Make the smallest safe change that achieves the goal, and preserve consistency
@@ -77,65 +81,69 @@ Muttdata template deck:
   about params or request bodies.
 - Report final title, ID, URL, and operations performed.
 
-## Template-first editing
+## Files (create, find, copy, rename, trash)
 
-- Every new slide must start from an existing slide in the template deck. To add
-  a slide, copy the best structural match from the template deck (see _Copying a
-  template slide across decks_), then edit only the text content needed.
-- Prefer copying the best structural match over building from scratch. Do not
-  recreate template slides manually unless copying is impossible.
-- Treat the copied slide as the source of truth for layout, spacing, typography,
-  shapes, containers, alignment, emphasis, and footer behavior.
-- Treat template slide titles as structural labels (the layout/content pattern),
-  not as content to reproduce; use them as a selection signal.
-- If an existing target slide is a poor fit, prefer replacing it with a copied
-  template slide rather than redesigning it by hand.
-- Keep all original visual styling unless a minimal adjustment is required to
-  prevent a layout defect.
-
-## Inspecting
-
-Read the deck before editing. A field mask keeps the response manageable while
-surfacing what you need: slide and element `objectId`s, placeholder types, text
-content with its run indices and styling, and geometry.
+Use the `gdrive` skill for these. A presentation's mimeType is
+`application/vnd.google-apps.presentation`; pass it when creating, and confirm
+the target matches it before copy, rename, or trash. (Note: "copy" here means
+copying a whole presentation file in Drive, a different operation from copying
+a single template slide between decks (see _Copying a template slide across
+decks_).)
 
 ```bash
-# Whole deck, focused on text shapes and their indices/styles
-gws slides presentations get --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(rows,columns)))"}'
+# Create a blank presentation
+gws drive files create \
+    --params '{"fields":"id,name,webViewLink","supportsAllDrives":true}' \
+    --json '{"name":"Presentation title","mimeType":"application/vnd.google-apps.presentation","parents":["root"]}'
 ```
 
-For large decks, save the response to `/tmp` first, then parse the local JSON.
-This avoids losing the successful read to terminal output truncation and avoids
-re-fetching after a transient network issue.
+## Reading and inspecting
+
+Reading and inspecting are different intents. Read when you need the deck's
+content — to show it or answer a question about it. Inspect when you are preparing
+an edit and need element `objectId`s, placeholder types, text run indices,
+geometry, and styling. Both save the response to `/tmp` first, then parse the
+local JSON, which avoids losing the read to terminal output truncation or a
+transient network error, and verify it is a presentation payload, not an API
+error object:
+
+```bash
+jq -e '(has("error") | not) and (.slides | type == "array")' /tmp/slides-read.json
+```
+
+If it contains an `error` with DNS, discovery, connection, or temporary lookup
+wording, rerun the same `gws` command with escalated network permissions. Do not
+pipe a failed response into `jq` as if it were a deck.
+
+### Reading content
+
+For a read, fetch the full payload — omit the `fields` mask so nothing is left
+out, including text inside grouped elements and table cells:
 
 ```bash
 gws slides presentations get \
-    --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(rows,columns)))"}' \
+    --params '{"presentationId":"PRES_ID"}' \
     2> /dev/null > /tmp/slides-read.json
 ```
 
-Before parsing a saved response, verify that it is a presentation payload rather
-than an API error object:
-
-```bash
-jq -e 'has("error") | not and (.slides | type == "array")' /tmp/slides-read.json
-```
-
-If the saved response contains an `error` with DNS, discovery, connection, or
-temporary lookup wording, rerun the same `gws` command with escalated network
-permissions. Do not pipe the failed response into `jq` parsers as if it were a
-deck.
-
-Use a compact slide index when you need only a read confirmation:
+Use the compact slide index for a read confirmation; extract full slide text only
+when the user explicitly asks. The extractor recurses through grouped children and
+table cells:
 
 ```bash
 jq -r '
+  def texts:
+    [
+      .shape?.text?.textElements[]?.textRun?.content,
+      (.elementGroup?.children[]? | texts),
+      .table?.tableRows[]?.tableCells[]?.text?.textElements[]?.textRun?.content
+    ] | flatten | map(select(. != null));
+
   "TITLE\t" + (.title // ""),
   (.slides | to_entries[] |
     ["SLIDE", (.key + 1 | tostring), .value.objectId,
-      ([.value.pageElements[]?.shape?.text?.textElements[]?.textRun?.content]
-       | map(select(. != null)
-       | gsub("\u000b"; " ")
+      ([.value.pageElements[]? | texts[]]
+       | map(gsub("\u000b"; " ")
        | gsub("\n"; " ")
        | gsub("  +"; " ")
        | gsub("^ +| +$"; ""))
@@ -144,6 +152,21 @@ jq -r '
        | join(" | "))
     ] | @tsv)
 ' /tmp/slides-read.json
+```
+
+Text baked into images, charts, or other raster assets is not API-native; render
+a thumbnail (see _Verifying_) and inspect visually when that content matters.
+
+### Inspecting for edits
+
+For edit prep, add a field mask to surface the `objectId`s, placeholder types, run
+indices, geometry, and styling you need while keeping the response manageable; it
+also reaches text inside grouped elements and table cells:
+
+```bash
+gws slides presentations get \
+    --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),elementGroup(children(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(tableRows(tableCells(text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))))))),image,table(tableRows(tableCells(text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))))))))"}' \
+    2> /dev/null > /tmp/slides-read.json
 ```
 
 From the output, note for each shape you intend to edit: its `objectId`, the
@@ -157,7 +180,12 @@ When post-processing this output programmatically, account for two quirks:
 stderr. Pipe with `2>/dev/null` when feeding stdout to a JSON parser; never
 `2>&1`, which merges that banner into the JSON and breaks the parse.
 
-## Editing slides
+## Editing an existing deck
+
+Text and styling changes on slides already in the deck. Creating new slides is
+template-first and covered below.
+
+### Text and style edits
 
 Every edit below is one `gws slides presentations batchUpdate` call (requests
 apply atomically; one invalid request rolls back the whole batch). Validate
@@ -285,55 +313,18 @@ to exactly the keys you changed.
 For anything the above do not cover — shapes, images, tables, geometry,
 recoloring — build the requests directly against the Slides `batchUpdate` API.
 
-## Copying a template slide across decks
-
-The Slides API cannot copy a slide between presentations while preserving its
-design, so this goes through the Muttdata Apps Script web app. Prefer a source
-slide `objectId` (from inspecting the template deck); `sourceSlideIndex` (1-based)
-is the fallback. `insertionIndex` sets the destination position; omit to append.
-
-```bash
-url="$(pass show gcloud/appscript/copy-slides/webapp-url)"
-secret="$(pass show gcloud/appscript/copy-slides/webapp-secret)"
-jq -nc \
-    --arg secret "$secret" \
-    --arg src 1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo \
-    --arg dst DEST_PRES_ID \
-    --arg slide SOURCE_SLIDE_OBJECT_ID \
-    '{secret:$secret, sourcePresentationId:$src, destinationPresentationId:$dst, sourceSlideObjectId:$slide}' |
-    curl -sSL -H 'Content-Type: application/json' -d @- "$url"
-```
-
-A success response is `{"ok":true,"newSlideObjectId":"..."}`; failure is
-`{"ok":false,"error":"..."}` or an HTTP status ≥ 400. After copying, inspect the
-new slide and replace only the text content needed.
-
-## Files (create, find, copy, rename, trash)
-
-Use the `gdrive` skill for these. A presentation's mimeType is
-`application/vnd.google-apps.presentation`; pass it when creating, and confirm
-the target matches it before copy, rename, or trash. (Note: "copy" here means
-copying a whole presentation file in Drive — distinct from copying a single
-template slide across decks, above.)
-
-```bash
-# Create a blank presentation
-gws drive files create \
-    --params '{"fields":"id,name,webViewLink","supportsAllDrives":true}' \
-    --json '{"name":"Presentation title","mimeType":"application/vnd.google-apps.presentation","parents":["root"]}'
-```
-
-## Text replacement and fitting
+### Text replacement and fitting
 
 - Change text content but preserve formatting. Take particular care not to flip
   bold to regular or regular to bold, and preserve font family, size, color,
   emphasis, alignment, and text-box structure unless a small change is required
   for fit.
-- Render a `**Chip:**` field in an existing chip/badge/pill/tag element when the
-  copied template has one. Do not create subtitle boxes for chips; if a chip is
-  needed, choose a template slide that already has a chip-like element. Keep chip
-  text short (one to three words) and preserve its fill, corner radius,
-  typography, alignment, and position.
+- A `**Chip:**` field is a short pill-style context label (e.g. "Overall
+  Outlook"), not a subtitle or second title. Render it in an existing
+  chip/badge/pill/tag element; if the copied template has none, choose a template
+  slide that does rather than adding a subtitle box. Keep chip text short (one to
+  three words) and preserve its fill, corner radius, typography, alignment, and
+  position.
 - Treat each text box or shape as a hard bounding box: text must fit fully inside
   without overflow, clipping, or collision. Use the template's original text as
   the practical maximum density.
@@ -348,30 +339,22 @@ gws drive files create \
 - Before finishing, review every edited text box for overflow, clipped text,
   empty lines, unnatural wrapping, and over-dense copy.
 
-## Verifying
+## Creating slides (template-first)
 
-The deck JSON cannot reveal whether text overflows its box, collides, or wraps
-badly — only a render can. For each slide you created or edited, render it and
-look at the result before reporting done:
+- Every new slide must start from an existing slide in the template deck. To add
+  a slide, copy the best structural match from the template deck (see _Copying a
+  template slide across decks_), then edit only the text content needed.
+- Do not recreate template slides manually unless copying is impossible.
+- Treat the copied slide as the source of truth for layout, spacing, typography,
+  shapes, containers, alignment, emphasis, and footer behavior.
+- Treat template slide titles as structural labels (the layout/content pattern),
+  not as content to reproduce; use them as a selection signal.
+- If an existing target slide is a poor fit, prefer replacing it with a copied
+  template slide rather than redesigning it by hand.
+- Keep all original visual styling unless a minimal adjustment is required to
+  prevent a layout defect.
 
-```bash
-# Returns a PNG URL for one rendered slide
-url="$(gws slides presentations pages getThumbnail \
-    --params '{"presentationId":"PRES_ID","pageObjectId":"SLIDE_OBJECT_ID","thumbnailProperties.thumbnailSize":"LARGE"}' \
-    2> /dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin)["contentUrl"])')"
-curl -sSL "$url" -o /tmp/slide.png
-```
-
-Then open `/tmp/slide.png` with the Read tool and inspect it for overflow,
-clipping, collisions, awkward wrapping, and overall fit. Fix any defect and
-re-render before finishing.
-
-`getThumbnail` is an expensive read request for quota, so use it as a final
-visual check per created or edited slide, not after every intermediate edit.
-Structured read-back (text runs, indices, styles) stays the right tool for
-verifying content and styling; the render is specifically for visual fit.
-
-## Template slide selection
+### Template slide selection
 
 Before adding a slide, review the template deck and pick the slide whose
 structure best matches the content. Match by layout, not superficial text
@@ -398,6 +381,52 @@ are equally suitable, prefer one not yet used (or used less) in the deck. Reuse
 the exact same template slide only when it is clearly the best fit or when
 consistency across a repeated sequence is desirable. When in doubt, choose the
 more restrained option and stay as close to the original template as possible.
+
+### Copying a template slide across decks
+
+The Slides API cannot copy a slide between presentations while preserving its
+design, so this goes through the Muttdata Apps Script web app. Prefer a source
+slide `objectId` (from inspecting the template deck); `sourceSlideIndex` (1-based)
+is the fallback. `insertionIndex` sets the destination position; omit to append.
+
+```bash
+url="$(pass show gcloud/appscript/copy-slides/webapp-url)"
+secret="$(pass show gcloud/appscript/copy-slides/webapp-secret)"
+jq -nc \
+    --arg secret "$secret" \
+    --arg src 1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo \
+    --arg dst DEST_PRES_ID \
+    --arg slide SOURCE_SLIDE_OBJECT_ID \
+    '{secret:$secret, sourcePresentationId:$src, destinationPresentationId:$dst, sourceSlideObjectId:$slide}' |
+    curl -sSL -H 'Content-Type: application/json' -d @- "$url"
+```
+
+A success response is `{"ok":true,"newSlideObjectId":"..."}`; failure is
+`{"ok":false,"error":"..."}` or an HTTP status ≥ 400. After copying, inspect the
+new slide and replace only the text content needed.
+
+## Verifying
+
+The deck JSON cannot reveal whether text overflows its box, collides, or wraps
+badly — only a render can. For each slide you created or edited, render it and
+look at the result before reporting done:
+
+```bash
+# Returns a PNG URL for one rendered slide
+url="$(gws slides presentations pages getThumbnail \
+    --params '{"presentationId":"PRES_ID","pageObjectId":"SLIDE_OBJECT_ID","thumbnailProperties.thumbnailSize":"LARGE"}' \
+    2> /dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin)["contentUrl"])')"
+curl -sSL "$url" -o /tmp/slide.png
+```
+
+Then open `/tmp/slide.png` with the Read tool and inspect it for overflow,
+clipping, collisions, awkward wrapping, and overall fit. Fix any defect and
+re-render before finishing.
+
+`getThumbnail` is an expensive read request for quota, so use it as a final
+visual check per created or edited slide, not after every intermediate edit.
+Structured read-back (text runs, indices, styles) stays the right tool for
+verifying content and styling; the render is specifically for visual fit.
 
 ## What to avoid
 
