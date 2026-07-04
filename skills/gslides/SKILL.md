@@ -104,6 +104,48 @@ content with its run indices and styling, and geometry.
 gws slides presentations get --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(rows,columns)))"}'
 ```
 
+For large decks, save the response to `/tmp` first, then parse the local JSON.
+This avoids losing the successful read to terminal output truncation and avoids
+re-fetching after a transient network issue.
+
+```bash
+gws slides presentations get \
+    --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(rows,columns)))"}' \
+    2> /dev/null > /tmp/slides-read.json
+```
+
+Before parsing a saved response, verify that it is a presentation payload rather
+than an API error object:
+
+```bash
+jq -e 'has("error") | not and (.slides | type == "array")' /tmp/slides-read.json
+```
+
+If the saved response contains an `error` with DNS, discovery, connection, or
+temporary lookup wording, rerun the same `gws` command with escalated network
+permissions. Do not pipe the failed response into `jq` parsers as if it were a
+deck.
+
+Use a compact slide index when you need only a read confirmation:
+
+```bash
+jq -r '
+  "TITLE\t" + (.title // ""),
+  (.slides | to_entries[] |
+    ["SLIDE", (.key + 1 | tostring), .value.objectId,
+      ([.value.pageElements[]?.shape?.text?.textElements[]?.textRun?.content]
+       | map(select(. != null)
+       | gsub("\u000b"; " ")
+       | gsub("\n"; " ")
+       | gsub("  +"; " ")
+       | gsub("^ +| +$"; ""))
+       | map(select(length > 0))
+       | .[0:4]
+       | join(" | "))
+    ] | @tsv)
+' /tmp/slides-read.json
+```
+
 From the output, note for each shape you intend to edit: its `objectId`, the
 `placeholder.type` (e.g. `TITLE`, `SUBTITLE`, `BODY`), the text run
 `startIndex`/`endIndex` (zero-based, end exclusive — these are the ranges you
