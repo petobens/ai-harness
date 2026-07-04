@@ -32,6 +32,12 @@ the formula standards and visual conventions below.
   sandboxes, if a `gws` command fails with a DNS, discovery, or other
   network-access error, rerun the same command with escalated tool permissions;
   do not treat it as a spreadsheet or API-shape failure.
+- Avoid running multiple `gws sheets` read commands in parallel. Concurrent
+  reads can race on auth/token refresh and fail with `Sheets auth failed:
+Failed to get token`. When inspecting several ranges, prefer a single
+  `spreadsheets.values.batchGet` call with multiple ranges. If `gws sheets +read`
+  fails with this auth error after another Sheets command succeeded, retry with
+  `spreadsheets.values.batchGet` before treating it as a real auth failure.
 - When reading or inspecting a sheet, keep the content in agent context and
   return only a brief confirmation with the title, ID, URL, and inspected ranges
   by default. Do not paste cell contents, a full extraction, or a summary unless
@@ -83,6 +89,9 @@ gws sheets spreadsheets get --params '{"spreadsheetId":"SHEET_ID","fields":"prop
 
 # Displayed values for one range (helper; read-only)
 gws sheets +read --spreadsheet SHEET_ID --range "P&L!A1:H40"
+
+# Displayed values for several ranges; prefer this over parallel +read calls
+gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["README!A1:Z80","Revenue!A1:Z120","Gross Margin!A1:Z140"],"valueRenderOption":"FORMATTED_VALUE"}'
 
 # Existing formulas — use FORMULA render mode before editing a computed area
 gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["P&L!A1:H40"],"valueRenderOption":"FORMULA"}'
