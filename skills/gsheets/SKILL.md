@@ -28,6 +28,14 @@ the formula standards and visual conventions below.
   request JSON to `/tmp`, running `--dry-run`, or inspecting a sheet. If the
   environment requires sandbox approval for those commands, request it as a tool
   permission only, not a product confirmation.
+- Google Sheets reads and writes require network access. In restricted
+  sandboxes, if a `gws` command fails with a DNS, discovery, or other
+  network-access error, rerun the same command with escalated tool permissions;
+  do not treat it as a spreadsheet or API-shape failure.
+- When reading or inspecting a sheet, keep the content in agent context and
+  return only a brief confirmation with the title, ID, URL, and inspected ranges
+  by default. Do not paste cell contents, a full extraction, or a summary unless
+  the user explicitly asks for one.
 - Inspect the target sheet before editing so you understand existing tabs, named
   ranges, table layout, and formatting. Inspect again before reporting done, and
   fix any off-by-one or shifted-cell issues introduced during the edit. As part

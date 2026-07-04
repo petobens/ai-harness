@@ -26,6 +26,10 @@ the type-specific skills (`gdocs`, `gsheets`).
 - Before copy, rename, or trash, fetch the target's `mimeType` and confirm it is
   the type the user means, especially when a content skill delegated the
   operation for a specific kind.
+- Google Drive operations require network access. In restricted sandboxes, if a
+  `gws` command fails with a DNS, discovery, or other network-access error,
+  rerun the same command with escalated tool permissions; do not treat it as a
+  Drive query or API-shape failure.
 - Accept Drive URLs or IDs; always pass the bare file or folder ID to `gws`
   (the segment after `/d/` for files, after `/folders/` for folders).
 - Report the resulting name, ID, and URL.

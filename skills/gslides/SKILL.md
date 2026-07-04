@@ -56,6 +56,14 @@ Muttdata template deck:
   inspecting a deck, building request JSON in `/tmp`, or running `--dry-run`. If
   the environment requires sandbox approval, request it as a tool permission
   only.
+- Google Slides reads and writes require network access. In restricted
+  sandboxes, if a `gws` command fails with a DNS, discovery, or other
+  network-access error, rerun the same command with escalated tool permissions;
+  do not treat it as a presentation or API-shape failure.
+- When reading or inspecting a deck, keep the content in agent context and
+  return only a brief confirmation with the title, ID, URL, and inspected slides
+  by default. Do not paste slide text, a full extraction, or a summary unless the
+  user explicitly asks for one.
 - Always inspect the target presentation before editing, and review every edited
   or created slide for visual fit before reporting done.
 - Make the smallest safe change that achieves the goal, and preserve consistency

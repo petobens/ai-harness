@@ -27,6 +27,14 @@ structure, formatting, and final polish.
   doc. If the execution environment requires a sandbox approval for those
   commands, request it as a tool permission only; do not present it as a
   product/workflow confirmation.
+- Google Docs reads and writes require network access. In restricted sandboxes,
+  if a `gws` command fails with a DNS, discovery, or other network-access error,
+  rerun the same command with escalated tool permissions; do not treat it as a
+  document or API-shape failure.
+- When reading or inspecting a doc, keep the content in agent context and return
+  only a brief confirmation with the title, ID, and URL by default. Do not paste
+  the document text, a full extraction, or a summary unless the user explicitly
+  asks for one.
 - Use `--dry-run` to validate request bodies locally before sending risky or
   layout-sensitive writes (supported on `batchUpdate` and other write methods).
 - Make the smallest safe change that achieves the user's goal.
