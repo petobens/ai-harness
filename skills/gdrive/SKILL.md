@@ -45,7 +45,12 @@ the type-specific skills (`gdocs`, `gsheets`, `gslides`).
 | Doc    | `application/vnd.google-apps.document`     | `https://docs.google.com/document/d/ID/edit`     |
 | Sheet  | `application/vnd.google-apps.spreadsheet`  | `https://docs.google.com/spreadsheets/d/ID/edit` |
 | Slides | `application/vnd.google-apps.presentation` | `https://docs.google.com/presentation/d/ID/edit` |
+| PDF    | `application/pdf`                          | `https://drive.google.com/file/d/ID/view`        |
 | Folder | `application/vnd.google-apps.folder`       | `https://drive.google.com/drive/folders/ID`      |
+
+`application/pdf` and other non-Google types are ordinary blobs: search, list,
+copy, rename, and trash work the same way. Reading a PDF's contents lives in the
+`pdf` skill, which downloads the bytes (below) and reads them.
 
 ## Commands
 
@@ -63,6 +68,10 @@ gws drive files list --params '{"q":"'\''FOLDER_ID'\'' in parents and trashed = 
 
 # Inspect metadata (use before copy/rename/trash to confirm the kind)
 gws drive files get --params '{"fileId":"FILE_ID","fields":"id,name,mimeType","supportsAllDrives":true}'
+
+# Download a blob file's bytes (PDF, image, zip, ...). -o must resolve inside the
+# current directory; a relative path works, /tmp and other outside paths are rejected.
+gws drive files get --params '{"fileId":"FILE_ID","alt":"media","supportsAllDrives":true}' -o ./FILE_NAME
 
 # Copy
 gws drive files copy \
