@@ -13,6 +13,8 @@ metadata:
             - gws
 ---
 
+<!-- markdownlint-disable MD013 -->
+
 # Google Sheets
 
 Use `gws` to create, read, edit, and analyze Google Sheets. You own both
@@ -32,12 +34,6 @@ the formula standards and visual conventions below.
   sandboxes, if a `gws` command fails with a DNS, discovery, or other
   network-access error, rerun the same command with escalated tool permissions;
   do not treat it as a spreadsheet or API-shape failure.
-- Avoid running multiple `gws sheets` read commands in parallel. Concurrent
-  reads can race on auth/token refresh and fail with `Sheets auth failed:
-Failed to get token`. When inspecting several ranges, prefer a single
-  `spreadsheets.values.batchGet` call with multiple ranges. If `gws sheets +read`
-  fails with this auth error after another Sheets command succeeded, retry with
-  `spreadsheets.values.batchGet` before treating it as a real auth failure.
 - When reading or inspecting a sheet, keep the content in agent context and
   return only a brief confirmation with the title, ID, URL, and inspected ranges
   by default. Do not paste cell contents, a full extraction, or a summary unless
@@ -50,19 +46,8 @@ Failed to get token`. When inspecting several ranges, prefer a single
   match its intended role per the palette rules below — no palette fill or bold
   on ordinary body rows, and title/total fills only on actual title/total rows.
   Compare colors with a small tolerance, since values read back as floats (e.g.
-  `#b7b7b7` returns `~0.7137`, not an exact match).
+  `#b7b7b7` returns `~0.717`, not an exact match).
 - Make the smallest safe change that achieves the user's goal.
-- Name every worksheet descriptively. Never leave a tab as `Sheet1`.
-- Ensure every worksheet has at least 1,000 rows and at least columns A:Z before
-  finishing. When creating new tabs, resize them to that minimum grid
-  immediately instead of leaving the default small grid.
-- Do not freeze rows or columns by default. Freeze panes only when the user
-  explicitly asks.
-- Prefer named ranges for repeated, stable, meaningful parameters so formulas
-  stay readable. Avoid magic numbers: put assumptions, constants, and thresholds
-  in labeled cells or named ranges and reference them from formulas.
-- Model workbook structure with relational concepts where helpful: keep tables
-  small, entity-focused, and normalized so each has a clear grain and purpose.
 - Before editing a target area, clear lingering formatting issues there (stale
   formatting, accidental fills, wrong text color, wrong merge state) so you start
   from a clean baseline, while preserving intended structure such as existing
@@ -71,12 +56,24 @@ Failed to get token`. When inspecting several ranges, prefer a single
   change, not as a follow-up round.
 - For destructive edits or large rewrites, prefer copying the sheet first and
   writing to the copy.
-- For rename/trash, confirm the file is a spreadsheet MIME type.
 - Accept Google Sheets URLs or IDs from the user; always pass the bare
   spreadsheet ID (the segment after `/spreadsheets/d/`) to `gws`.
 - Use `gws schema sheets.spreadsheets.METHOD` or `gws sheets --help` when unsure
   about params, request bodies, or supported commands.
 - Report final title, ID, URL, and operations performed.
+
+## Files (create, find, copy, rename, trash)
+
+Use the `gdrive` skill for these. A spreadsheet's mimeType is
+`application/vnd.google-apps.spreadsheet`; pass it when creating, and confirm
+the target matches it before copy, rename, or trash.
+
+```bash
+# Create a blank spreadsheet
+gws drive files create \
+    --params '{"fields":"id,name,webViewLink","supportsAllDrives":true}' \
+    --json '{"name":"Spreadsheet title","mimeType":"application/vnd.google-apps.spreadsheet","parents":["root"]}'
+```
 
 ## Reading
 
@@ -101,6 +98,12 @@ gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","r
 preserve or edit formulas, read the same range with `valueRenderOption:FORMULA`;
 read both when you need displayed values and the formulas behind them.
 
+Do not run multiple `gws sheets` reads in parallel: concurrent reads can race on
+auth/token refresh and fail with `Sheets auth failed: Failed to get token`.
+Batch several ranges into one `values.batchGet` call instead, and if `+read`
+hits that auth error after another Sheets command succeeded, retry with
+`batchGet` before treating it as a real auth failure.
+
 ## Writing
 
 Each operation is a single command. `valueInputOption:USER_ENTERED` parses
@@ -123,19 +126,6 @@ gws sheets spreadsheets values clear --params '{"spreadsheetId":"SHEET_ID","rang
 These value commands write cell contents only. For everything they cannot
 express — formatting, merges, named ranges, grid resizing, freezing, column
 auto-resize, conditional formatting — use `batchUpdate` (below).
-
-## Files (create, find, copy, rename, trash)
-
-Use the `gdrive` skill for these. A spreadsheet's mimeType is
-`application/vnd.google-apps.spreadsheet`; pass it when creating, and confirm
-the target matches it before copy, rename, or trash.
-
-```bash
-# Create a blank spreadsheet
-gws drive files create \
-    --params '{"fields":"id,name,webViewLink","supportsAllDrives":true}' \
-    --json '{"name":"Spreadsheet title","mimeType":"application/vnd.google-apps.spreadsheet","parents":["root"]}'
-```
 
 ## Raw batchUpdate
 
@@ -168,6 +158,9 @@ Colors are RGB floats in `0..1`, e.g. dark gray 1 `#b7b7b7` is
 - Prefer native formulas like `=SUM(A1, A2)` or `=A1+A2` over manual arithmetic.
 - For totals over filterable tables, prefer `SUBTOTAL`, e.g.
   `=SUBTOTAL(9, B3:B)`, so totals respond when users filter rows.
+- Prefer named ranges for repeated, stable, meaningful parameters so formulas
+  stay readable. Avoid magic numbers: put assumptions, constants, and thresholds
+  in labeled cells or named ranges and reference them from formulas.
 
 When you explain a formula to the user, structure it as:
 
@@ -329,7 +322,14 @@ Do not introduce colors outside this palette unless the user explicitly asks.
   explicitly asks otherwise.
 - Do not add a `Total` label in the total row unless the user explicitly asks.
 - Give every worksheet an explicit, descriptive name (e.g. `Params`, `Unit Cost`,
-  `Salary Bands`, `P&L`, `README`, `ToDos`).
+  `Salary Bands`, `P&L`, `README`, `ToDos`). Never leave a tab as `Sheet1`.
+- Ensure every worksheet has at least 1,000 rows and at least columns A:Z before
+  finishing. When creating new tabs, resize them to that minimum grid immediately
+  instead of leaving the default small grid.
+- Do not freeze rows or columns by default. Freeze panes only when the user
+  explicitly asks.
+- Model workbook structure with relational concepts where helpful: keep tables
+  small, entity-focused, and normalized so each has a clear grain and purpose.
 - Prefer one table per logical concept. Split across tabs when a tab gets dense.
 - Leave exactly one empty spacer between distinct subtables on the same tab: one
   blank column for side-by-side, one blank row for stacked. Do not add blank rows
