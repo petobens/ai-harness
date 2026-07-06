@@ -46,6 +46,25 @@ with information that is likely to matter again in future conversations.
 - Add comments only when truly necessary, and keep them as short and compact as
   possible.
 
+### Python
+
+These defaults apply to Python code that will remain in a repository or be
+user-facing. They do not apply to temporary scripts written only to support
+agent work during a task. A repo's AGENTS.md overrides them where they conflict.
+
+- Target Python 3.14+ syntax.
+- Always include type hints, using built-in generics (`list`, `dict`) and
+  `X | None` unions rather than `typing.List` or `Optional`.
+- Prefer `pathlib` over `os.path`.
+- Quotes: double for text and interpolation, single for short symbol-like
+  strings.
+- Write NumPy-style docstrings: a summary line, then `Parameters`/`Returns`
+  sections, omitting types since they are in the signature. Skip boilerplate
+  docstrings for obvious one-off code.
+- Before finishing, format and lint with Ruff and type-check with `zmypy`
+  (Zuban), falling back to `mypy` if `zmypy` is not installed.
+- For non-trivial code, provide pytest tests.
+
 ## Agent Memory
 
 > [!NOTE]
