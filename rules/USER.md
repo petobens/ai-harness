@@ -77,4 +77,6 @@ agent work during a task. A repo's AGENTS.md overrides them where they conflict.
 > Include stable preferences, recurring constraints, and long-term facts.
 > Exclude temporary task details, transient project state, and vague traits.
 
-- Before code changes, find the repository root and read its AGENTS.md.
+- Before code changes in a repository, find the repository root and check for
+  AGENTS.md once per repository per session. Read it if present. Recheck only
+  when work moves to a different repository.
