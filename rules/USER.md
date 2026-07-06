@@ -37,6 +37,9 @@ with information that is likely to matter again in future conversations.
 ## Coding Preferences
 
 - Make the smallest practical code change that solves the stated problem directly.
+- For bug fixes, prefer the smallest local change at the failing call site; only
+  change shared helpers, APIs, or abstractions when the bug clearly belongs
+  there or affects multiple callers.
 - Do not preserve backward compatibility unless I explicitly request it.
 - Do not make unrelated cleanup or refactors unless explicitly requested.
 - Do not add abstractions unless they are clearly needed.
