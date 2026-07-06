@@ -41,10 +41,15 @@ with information that is likely to matter again in future conversations.
 - Do not make unrelated cleanup or refactors unless explicitly requested.
 - Do not add abstractions unless they are clearly needed.
 - Avoid defensive coding unless it adds clear practical value.
-- Use inline code for single-use logic instead of extracting helper functions.
 - Optimize for clarity and directness over extensibility.
+- Keep code compact and local by default. Use inline code for single-use logic,
+  avoid exporting helpers unless another file uses them, and avoid helper
+  functions or intermediate variables that do not improve clarity.
 - Add comments only when truly necessary, and keep them as short and compact as
   possible.
+- Before finishing a code change, review whether the result can be simpler:
+  fewer lines, fewer helpers, fewer intermediate variables, and less indirection,
+  without hurting readability.
 
 ### Python
 
