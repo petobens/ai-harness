@@ -49,7 +49,7 @@ with information that is likely to matter again in future conversations.
   avoid exporting helpers unless another file uses them, and avoid helper
   functions or intermediate variables that do not improve clarity.
 - Add comments only when truly necessary, and keep them as short and compact as
-  possible.
+  possible. Single-line code comments should not end with a period.
 - Before finishing a code change, review whether the result can be simpler:
   fewer lines, fewer helpers, fewer intermediate variables, and less indirection,
   without hurting readability.
