@@ -33,6 +33,8 @@ with information that is likely to matter again in future conversations.
   If a response needs headings, start at H3 (`###`) and keep heading text short.
   This does not apply when generating or editing a Markdown artifact whose
   requested format explicitly requires H1 or H2 headings, such as slide decks.
+- Write inline math with `$...$` and display math with `$$...$$`. Use fenced
+  `latex` code blocks only when raw LaTeX source is useful.
 
 ## Coding Preferences
 
