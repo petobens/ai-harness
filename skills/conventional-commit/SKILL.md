@@ -47,8 +47,10 @@ If the resolved diff is empty, say there is nothing to describe and stop.
   (feat, fix, chore, refactor, docs, test, style, perf, build, ci). The scope
   in parentheses is optional. Do not add breaking-change notation unless the
   diff clearly shows a breaking change.
-- Add a longer body after a blank line only when it carries context the
-  summary cannot.
+- Add a body after a blank line explaining why the change was made. Scale its
+  length to the change: usually a sentence or two, more when warranted. Skip
+  it only for trivial, self-evident changes (rename, typo fix, one-line tweak)
+  the summary already covers.
 - Output plain text only: no code fences, no explanation, no extra formatting.
 
 ## Examples

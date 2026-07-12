@@ -40,8 +40,10 @@ generated conventional commit messages.
   explanations, code blocks, or extra formatting.
 - Keep the commit message under 72 characters if possible.
 - Write a short summary in the imperative mood after the colon.
-- Optionally, add a longer description after a blank line if more context is
-  needed.
+- Add a description after a blank line explaining why the change was made.
+  Scale its length to the change: usually a sentence or two, more when
+  warranted. Skip it only for trivial, self-evident changes (rename, typo fix,
+  one-line tweak) the summary already covers.
 
 Recent commit history:
 
