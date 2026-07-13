@@ -14,8 +14,8 @@ metadata:
 
 # Conventional Commit
 
-Generate a single commit message for a set of changes. Output the message
-only; do not run `git commit`.
+Generate a single commit message for a set of changes. Output the message in a
+single fenced `text` code block; do not run `git commit`.
 
 ## Scope
 
@@ -28,7 +28,8 @@ The request names what to describe. Resolve the diff accordingly:
 - Against a base branch `BASE`: `git diff --no-ext-diff BASE...HEAD`
 - A specific commit `SHA`: `git diff --no-ext-diff SHA^!`
 
-If the resolved diff is empty, say there is nothing to describe and stop.
+If the resolved diff is empty, say there is nothing to describe and stop. The
+output rules below do not apply.
 
 ## Steps
 
@@ -43,6 +44,8 @@ If the resolved diff is empty, say there is nothing to describe and stop.
 ## Rules
 
 - Summary line in the imperative mood, under 72 characters if possible.
+- Wrap body prose at 72 characters. Do not wrap URLs, code, command output, or
+  Git trailers when wrapping would reduce readability or usability.
 - Conventional Commits format is `type(scope): summary`. Use a correct type
   (feat, fix, chore, refactor, docs, test, style, perf, build, ci). The scope
   in parentheses is optional. Do not add breaking-change notation unless the
@@ -51,7 +54,8 @@ If the resolved diff is empty, say there is nothing to describe and stop.
   length to the change: usually a sentence or two, more when warranted. Skip
   it only for trivial, self-evident changes (rename, typo fix, one-line tweak)
   the summary already covers.
-- Output plain text only: no code fences, no explanation, no extra formatting.
+- Output only the commit message in a single fenced `text` code block, with no
+  explanation or formatting outside it.
 
 ## Examples
 

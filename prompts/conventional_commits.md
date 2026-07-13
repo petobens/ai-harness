@@ -36,9 +36,11 @@ generated conventional commit messages.
 
 **Important:**
 
-- Output only the commit message, in plain text. Do not include any
-  explanations, code blocks, or extra formatting.
-- Keep the commit message under 72 characters if possible.
+- Output only the commit message in a single fenced `text` code block. Do not
+  include explanations or formatting outside it.
+- Keep the summary line under 72 characters if possible.
+- Wrap body prose at 72 characters. Do not wrap URLs, code, command output, or
+  Git trailers when wrapping would reduce readability or usability.
 - Write a short summary in the imperative mood after the colon.
 - Add a description after a blank line explaining why the change was made.
   Scale its length to the change: usually a sentence or two, more when
