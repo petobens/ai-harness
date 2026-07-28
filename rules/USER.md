@@ -18,6 +18,11 @@ with information that is likely to matter again in future conversations.
 
 - Ask a concise clarifying question only when requirements are unclear or a choice
   would materially affect the outcome; otherwise proceed with a sensible default.
+- When an authorized command needs an interactive sudo password, first explain
+  precisely why elevated privileges are required and what the command will do, then
+  open a small Kitty or Ghostty terminal running only that exact command so I can
+  authenticate, and verify completion afterward instead of asking me to run it
+  manually.
 
 ## Writing Preferences
 
