@@ -290,9 +290,14 @@ Do not introduce colors outside this palette unless the user explicitly asks.
 - Body cells follow content-based alignment by default: text labels left,
   numbers right, and only special-purpose fields such as status flags centered
   when that clearly improves readability.
-- Auto-resize columns so they are as narrow as possible while still fitting their
-  contents, but wide enough that header words are not split awkwardly across
-  lines (e.g. avoid wrapping `Transaction` as `Transactio` / `n`).
+- Size columns primarily for their body contents, not for displaying headers on
+  one line. Wrap every header and use the narrowest width that fits the body
+  values while keeping the header to at most three lines. Prefer two lines when
+  a small width increase is enough; allow three when it keeps the table
+  materially more compact. Never split a word across lines. Increase the header
+  row height so all text remains visible.
+- Do not rely on automatic column resizing when a long header would make the
+  column unnecessarily wide. Set an explicit column width in those cases.
 
 ### Structure
 
@@ -424,6 +429,8 @@ Treat this as a suggestion, not a required template:
   2 for the first one or two columns, light cornflower blue 2 for most, and light
   cyan 2 only for specific highlighted columns.
 - Titles or headers without text wrap, horizontal center, or vertical center.
+- Widening columns merely to keep long headers on one line when a clean two- or
+  three-line wrapped header would keep the table compact.
 - Recreating formatting by hand when an existing table's style can be reused via
   copy/paste formatting.
 
