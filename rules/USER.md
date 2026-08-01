@@ -3,8 +3,8 @@
 This file contains durable context about me, my preferences, and how I like to
 work.
 
-Read it before starting work. Keep the "Agent Memory" section updated, but only
-with information that is likely to matter again in future conversations.
+Read it before starting work. Update the "Agent Memory" section only when a new
+durable preference or constraint becomes clear.
 
 ## About Me
 
@@ -53,17 +53,19 @@ with information that is likely to matter again in future conversations.
   there or affects multiple callers.
 - Do not preserve backward compatibility unless I explicitly request it.
 - Do not make unrelated cleanup or refactors unless explicitly requested.
-- Do not add abstractions unless they are clearly needed.
 - Avoid defensive coding unless it adds clear practical value.
-- Optimize for clarity and directness over extensibility.
-- Keep code compact and local by default. Use inline code for single-use logic,
-  avoid exporting helpers unless another file uses them, and avoid helper
-  functions or intermediate variables that do not improve clarity.
+- Keep code compact and local by default. Prefer direct code over speculative
+  extensibility: use inline code for single-use logic, avoid exporting helpers
+  unless another file uses them, and introduce abstractions or intermediate
+  variables only when they improve clarity.
 - Add comments only when truly necessary, and keep them as short and compact as
   possible. Single-line code comments should not end with a period.
-- Before finishing a code change, review whether the result can be simpler:
-  fewer lines, fewer helpers, fewer intermediate variables, and less indirection,
-  without hurting readability.
+- Before finishing any code change, review the complete diff as if it were going
+  through final code review. Simplify and polish the implementation, remove
+  unnecessary complexity or duplication introduced by the change, and check that
+  naming, comments, and structure are clear and consistent. Run the relevant
+  formatters, linters, and tests afterward. Keep this review scoped to the changed
+  code and avoid unrelated refactors.
 
 ### Python
 
@@ -82,7 +84,8 @@ agent work during a task. A repo's AGENTS.md overrides them where they conflict.
   docstrings for obvious one-off code.
 - Before finishing, format and lint with Ruff and type-check with `zmypy`
   (Zuban), falling back to `mypy` if `zmypy` is not installed.
-- For non-trivial code, provide pytest tests.
+- For non-trivial Python changes, add or update pytest tests when the repository
+  has a test suite or the behavior can be meaningfully tested.
 
 ## Agent Memory
 
