@@ -386,7 +386,7 @@ more restrained option and stay as close to the original template as possible.
 
 The Slides API cannot copy a slide between presentations while preserving its
 design, so this goes through the Muttdata Apps Script web app. Its deployed
-source is [copy-slides-webapp.gs](references/copy-slides-webapp.gs); edit that
+source is [copy-slides-webapp.gs](scripts/copy-slides-webapp.gs); edit that
 copy and redeploy when the web app changes. Prefer a source slide `objectId`
 (from inspecting the template deck); `sourceSlideIndex` (1-based) is the
 fallback. `insertionIndex` sets the destination position; omit to append.
