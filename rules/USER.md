@@ -60,25 +60,28 @@ durable preference or constraint becomes clear.
   variables only when they improve clarity.
 - Add comments only when truly necessary, and keep them as short and compact as
   possible. Single-line code comments should not end with a period.
-- Before finishing any code change, review the complete diff as if it were going
-  through final code review. Simplify and polish the implementation, remove
-  unnecessary complexity or duplication introduced by the change, and check that
-  naming, comments, and structure are clear and consistent. Run the relevant
-  formatters, linters, and tests afterward. Keep this review scoped to the changed
-  code and avoid unrelated refactors.
+- Before changing code, find the repository root and read its `AGENTS.md`, if
+  present. Do this once per repository per session.
+- Before finishing a code change, review the complete diff as if it were going
+  through final code review. Simplify and polish the changed code as much as
+  practical: remove unnecessary complexity, indirection, duplication, and
+  verbosity, and make the implementation as compact and direct as clarity allows.
+  Check naming and structure, then run the relevant formatters, linters, and tests.
+  Keep the review scoped to changed code.
 
 ### Python
 
 These defaults apply to Python code that will remain in a repository or be
 user-facing. They do not apply to temporary scripts written only to support
-agent work during a task. A repo's AGENTS.md overrides them where they conflict.
+agent work during a task. Repository configuration and instructions override
+these defaults where they conflict.
 
 - Target Python 3.14+ syntax.
 - Always include type hints, using built-in generics (`list`, `dict`) and
   `X | None` unions rather than `typing.List` or `Optional`.
 - Prefer `pathlib` over `os.path`.
-- Quotes: double for text and interpolation, single for short symbol-like
-  strings.
+- Prefer double quotes for text and interpolation, and single quotes for short
+  symbol-like strings, unless the repository formatter enforces another style.
 - Write NumPy-style docstrings: a summary line, then `Parameters`/`Returns`
   sections, omitting types since they are in the signature. Skip boilerplate
   docstrings for obvious one-off code.
@@ -93,7 +96,3 @@ agent work during a task. A repo's AGENTS.md overrides them where they conflict.
 > Update this section only with durable information likely to matter again.
 > Include stable preferences, recurring constraints, and long-term facts.
 > Exclude temporary task details, transient project state, and vague traits.
-
-- Before code changes in a repository, find the repository root and check for
-  AGENTS.md once per repository per session. Read it if present. Recheck only
-  when work moves to a different repository.
