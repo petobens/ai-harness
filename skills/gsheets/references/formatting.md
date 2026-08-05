@@ -177,6 +177,9 @@ is genuinely a different color, not to chase this drift.
 
 - Organize tabs by logical responsibility, such as documentation, parameters,
   source data, operating drivers, calculations, scenarios, and outputs.
+- Keep workbook-wide controls and assumptions used by multiple calculation areas
+  in a dedicated `Params` tab. Co-locate narrowly scoped inputs with their
+  primary model tab, and do not duplicate shared assumptions.
 - Give each table one clear grain and one row per record. When data repeats,
   connect normalized tables with stable keys and store each source value once.
 - Split a worksheet when it mixes distinct calculation engines, becomes hard to
@@ -196,6 +199,9 @@ is genuinely a different color, not to chase this drift.
   structures and are meant to be read together.
 - Separate them with exactly one blank column; align their title and header rows;
   and match column widths, row heights, number formats, and hierarchy.
+- When inserting columns for a side table, keep the spacer and unused cells below
+  the table unfilled and not bold. Inspect them across every used row because
+  inserted columns may inherit each existing row's formatting.
 - Stack wide time-series or detail tables vertically rather than forcing them
   side by side.
 

@@ -65,6 +65,11 @@ formatting and layout unless the user requests a restyle.
   Preserve existing formats and change only cells confirmed to be inconsistent;
   when extending a table, copy formatting from the nearest matching row or
   column.
+- Never assume inserted rows or columns are formatting-neutral. After an
+  `insertDimension`, inspect `effectiveFormat` across the new dimensions for the
+  full used extent, including blank cells where they intersect titles, headers,
+  totals, and KPIs. Reset only unintended inherited formatting outside the
+  intended new table or copied block.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the same
   change, not as a follow-up round.
 - For destructive edits or large rewrites, prefer copying the sheet first and

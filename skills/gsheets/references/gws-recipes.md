@@ -94,6 +94,13 @@ batch. Process row and column deletions from bottom to top, account for the new
 coordinates in subsequent requests, and re-inspect the affected layout after
 the batch applies.
 
+`insertDimension.inheritFromBefore` chooses which adjacent dimension supplies
+formatting; it does not create neutral cells. When inserted rows or columns
+should be blank outside a new table, add a targeted `repeatCell` request for the
+unused portion and reset only the inherited format fields that should be
+neutral. Validate blank cells across the full used extent, since title, header,
+total, and KPI formats can otherwise repeat into the inserted dimensions.
+
 Use `moveDimension` to reorder complete rows or columns instead of copying and
 clearing them. It preserves formatting and lets Sheets update dependent formulas;
 re-read the moved range and its dependents afterward.
