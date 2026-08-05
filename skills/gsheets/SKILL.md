@@ -61,10 +61,10 @@ formatting and layout unless the user requests a restyle.
   edits re-quantize stored fills by up to one 8-bit step, so a palette color can
   legitimately read back one unit off. Do not rewrite fills to chase that drift.
 - Make the smallest safe change that achieves the user's goal.
-- Before editing a target area, clear lingering formatting issues there (stale
-  formatting, accidental fills, wrong text color, wrong merge state) so you start
-  from a clean baseline, while preserving intended structure such as existing
-  tables, header rows, total rows, and merged text blocks.
+- Never clear or reapply formatting across a whole target area by default.
+  Preserve existing formats and change only cells confirmed to be inconsistent;
+  when extending a table, copy formatting from the nearest matching row or
+  column.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the same
   change, not as a follow-up round.
 - For destructive edits or large rewrites, prefer copying the sheet first and
@@ -89,6 +89,13 @@ formatting and layout unless the user requests a restyle.
 - Avoid `IMPORTRANGE` unless clearly needed. Prefer local source tabs,
   pasted/imported data tables, or connected data ranges when they are more
   reliable and easier to audit.
+- Maintain one calculation engine for each modeled metric. Make summaries,
+  scenarios, dashboards, and presentation outputs derive from the same logic
+  instead of independently recreating calculations.
+- When one tab shows an active case and another compares several cases,
+  parameterize the same model logic for every case rather than substituting
+  simplified assumptions that can diverge. After structural changes, validate
+  every relevant case and reconcile detail tables, summaries, and outputs.
 
 When you explain a formula to the user, structure it as:
 

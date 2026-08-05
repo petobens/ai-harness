@@ -7,19 +7,23 @@ inconsistent formatting, or extending an existing table that follows them.
 ## Contents
 
 - [Color palette](#color-palette-cell-backgrounds)
+- [Semantic colors](#semantic-colors)
 - [Text formatting](#text-formatting)
+- [Period labels](#period-labels)
 - [Number formatting](#number-formatting)
 - [Alignment and wrapping](#alignment-and-wrapping)
+- [Row hierarchy](#row-hierarchy)
 - [Structure](#structure)
+- [Workbook architecture](#workbook-architecture)
+- [Side-by-side tables](#side-by-side-tables)
 - [README tab](#readme-tab)
 
 ## Color palette (cell backgrounds)
 
 Use the corresponding Google Sheets variants consistently.
 
-- **Dark gray 1** (`#b7b7b7`) for top-level **table titles**: banner cells that
-  name a table or section, merged across the table width only when the structure
-  rules below allow it.
+- **Dark gray 1** (`#b7b7b7`) for top-level **table title cells** or compact
+  title blocks, merged only when the structure rules below allow it.
 - **Light gray 1** (`#d9d9d9`) for **total rows**, which appear at the top of
   each table rather than the bottom.
 - **Light green 2** (`#b6d7a8`) for **field-style headers** and, in wider data
@@ -29,10 +33,11 @@ Use the corresponding Google Sheets variants consistently.
   subsection headers**, and most remaining header columns in wider data tables.
   In compact two-column tables, use it for the value column header.
 - **Light cyan 2** (`#a2c4c9`) for **specific highlighted headers** in wider
-  data tables, usually the last column or special-purpose columns, not as the
-  default for all wide-table headers.
-- **Light red 2** (`#ea9999`) or **light orange 2** (`#f9cb9c`) sparingly, to
-  highlight specific important individual cells.
+  data tables, usually actual periods or special-purpose columns.
+- **Light orange 2** (`#f9cb9c`) for full-year or terminal-total headers, and
+  sparingly for other important individual cells.
+- **Light red 2** (`#ea9999`) sparingly for adverse scenarios or important
+  individual cells.
 - A small **gradient or hierarchy of gray fills** may be used sparingly within
   table rows when it clearly improves readability, such as grouped subsection
   rows under a parent row.
@@ -51,6 +56,17 @@ auditing fills, match each color to the nearest palette entry within a tolerance
 of about 2/255 per channel and treat it as correct. Only rewrite a fill when it
 is genuinely a different color, not to chase this drift.
 
+### Semantic colors
+
+- Use light cyan 2 for actual-period headers, light cornflower blue 2 for
+  forecast-period headers, and light orange 2 for full-year or terminal-total
+  headers. Apply these roles consistently wherever the same periods recur.
+- In scenario comparisons, use light red 2 for the adverse case, light
+  cornflower blue 2 for the central case, and light green 2 for the favorable
+  case.
+- Use light gray 1 sparingly for important calculated rows, subtotals, and KPIs.
+  Leave ordinary detail rows unfilled.
+
 ## Text formatting
 
 - Use **10 pt font** throughout the workbook. Do not increase font size for
@@ -58,15 +74,11 @@ is genuinely a different color, not to chase this drift.
 - Table titles and column headers must always be **bold**.
 - Column headers use human-readable **Title Case** labels such as `Foo Bar`, not
   snake_case, lower case, or sentence case.
-- For monthly-period column headers, use compact `YYYYMM` labels such as
-  `202605`, unless the user asks for another date format.
 - Where a row label or column header refers to a measurable value, include the
   unit in parentheses when practical, such as `(USD)`, `(%)`, or `(Q)`. Put the
   unit on the label that names the measured metric, not on a purely categorical
-  or time-period header. In a P&L with months across columns, use row labels like
-  `Revenue (USD)`, `COGS (USD)`, `Gross Profit (USD)`, while month headers stay
-  `202601`, `202602`. Only put units in column headers when the column itself is
-  the measured field, such as `Amount (USD)`, `Margin (%)`, or `Units (Q)`.
+  or time-period header. Put units in a column header only when the column itself
+  is the measured field, such as `Amount (USD)`, `Rate (%)`, or `Units (Q)`.
 - Style manual model inputs and configuration parameters as **bold blue**
   (`#0010ff`, bold), anywhere in the workbook, not just dedicated parameter
   tables.
@@ -75,6 +87,14 @@ is genuinely a different color, not to chase this drift.
   not parameters.
 - Regular values: default text color, not bold. Formulas and derived values:
   default text color unless the user wants them emphasized.
+
+### Period labels
+
+- Write period labels without spaces: `202601`, `2026Q1`, `2026H1`, `2026FY`.
+- Place interim totals immediately after their component periods, for example:
+  `2026Q1`, `2026Q2`, `2026H1`, `2026Q3`, `2026Q4`, `2026H2`, `2026FY`.
+- Use concise comparison headers such as `Q2 QoQ (%)`, `HoH (%)`, and `YoY (%)`.
+  Do not repeat the complete periods in every comparison header.
 
 ## Number formatting
 
@@ -103,43 +123,46 @@ is genuinely a different color, not to chase this drift.
 - Do not rely on automatic column resizing when a long header would make the
   column unnecessarily wide. Set an explicit column width in those cases.
 
+## Row hierarchy
+
+- Use indentation to show hierarchy: indent components, supporting amounts,
+  adjustments, and bridge items beneath the primary metric they explain.
+- Keep primary KPIs unindented. Use bold and light-gray shading selectively to
+  distinguish them from supporting calculations; do not bold every derived row.
+- Treat repeated metric pairs consistently: give the primary measure the same
+  emphasis and its supporting calculation the same indentation throughout.
+- Format share or mix rows as indented, italic, and not bold. Use the concise
+  label `Share (%)` when the parent row already supplies the context.
+
 ## Structure
 
 - For compact two-column tables, use `Metric` (or another field label) as the
   first column header with light green 2 (`#b6d7a8`), and `Value` as the second
   with light cornflower blue 2 (`#a4c2f4`). Do not make both headers green.
-- Group related tables on the same tab, each with its own dark gray title banner
-  on top.
-- Prefer compact layouts with related small tables placed side by side,
-  separated by exactly one blank column, instead of stacking everything
-  vertically when the sheet stays readable.
+- Group related tables on the same tab, each with its own dark gray title cell or
+  compact title block.
 - Keep input tables minimal: only include assumptions that are directly used. Do
   not keep source snapshot or audit tables unless they are needed for formulas or
   explicitly requested.
-- Table title background fill extends only across the actual width of the table,
-  ending at the last populated column, never beyond it.
-- If a table has a total row, place the table title in the first cell of the
-  total row, not merged across the full width. Put total values on that same row,
-  starting in the value columns to the right of the title cell. For example a P&L
-  with the title in column A and totals across B:E on the same row.
-- If a table has no total row, the title may extend across the full table width.
-  The column header row must immediately follow the title row, with no blank row
-  between them.
+- In wide tables other than the README layout, keep the title in column A. Let it
+  span A:B or A:C only when needed for legibility; never extend it across the
+  full table merely to match the table width. Compact tables of three columns or
+  fewer may merge the title across their actual width.
+- Keep cells to the right of a title blank and unfilled unless they contain
+  genuine title-row totals. When totals exist, use dark gray for the title cell
+  or block and light gray for populated total cells; never shade empty cells.
+- Keep titles concise. Prefer a descriptive noun phrase followed by one short
+  qualifier, using at most one separator.
 - Whenever a table has a total row, the required row order is: title and total
   values on the same row, then column headers, then body rows. Total rows are
   always above the column headers, never below or at the bottom, unless the user
   explicitly asks otherwise.
 - Do not add a `Total` label in the total row unless the user explicitly asks.
-- Give every worksheet an explicit, descriptive name (e.g. `Params`, `Unit Cost`,
-  `Salary Bands`, `P&L`, `README`, `ToDos`). Never leave a tab as `Sheet1`.
-- Ensure every worksheet has at least 500 rows and at least columns A:Z before
-  finishing. When creating new tabs, resize them to that minimum grid
-  immediately instead of leaving the default small grid.
+- Give every worksheet an explicit, descriptive name, such as `Params`,
+  `Source Data`, `Model`, `Summary`, `README`, or `To-Dos`. Never leave a tab as
+  `Sheet1`.
 - Do not freeze rows or columns by default. Freeze panes only when the user
   explicitly asks.
-- Model workbook structure with relational concepts where helpful: keep tables
-  small, entity-focused, and normalized so each has a clear grain and purpose.
-- Prefer one table per logical concept. Split across tabs when a tab gets dense.
 - Leave exactly one empty spacer between distinct subtables on the same tab: one
   blank column for side-by-side, one blank row for stacked. Do not add blank rows
   inside a table, e.g. between a title or total row and its column headers.
@@ -148,6 +171,33 @@ is genuinely a different color, not to chase this drift.
   column headers on the next row and body rows below.
 - Reuse an existing table's formatting through copy/paste formatting when
   practical rather than recreating it by hand.
+- Keep gridlines visible unless the user explicitly requests otherwise.
+
+### Workbook architecture
+
+- Organize tabs by logical responsibility, such as documentation, parameters,
+  source data, operating drivers, calculations, scenarios, and outputs.
+- Give each table one clear grain and one row per record. When data repeats,
+  connect normalized tables with stable keys and store each source value once.
+- Split a worksheet when it mixes distinct calculation engines, becomes hard to
+  scan, or combines unrelated grains.
+- Keep tightly coupled drivers and their immediate outputs together when that
+  makes the causal relationship easier to audit. Order drivers before outputs.
+- Within a repeated subject area, show detailed-period tables before
+  summarized-period tables, and keep the same table sequence across related
+  tabs.
+- Avoid hidden or far-right helper tables when formulas can live directly in the
+  principal table. Put substantial reusable helper logic in a clearly named
+  dedicated tab.
+
+### Side-by-side tables
+
+- Place small, directly comparable tables side by side when they have compatible
+  structures and are meant to be read together.
+- Separate them with exactly one blank column; align their title and header rows;
+  and match column widths, row heights, number formats, and hierarchy.
+- Stack wide time-series or detail tables vertically rather than forcing them
+  side by side.
 
 ## README tab
 
@@ -162,10 +212,9 @@ and important caveats. Keep it readable and polished, but do not over-design it.
   README title in its own merged row across the content width, styled like a
   table title: dark gray 1 (`#b7b7b7`), bold, horizontally and vertically
   centered, wrap enabled.
-- The narrative usually lives directly below the title row, with no blank spacer
-  row between them, in a single merged multi-column, multi-row cell containing
-  the full text block, typically spanning about 3 to 5 columns and enough rows for
-  the content to be fully visible without clipping.
+- Put the narrative directly below the title row, with no blank spacer, in a
+  single merged block spanning no farther than columns A:E. Extend the block
+  downward rather than widening it when more space is needed.
 - Format body text cleanly inside the merged block, preserving clear paragraph
   breaks, section labels, lists, and other internal structure.
 - README section labels such as `Takeaways`, `How To Use`, and `Limitations`
@@ -174,6 +223,10 @@ and important caveats. Keep it readable and polished, but do not over-design it.
   multi-column block instead of expanding A.
 - When editing an existing README narrative block, preserve its structure and
   rich-text styling unless the user asks for a redesign.
+- Give each definition its own bullet. Present each source as a direct hyperlink
+  and do not add an accessed date unless requested.
+- Keep the workbook map synchronized with the actual tabs and remove stale
+  references. Prefer shortening the narrative before increasing its footprint.
 
 ### README prose conventions
 

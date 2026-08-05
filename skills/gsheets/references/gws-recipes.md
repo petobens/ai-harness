@@ -36,13 +36,13 @@ on `get` so the response stays small.
 gws sheets spreadsheets get --params '{"spreadsheetId":"SHEET_ID","fields":"properties.title,sheets.properties(title,sheetId,gridProperties(rowCount,columnCount)),namedRanges(name,range)"}'
 
 # Displayed values for one range (helper; read-only)
-gws sheets +read --spreadsheet SHEET_ID --range "P&L!A1:H40"
+gws sheets +read --spreadsheet SHEET_ID --range "Model!A1:H40"
 
 # Displayed values for several ranges; prefer this over parallel +read calls
-gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["README!A1:Z80","Revenue!A1:Z120","Gross Margin!A1:Z140"],"valueRenderOption":"FORMATTED_VALUE"}'
+gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["README!A1:E80","Data!A1:Z120","Model!A1:Z140"],"valueRenderOption":"FORMATTED_VALUE"}'
 
 # Existing formulas — use FORMULA render mode before editing a computed area
-gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["P&L!A1:H40"],"valueRenderOption":"FORMULA"}'
+gws sheets spreadsheets values batchGet --params '{"spreadsheetId":"SHEET_ID","ranges":["Model!A1:H40"],"valueRenderOption":"FORMULA"}'
 ```
 
 `+read` returns `FORMATTED_VALUE` (what the cell shows). When you need to
@@ -64,8 +64,8 @@ what a user typing into the cell would get.
 ```bash
 # Set a range
 gws sheets spreadsheets values update \
-    --params '{"spreadsheetId":"SHEET_ID","range":"P&L!A1","valueInputOption":"USER_ENTERED"}' \
-    --json '{"values":[["Revenue (USD)","=SUM(B2:B13)"]]}'
+    --params '{"spreadsheetId":"SHEET_ID","range":"Model!A1","valueInputOption":"USER_ENTERED"}' \
+    --json '{"values":[["Total","=SUM(B2:B13)"]]}'
 
 # Append rows (helper)
 gws sheets +append --spreadsheet SHEET_ID --json-values '[["2026-06-27",10,"note"]]'
@@ -80,6 +80,11 @@ auto-resize, conditional formatting — use `batchUpdate`.
 Group related writes into as few atomic requests as practical, rather than
 issuing one network command per cell or formatting change.
 
+Prefer the `values` endpoints for content-only edits because they preserve
+existing formatting. With `updateCells` or `repeatCell`, use the narrowest
+possible `fields` mask and include `userEnteredFormat` only when intentionally
+changing formatting.
+
 ## Raw batchUpdate
 
 `spreadsheets.batchUpdate` applies requests atomically: if one is invalid, none
@@ -88,6 +93,10 @@ Structural mutations shift the coordinates used by later requests in the same
 batch. Process row and column deletions from bottom to top, account for the new
 coordinates in subsequent requests, and re-inspect the affected layout after
 the batch applies.
+
+Use `moveDimension` to reorder complete rows or columns instead of copying and
+clearing them. It preserves formatting and lets Sheets update dependent formulas;
+re-read the moved range and its dependents afterward.
 
 ```bash
 gws sheets spreadsheets batchUpdate --dry-run \
