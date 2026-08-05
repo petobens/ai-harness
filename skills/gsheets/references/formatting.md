@@ -42,6 +42,15 @@ Use the corresponding Google Sheets variants consistently.
 
 Do not introduce colors outside this palette unless the user explicitly asks.
 
+Write these exact hex values, since they are the Google Sheets picker variants a
+user gets from the UI. Do not expect to read them back unchanged: structural
+edits such as `moveDimension`, `insertDimension`, or a sheet rename make Sheets
+re-quantize stored fills by up to one 8-bit step per channel, so `#b7b7b7` comes
+back as `#b6b6b6` and `#d9d9d9` as `#d8d8d8`. The difference is invisible. When
+auditing fills, match each color to the nearest palette entry within a tolerance
+of about 2/255 per channel and treat it as correct. Only rewrite a fill when it
+is genuinely a different color, not to chase this drift.
+
 ## Text formatting
 
 - Use **10 pt font** throughout the workbook. Do not increase font size for

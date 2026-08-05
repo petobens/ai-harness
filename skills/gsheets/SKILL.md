@@ -56,8 +56,10 @@ formatting and layout unless the user requests a restyle.
 - For a workbook-wide review or broad structural change, perform those checks
   across every relevant table. Confirm every row's fill and bold match its role:
   no palette fill or bold on ordinary body rows, and title/total fills only on
-  actual title/total rows. Compare colors with a small tolerance because values
-  read back as floats (e.g. `#b7b7b7` returns `~0.717`).
+  actual title/total rows. Compare colors with a tolerance of about 2/255 per
+  channel: they read back as floats (`#b7b7b7` returns `~0.717`), and structural
+  edits re-quantize stored fills by up to one 8-bit step, so a palette color can
+  legitimately read back one unit off. Do not rewrite fills to chase that drift.
 - Make the smallest safe change that achieves the user's goal.
 - Before editing a target area, clear lingering formatting issues there (stale
   formatting, accidental fills, wrong text color, wrong merge state) so you start
