@@ -24,8 +24,11 @@ Use the corresponding Google Sheets variants consistently.
 
 - **Dark gray 1** (`#b7b7b7`) for top-level **table title cells** or compact
   title blocks, merged only when the structure rules below allow it.
-- **Light gray 1** (`#d9d9d9`) for **total rows**, which appear at the top of
-  each table rather than the bottom.
+- **Light gray 1** (`#d9d9d9`) for populated **title-row totals** beside a dark
+  gray title cell or block. Within consecutive emphasized body rows, it may
+  also distinguish primary rows from supporting rows.
+- **Soft gray** (`#efefef`) as the default for emphasized calculated totals,
+  subtotals, reconciliation rows, and KPIs within a table body.
 - **Light green 2** (`#b6d7a8`) for **field-style headers** and, in wider data
   tables, typically the first column or first two columns. In compact two-column
   tables, use it only for the field/metric column header.
@@ -38,12 +41,12 @@ Use the corresponding Google Sheets variants consistently.
   sparingly for other important individual cells.
 - **Light red 2** (`#ea9999`) sparingly for adverse scenarios or important
   individual cells.
-- A small **gradient or hierarchy of gray fills** may be used sparingly within
-  table rows when it clearly improves readability, such as grouped subsection
-  rows under a parent row.
+- Prefer soft gray for emphasized body rows. When two or more emphasized rows
+  are consecutive, light gray 1 may be used sparingly on primary rows to create
+  hierarchy; keep the supporting rows soft gray.
 - Table body cells should have **no background fill** unless the user explicitly
-  requests an exception, a specific value needs highlighting, or a limited
-  grayscale hierarchy materially improves readability.
+  requests an exception, a specific value needs highlighting, or soft-gray
+  emphasis materially improves readability.
 
 Do not introduce colors outside this palette unless the user explicitly asks.
 
@@ -64,8 +67,10 @@ is genuinely a different color, not to chase this drift.
 - In scenario comparisons, use light red 2 for the adverse case, light
   cornflower blue 2 for the central case, and light green 2 for the favorable
   case.
-- Use light gray 1 sparingly for important calculated rows, subtotals, and KPIs.
-  Leave ordinary detail rows unfilled.
+- Use light gray 1 for populated title-row totals. Use soft gray by default for
+  emphasized totals, subtotals, reconciliation rows, and KPIs within the table
+  body. In a consecutive emphasized block, light gray 1 may distinguish primary
+  rows from soft-gray supporting rows. Leave ordinary detail rows unfilled.
 
 ## Text formatting
 
@@ -127,7 +132,7 @@ is genuinely a different color, not to chase this drift.
 
 - Use indentation to show hierarchy: indent components, supporting amounts,
   adjustments, and bridge items beneath the primary metric they explain.
-- Keep primary KPIs unindented. Use bold and light-gray shading selectively to
+- Keep primary KPIs unindented. Use bold and soft-gray shading selectively to
   distinguish them from supporting calculations; do not bold every derived row.
 - Treat repeated metric pairs consistently: give the primary measure the same
   emphasis and its supporting calculation the same indentation throughout.
@@ -169,8 +174,11 @@ is genuinely a different color, not to chase this drift.
 - When the user specifies a starting row, place the table title on that row. If
   the table has totals, put the title and total values on that same row, then
   column headers on the next row and body rows below.
-- Reuse an existing table's formatting through copy/paste formatting when
-  practical rather than recreating it by hand.
+- Before constructing formatting from palette rules, inspect and copy the nearest
+  semantically equivalent row or table through paste-formatting when practical.
+  Treat informal color descriptions as contextual unless the user specifies a
+  palette name or hex value; when the user cites a cell or range as the example,
+  copy its exact formatting.
 - Keep gridlines visible unless the user explicitly requests otherwise.
 
 ### Workbook architecture
