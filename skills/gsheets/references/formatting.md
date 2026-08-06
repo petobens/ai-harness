@@ -74,8 +74,9 @@ is genuinely a different color, not to chase this drift.
 
 ## Text formatting
 
-- Use **10 pt font** throughout the workbook. Do not increase font size for
-  titles, headers, totals, or emphasis unless the user explicitly asks.
+- Use **10 pt font** throughout the workbook except on the README tab, which
+  follows its dedicated typography rules below. Do not otherwise increase font
+  size for titles, headers, totals, or emphasis unless the user explicitly asks.
 - Table titles and column headers must always be **bold**.
 - Column headers use human-readable **Title Case** labels such as `Foo Bar`, not
   snake_case, lower case, or sentence case.
@@ -220,25 +221,25 @@ and important caveats. Keep it readable and polished, but do not over-design it.
 
 ### README layout and formatting
 
-- The README tab uses **11 pt font**. Do not increase font size for the title,
-  section labels, or emphasis unless the user explicitly asks.
-- It must have a separate title row and a separate narrative body block. Put the
-  README title in its own merged row across the content width, styled like a
-  table title: dark gray 1 (`#b7b7b7`), bold, horizontally and vertically
-  centered, wrap enabled.
-- Put the narrative directly below the title row, with no blank spacer, in a
-  single merged block spanning no farther than columns A:E. Extend the block
-  downward rather than widening it when more space is needed.
-- Format body text cleanly inside the merged block, preserving clear paragraph
-  breaks, section labels, lists, and other internal structure.
-- README section labels such as `Takeaways`, `How To Use`, and `Limitations`
-  should be bold using rich-text styling inside the merged body block.
-- Do not widen column A to fit narrative content; keep the body in the merged
-  multi-column block instead of expanding A.
-- When editing an existing README narrative block, preserve its structure and
-  rich-text styling unless the user asks for a redesign.
-- Give each definition its own bullet. Present each source as a direct hyperlink
-  and do not add an accessed date unless requested.
+- Use **11 pt Arial** for README section headers and body content.
+- Keep the README content no wider than columns A:E. Do not widen column A to
+  fit narrative content; merge across the content width instead.
+- Put the README title in its own merged row across A:E. Use dark gray 1
+  (`#b7b7b7`), 12 pt bold text, horizontal and vertical centering, and wrapping.
+- Start the first section immediately below the title, with no blank row between
+  them. Build every section from three parts:
+  1. A merged A:E section-header row with light gray 1 (`#d9d9d9`), bold text,
+     left alignment, vertical centering, and wrapping.
+  2. A merged A:E unfilled body row directly below it, with regular text, left
+     and top alignment, wrapping, and enough row height to show all content.
+  3. Exactly one blank, unfilled, non-bold spacer row after the body, including
+     after the final section.
+- Keep each section independently editable. Do not collapse multiple sections
+  into one large rich-text narrative block. A long body may span multiple rows
+  only when needed; merge the full A:E body area vertically and horizontally.
+- When inserting or moving README rows, inspect the full A:E range afterward.
+  Reset inherited fill, bold, alignment, and wrapping on spacer rows, and verify
+  every section header and body retained its intended formatting.
 - Keep the workbook map synchronized with the actual tabs and remove stale
   references. Prefer shortening the narrative before increasing its footprint.
 
