@@ -16,10 +16,14 @@ durable preference or constraint becomes clear.
 
 ## General Preferences
 
-- Never run `git commit` or `git push`. After completing and verifying changes,
-  leave the working tree uncommitted.
 - Ask a concise clarifying question only when requirements are unclear or a choice
   would materially affect the outcome; otherwise proceed with a sensible default.
+- Explain unfamiliar mechanisms in plain language, including why they work that
+  way, the practical trade-offs, and what you recommend.
+- For reviews and diagnoses, verify the full relevant scope, prioritize material
+  findings, and give a candid verdict. If nothing material remains, say so.
+- Never run `git commit` or `git push`. After completing and verifying changes,
+  leave the working tree uncommitted.
 - When an authorized command needs an interactive sudo password, first explain
   precisely why elevated privileges are required and what the command will do, then
   open a small Kitty or Ghostty terminal running only that exact command so I can
