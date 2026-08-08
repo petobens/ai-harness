@@ -80,6 +80,9 @@ is genuinely a different color, not to chase this drift.
 - Table titles and column headers must always be **bold**.
 - Column headers use human-readable **Title Case** labels such as `Foo Bar`, not
   snake_case, lower case, or sentence case.
+- Choose one term for each recurring concept and use it consistently across tab
+  names, table titles, headers, labels, mechanics, and documentation. Do not
+  alternate between near-synonyms unless they represent different concepts.
 - Where a row label or column header refers to a measurable value, include the
   unit in parentheses when practical, such as `(USD)`, `(%)`, or `(Q)`. Put the
   unit on the label that names the measured metric, not on a purely categorical
@@ -106,6 +109,10 @@ is genuinely a different color, not to chase this drift.
 
 - Currency: `$` prefix with thousands separators (e.g. `$14,800,000`).
 - Percentages: trailing `%` with **2 decimal places** (e.g. `12.49%`, `40.00%`).
+- Show negative values with a leading minus sign, not parentheses, such as
+  `-$14,800` or `-12.49%`.
+- Format percentage-point changes as numbers followed by `pp`, not as
+  percentages, and use a leading minus sign for negative changes.
 - If a displayed number is clearly an integer, do not format it with unnecessary
   decimal places.
 - Never show raw decimals like `0.125` when a percentage is intended.
@@ -147,9 +154,6 @@ is genuinely a different color, not to chase this drift.
   with light cornflower blue 2 (`#a4c2f4`). Do not make both headers green.
 - Group related tables on the same tab, each with its own dark gray title cell or
   compact title block.
-- Keep input tables minimal: only include assumptions that are directly used. Do
-  not keep source snapshot or audit tables unless they are needed for formulas or
-  explicitly requested.
 - In wide tables other than the README layout, keep the title in column A. Let it
   span A:B or A:C only when needed for legibility; never extend it across the
   full table merely to match the table width. Compact tables of three columns or
@@ -198,6 +202,8 @@ is genuinely a different color, not to chase this drift.
 - Within a repeated subject area, show detailed-period tables before
   summarized-period tables, and keep the same table sequence across related
   tabs.
+- When presenting an aggregate and its components, show the aggregate first and
+  then its components. Keep that ordering consistent across related tables.
 - Avoid hidden or far-right helper tables when formulas can live directly in the
   principal table. Put substantial reusable helper logic in a clearly named
   dedicated tab.

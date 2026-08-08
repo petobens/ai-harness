@@ -9,6 +9,7 @@ Use these commands and API patterns when working with Google Sheets through
 
 - [Files](#files)
 - [Reading](#reading)
+- [Metadata inspection](#metadata-inspection)
 - [Writing](#writing)
 - [Raw batchUpdate](#raw-batchupdate)
 
@@ -55,6 +56,22 @@ Batch several ranges into one `values.batchGet` call instead, and if `+read`
 hits that auth error after another Sheets command succeeded, retry with
 `batchGet` before treating it as a real auth failure.
 
+## Metadata inspection
+
+Values endpoints do not expose layout metadata. Before and after structural or
+formatting edits, use a range-scoped `spreadsheets.get` to compare formatting,
+merges, conditional formatting, data validation, hyperlinks, rich-text runs, and
+dimension sizes. Re-read workbook-level named ranges when coordinates can shift.
+
+```bash
+gws sheets spreadsheets get \
+    --params '{"spreadsheetId":"SHEET_ID","ranges":["Model!A1:H40"],"includeGridData":true,"fields":"namedRanges(name,range),sheets(properties(title,sheetId),merges,conditionalFormats,data(startRow,startColumn,rowMetadata(pixelSize),columnMetadata(pixelSize),rowData.values(userEnteredValue,effectiveFormat(backgroundColor,textFormat(bold,fontSize,foregroundColor),numberFormat,horizontalAlignment,verticalAlignment,wrapStrategy),dataValidation,hyperlink,textFormatRuns)))"}'
+```
+
+For rich-text links, inspect link URIs inside `textFormatRuns`; the cell-level
+`hyperlink` field may be empty. Keep ranges and field masks narrow so the response
+stays reviewable.
+
 ## Writing
 
 Each operation is a single command. `valueInputOption:USER_ENTERED` parses
@@ -94,6 +111,11 @@ batch. Process row and column deletions from bottom to top, account for the new
 coordinates in subsequent requests, and re-inspect the affected layout after
 the batch applies.
 
+For structural changes, capture the affected formulas, displayed values,
+invariant outputs, and metadata before writing. After the batch applies, repeat
+the same reads and compare them, including shifted dependents and metadata ranges
+outside the edited table.
+
 `insertDimension.inheritFromBefore` chooses which adjacent dimension supplies
 formatting; it does not create neutral cells. When inserted rows or columns
 should be blank outside a new table, add a targeted `repeatCell` request for the
@@ -122,7 +144,9 @@ format, number format, alignment, wrap), `mergeCells`, `updateSheetProperties`
 
 Copy, move, or format complete merged ranges rather than partially intersecting
 them. For small wording changes inside an existing rich-text cell, prefer
-`findReplace` over rewriting the whole cell so its text-format runs survive.
+`findReplace` over rewriting the whole cell so its text-format runs survive. If
+rewriting is necessary, preserve and restore the runs explicitly, then verify
+their link URIs.
 
 Colors are RGB floats in `0..1`, e.g. dark gray 1 `#b7b7b7` is
 `{"red":0.717,"green":0.717,"blue":0.717}`.

@@ -25,9 +25,10 @@ formatting and layout unless the user requests a restyle.
 
 - Before any `gws` operation, read
   [gws-recipes.md](references/gws-recipes.md) completely.
-- Before creating, editing, formatting, or visually reviewing a spreadsheet,
-  read [formatting.md](references/formatting.md) completely. Its formatting
-  rules are mandatory unless the user explicitly requests an exception.
+- Before creating, formatting, structurally editing, or visually reviewing a
+  spreadsheet, read [formatting.md](references/formatting.md) completely. Its
+  formatting rules are mandatory unless the user explicitly requests an
+  exception.
 
 ## Rules
 
@@ -46,30 +47,26 @@ formatting and layout unless the user requests a restyle.
   return only a brief confirmation with the title, ID, URL, and inspected ranges
   by default. Do not paste cell contents, a full extraction, or a summary unless
   the user explicitly asks for one.
-- Inspect the target sheet before editing so you understand existing tabs, named
-  ranges, table layout, and formatting. Inspect again before reporting done, and
-  fix any off-by-one or shifted-cell issues introduced during the edit.
-- For a small edit, validate every edited range and its surrounding table
-  boundaries. Read both formulas and displayed values, scan for formula errors,
-  confirm relevant totals reconcile, and inspect `effectiveFormat`
-  (`backgroundColor`, `textFormat.bold`, number format, alignment, and wrap).
-- For a workbook-wide review or broad structural change, perform those checks
-  across every relevant table. Confirm every row's fill and bold match its role:
-  no palette fill or bold on ordinary body rows, and title/total fills only on
-  actual title/total rows. Compare colors with a tolerance of about 2/255 per
-  channel: they read back as floats (`#b7b7b7` returns `~0.717`), and structural
-  edits re-quantize stored fills by up to one 8-bit step, so a palette color can
-  legitimately read back one unit off. Do not rewrite fills to chase that drift.
+- Inspect the target before editing so you understand its tabs, named ranges,
+  formulas, table boundaries, and formatting. Before changing formulas or
+  structure, record the outputs that should remain unchanged.
+- After any edit, read the edited ranges and surrounding boundaries in both
+  formula and displayed-value modes. Scan for formula errors and confirm relevant
+  totals, invariant outputs, and downstream summaries reconcile.
+- After structural or formatting edits, also compare merges, named ranges,
+  conditional-format ranges, data validation, hyperlinks and rich-text runs, row
+  heights, column widths, and `effectiveFormat`. Inspect shifted dependents and
+  blank cells across the full used extent, and fix off-by-one or inherited-format
+  issues before reporting done.
+- For workbook-wide reviews or broad changes, perform those checks across every
+  relevant table and output. Apply the palette tolerance and row-role rules from
+  [formatting.md](references/formatting.md); do not rewrite visually equivalent
+  colors or style ordinary body rows as titles or totals.
 - Make the smallest safe change that achieves the user's goal.
 - Never clear or reapply formatting across a whole target area by default.
   Preserve existing formats and change only cells confirmed to be inconsistent;
   when extending a table, copy formatting from the nearest matching row or
   column.
-- Never assume inserted rows or columns are formatting-neutral. After an
-  `insertDimension`, inspect `effectiveFormat` across the new dimensions for the
-  full used extent, including blank cells where they intersect titles, headers,
-  totals, and KPIs. Reset only unintended inherited formatting outside the
-  intended new table or copied block.
 - Apply formatting (colors, number formats, alignment, wrap) as part of the same
   change, not as a follow-up round.
 - For `README` tabs, follow the dedicated section-row layout in
@@ -85,6 +82,12 @@ formatting and layout unless the user requests a restyle.
 
 ## Formula standards
 
+- Classify model values as source facts, manual parameters, or derived results.
+  Do not create a parameter when the value can be derived reliably from an
+  existing source or model driver. Remove unused parameters and duplicated
+  literals that can drift from their source.
+- Keep parameter and source tables minimal. Retain values and snapshots only
+  when they feed formulas, support auditability, or are explicitly requested.
 - Whenever a value is the result of a computation, write it as a formula in the
   sheet. Never compute the result yourself and paste a static number when the
   value should be derived from other cells.
@@ -102,8 +105,9 @@ formatting and layout unless the user requests a restyle.
   instead of independently recreating calculations.
 - When one tab shows an active case and another compares several cases,
   parameterize the same model logic for every case rather than substituting
-  simplified assumptions that can diverge. After structural changes, validate
-  every relevant case and reconcile detail tables, summaries, and outputs.
+  simplified assumptions that can diverge. After model changes, validate every
+  relevant case against the recorded invariants and reconcile detail tables,
+  summaries, and outputs.
 
 When you explain a formula to the user, structure it as:
 
