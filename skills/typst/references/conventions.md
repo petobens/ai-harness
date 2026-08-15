@@ -139,9 +139,10 @@ Use the exported semantic environments:
 
 Available environments are `theorem`, `proposition`, `lemma`, `corollary`,
 `definition`, `example`, `exercise`, `remark`, `notation`, `solution`, and
-`proof`. Pass `numbered: false` when a numbered statement is not appropriate.
-Use `title:` only to replace the localized environment name; use `note:` for a
-parenthetical statement title.
+`proof`. Choose numbering per occurrence: pass `numbered: false` for an
+unnumbered remark, notation, or other statement instead of changing the
+template default. Use `title:` only to replace the localized environment name;
+use `note:` for a parenthetical statement title.
 
 ## Citations and bibliography
 

@@ -36,8 +36,8 @@ one-off behavior, the corresponding template for one document type, or
 
 Inspect the target source, nearby `.typ` files, bibliography files, assets, and
 the relevant local package. Classify the output as article, book, Mutt slides,
-or standalone artifact. Never inspect generated PDFs as a substitute for
-reading their Typst source.
+or standalone artifact. Read the source first; use the rendered PDF for visual
+verification.
 
 Identify the document entry point before compiling. When editing an included
 chapter, compile the enclosing `main.typ`, not the chapter in isolation.

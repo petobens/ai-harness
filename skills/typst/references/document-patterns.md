@@ -5,8 +5,12 @@ corresponding template source for its full parameter list and implementation.
 
 ## Figures and tables
 
-- Let articles place ordinary floats automatically. Use `placement: none` only
-  when an object must remain at its source position.
+- In articles and books, ordinary image and table figures float to the top by
+  default so following text can use the remaining page. Omit `placement` for
+  ordinary figures; an explicit `placement: auto` overrides this default. Use
+  `placement: none` only when an object must remain at its source position.
+  When anchored and floating objects are mixed, verify their rendered order
+  and anchor a later dependent figure if needed.
 - Use `article-table` or `book-table` for compact native tables and wrap them in
   a figure with `kind: table`.
 - Use `subfigure-grid` when panels need individual references.
