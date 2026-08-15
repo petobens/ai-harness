@@ -148,8 +148,6 @@ and content slides begin at `## Slide 2:`, numbered continuously.
 Output in this format, omitting optional lines when unneeded.
 
 ```md
-<!-- markdownlint-disable MD013 -->
-
 # Slides Plan (Internal)
 
 **Governing question:** One-sentence question the deck answers

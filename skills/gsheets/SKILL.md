@@ -13,8 +13,6 @@ metadata:
             - gws
 ---
 
-<!-- markdownlint-disable MD013 -->
-
 # Google Sheets
 
 Use `gws` to create, read, edit, and analyze Google Sheets. Own both formula

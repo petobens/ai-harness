@@ -17,8 +17,6 @@ metadata:
             - pass
 ---
 
-<!-- markdownlint-disable MD013 -->
-
 # Google Slides
 
 You interact with Google Slides through `gws`: reading and inspecting decks,
@@ -164,8 +162,22 @@ indices, geometry, and styling you need while keeping the response manageable; i
 also reaches text inside grouped elements and table cells:
 
 ```bash
+fields="title,pageSize,slides(objectId,\
+slideProperties.layoutObjectId,pageElements(objectId,size,transform,\
+shape(shapeType,placeholder,text(textElements(startIndex,endIndex,\
+textRun(content,style),paragraphMarker(bullet,style)))),\
+elementGroup(children(objectId,size,transform,\
+shape(shapeType,placeholder,text(textElements(startIndex,endIndex,\
+textRun(content,style),paragraphMarker(bullet,style)))),image,\
+table(tableRows(tableCells(text(textElements(startIndex,endIndex,\
+textRun(content,style),paragraphMarker(bullet,style)))))))),image,\
+table(tableRows(tableCells(text(textElements(startIndex,endIndex,\
+textRun(content,style),paragraphMarker(bullet,style)))))))))"
+params="$(jq -nc \
+    --arg fields "$fields" \
+    '{presentationId:"PRES_ID",fields:$fields}')"
 gws slides presentations get \
-    --params '{"presentationId":"PRES_ID","fields":"title,pageSize,slides(objectId,slideProperties.layoutObjectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),elementGroup(children(objectId,size,transform,shape(shapeType,placeholder,text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))),image,table(tableRows(tableCells(text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))))))),image,table(tableRows(tableCells(text(textElements(startIndex,endIndex,textRun(content,style),paragraphMarker(bullet,style)))))))))"}' \
+    --params "$params" \
     2> /dev/null > /tmp/slides-read.json
 ```
 
@@ -416,8 +428,13 @@ look at the result before reporting done:
 ```bash
 # Returns a PNG URL for one rendered slide
 url="$(gws slides presentations pages getThumbnail \
-    --params '{"presentationId":"PRES_ID","pageObjectId":"SLIDE_OBJECT_ID","thumbnailProperties.thumbnailSize":"LARGE"}' \
-    2> /dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin)["contentUrl"])')"
+    --params '{
+        "presentationId": "PRES_ID",
+        "pageObjectId": "SLIDE_OBJECT_ID",
+        "thumbnailProperties.thumbnailSize": "LARGE"
+    }' \
+    2> /dev/null | python3 -c \
+    'import json,sys; print(json.load(sys.stdin)["contentUrl"])')"
 curl -sSL "$url" -o /tmp/slide.png
 ```
 

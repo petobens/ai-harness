@@ -1,7 +1,5 @@
 # gws Recipes
 
-<!-- markdownlint-disable MD013 -->
-
 Use these commands and API patterns when working with Google Sheets through
 `gws`.
 

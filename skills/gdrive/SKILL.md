@@ -13,8 +13,6 @@ metadata:
             - gws
 ---
 
-<!-- markdownlint-disable MD013 -->
-
 # Google Drive
 
 Use `gws` for file-type-agnostic Drive operations: searching, listing folders,
@@ -61,7 +59,14 @@ gws drive files create \
     --json '{"name":"File title","mimeType":"application/vnd.google-apps.spreadsheet","parents":["root"]}'
 
 # Search by name; add a mimeType clause to filter by kind
-gws drive files list --params '{"q":"name contains '\''quarterly model'\'' and mimeType = '\''application/vnd.google-apps.spreadsheet'\''","pageSize":10,"orderBy":"modifiedTime desc","fields":"files(id,name,mimeType,webViewLink,modifiedTime,owners(displayName))","includeItemsFromAllDrives":true,"supportsAllDrives":true}'
+gws drive files list --params '{
+    "q": "name contains '\''quarterly model'\'' and mimeType = '\''application/vnd.google-apps.spreadsheet'\''",
+    "pageSize": 10,
+    "orderBy": "modifiedTime desc",
+    "fields": "files(id,name,mimeType,webViewLink,modifiedTime,owners(displayName))",
+    "includeItemsFromAllDrives": true,
+    "supportsAllDrives": true
+}'
 
 # List a folder's direct children
 gws drive files list --params '{"q":"'\''FOLDER_ID'\'' in parents and trashed = false","pageSize":1000,"orderBy":"folder,name","fields":"nextPageToken,files(id,name,mimeType,webViewLink)","includeItemsFromAllDrives":true,"supportsAllDrives":true}'

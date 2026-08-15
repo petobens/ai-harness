@@ -16,8 +16,6 @@ metadata:
             - pdftoppm
 ---
 
-<!-- markdownlint-disable MD013 -->
-
 # PDF
 
 How you read a PDF depends on which agent is running this skill. Claude Code has
@@ -114,7 +112,6 @@ the agent-appropriate path above.
    A success response is JSON with `"status":"success"` and the resolved
    `saved_file` path. In a restricted sandbox, a DNS/discovery/network error
    means rerun with escalated tool permissions, not a real failure.
-
 3. Read the downloaded file (see _Reading a local PDF_).
 4. Remove the downloaded PDF (and any rendered PNGs) when done unless the user
    wants to keep them.
