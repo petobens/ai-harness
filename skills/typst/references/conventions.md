@@ -37,6 +37,9 @@ hyphenation, localized names, dates, and theorem titles. Use
 - Run `typstyle` rather than aligning or wrapping Typst by hand.
 - Use content blocks for formatted document content and strings for plain
   metadata or file paths, following the template signatures and examples.
+- Pass `none` to omit an optional template field or section. Do not use an
+  empty string or empty content block as the control signal, even when a
+  template tolerates those values.
 - Separate prose paragraphs with one blank line. Do not use manual line breaks
   to control paragraph wrapping.
 - Prefer semantic template helpers over local `set` and `show` rules.
@@ -126,11 +129,9 @@ $
 Use `#equation(...)` when numbering is required:
 
 ```typst
-#equation(
-  $
-    Y_t = K_t^alpha (A_t L_t)^(1 - alpha)
-  $,
-) <eq:production>
+#equation($
+  Y_t = K_t^alpha (A_t L_t)^(1 - alpha)
+$) <eq:production>
 ```
 
 Do not type equation numbers manually. The templates handle section-aware,
@@ -158,6 +159,14 @@ Available environments are `theorem`, `proposition`, `lemma`, `corollary`,
 unnumbered remark, notation, or other statement instead of changing the
 template default. Use `title:` only to replace the localized environment name;
 use `note:` for a parenthetical statement title.
+
+Continue a previously numbered example without incrementing its counter:
+
+```typst
+#continued-example(<exa:lexicographic_preferences>)[
+  The same example continues here.
+]
+```
 
 ## Citations and bibliography
 

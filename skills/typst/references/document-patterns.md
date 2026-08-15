@@ -9,6 +9,8 @@ needed parameter or behavior.
 - Import `@local/latex-article:0.1.0` and apply `latex-article.with(...)`.
 - Let the template own page geometry, title matter, abstract width, typography,
   running heads, footnotes, floats, and section-based numbering.
+- Set omitted optional fields such as `abstract`, `keywords`, `jel`,
+  `author-note`, and `short-title` to `none`.
 - Use `#appendix[...]`; do not reset counters or type appendix numbers.
 
 Article appendix sections remain level-two headings:
@@ -25,6 +27,8 @@ Article appendix sections remain level-two headings:
 - Import `@local/latex-book:0.1.0` and apply `latex-book.with(...)`.
 - Let the template own front matter, page-number phases, running heads, chapter
   openings, and chapter-based numbering.
+- Set omitted optional fields such as `subtitle`, `institution`, `department`,
+  `logo`, `copyright`, `dedication`, and `preface` to `none`.
 - Split chapters with `#include` when useful.
 - Use `#appendix[...]` for appendix numbering.
 - Use `#chapter-bibliographies(read("references.bib", encoding: none))` for one
@@ -43,8 +47,8 @@ Book appendices remain inside the current chapter and use level-two headings:
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
 - Use level-one headings for agenda sections and level-two headings for slides.
-- Prefer `card`, `callout`, `formula`, `small`, `theorem`, `solution`, `proof`,
-  and grids over ad hoc boxes.
+- Prefer `slide-subtitle`, `card`, `callout`, `formula`, `small`, `theorem`,
+  `solution`, `proof`, and grids over ad hoc styling and boxes.
 - Treat every slide as a hard frame. Shorten or split content before reducing
   type size; accept no overflow, clipping, collisions, or title-chip overlap.
 - Supply figure captions for semantics and references even though the template
