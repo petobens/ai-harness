@@ -115,8 +115,15 @@ Slide-local labels may instead use a descriptive `slide-...` name, as in
 
 ## Equations
 
-Raw display math is intentionally unnumbered in articles and books. Use the
-template helpers when numbering is required:
+Raw display math is intentionally unnumbered in articles and books:
+
+```typst
+$
+  k^* = (s / (n + g + delta))^(1 / (1 - alpha))
+$
+```
+
+Use `#equation(...)` when numbering is required:
 
 ```typst
 #equation(
@@ -124,12 +131,6 @@ template helpers when numbering is required:
     Y_t = K_t^alpha (A_t L_t)^(1 - alpha)
   $,
 ) <eq:production>
-
-#uequation(
-  $
-    k^* = (s / (n + g + delta))^(1 / (1 - alpha))
-  $,
-)
 ```
 
 Do not type equation numbers manually. The templates handle section-aware,
