@@ -65,9 +65,28 @@ Book appendices remain inside the current chapter and use level-two headings:
   `placement: none` only when an object must remain at its source position.
   When anchored and floating objects are mixed, verify their rendered order
   and anchor a later dependent figure if needed.
-- Use `article-table` or `book-table` for compact native tables and wrap them in
-  a figure with `kind: table`.
+- Use `latex-table` for compact Booktabs-style native tables and wrap it in a
+  figure with `kind: table` when it needs a caption or reference.
 - Use `subfigure-grid` when panels need individual references.
 - Use the standalone template for reusable or complex figures and tables, then
   import the compiled PDF into articles, books, or slides.
 - Diagnose blank space before adding page breaks or manual vertical spacing.
+
+`latex-table` accepts one tuple for the header and one tuple per body row:
+
+```typst
+#latex-table(
+  columns: (2fr, 1fr, 1fr),
+  align: (left, right, right),
+  header: ([Indicator], [2020], [2025]),
+  rows: (
+    ([Productivity], [100], [114]),
+  ),
+)
+```
+
+In standalone table sources, import it explicitly:
+
+```typst
+#import "@local/template-utils:0.1.0": latex-table
+```
