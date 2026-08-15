@@ -72,6 +72,20 @@ heading levels differ:
 Use lowercase snake case derived from the title or caption. Never use generic
 labels such as `<sec:name>` or `<eq:label>` in finished work.
 
+Use a semantic heading with `numbering: none` when a structural heading should
+be unnumbered. Do not simulate it with styled paragraph text. Keep the level and
+label prefix appropriate for the document family:
+
+```typst
+// Article subsubsection
+#heading(level: 3, numbering: none)[Identification assumptions]
+<ssub:identification_assumptions>
+
+// Book subsection
+#heading(level: 3, numbering: none)[Pure exchange economy]
+<sub:pure_exchange_economy>
+```
+
 Use these prefixes consistently in articles and books:
 
 | Object        | Prefix  |

@@ -5,15 +5,15 @@ description: >-
   and Mutt slide decks using the local templates and conventions for source
   structure, typography, layout, numbering, figures, tables, equations,
   citations, and localization. Use for creating or modifying .typ documents,
-  changing shared Typst templates, and resolving Typst layout or rendering
-  problems.
+  resolving document layout or rendering problems, and fixing shared templates
+  when a defect belongs there.
 ---
 
 # Typst
 
 Write Typst through the shared local templates and established source patterns.
-Preserve the template system, source conventions, and rendered quality instead
-of treating a `.typ` file as isolated markup.
+Treat the templates as finished document infrastructure: use their semantic
+APIs and conventions instead of recreating typography or layout locally.
 
 ## Required context
 
@@ -25,31 +25,29 @@ Read [document-patterns.md](references/document-patterns.md) when creating or
 changing an article, book, slide deck, standalone artifact, figure, table,
 float, title page, or appendix.
 
-Template sources live under
-`~/git-repos/private/dotfiles/typst/packages/local`. Change the document for
-one-off behavior, the corresponding template for one document type, or
-`template-utils` for behavior shared by articles, books, and slides.
-
 ## Workflow
 
 ### 1. Inspect
 
 Inspect the target source, nearby `.typ` files, bibliography files, assets, and
-the relevant local package. Classify the output as article, book, Mutt slides,
-or standalone artifact. Read the source first; use the rendered PDF for visual
+relevant rendered output. Classify the output as article, book, Mutt slides, or
+standalone artifact. Read the source first; use the rendered PDF for visual
 verification.
 
 Identify the document entry point before compiling. When editing an included
 chapter, compile the enclosing `main.typ`, not the chapter in isolation.
 
-### 2. Choose the right layer
+### 2. Use the template API
 
-- Put content and one-off exceptions in the document.
-- Put behavior expected in every document of one type in that template.
-- Put behavior shared by article, book, and slides in `template-utils`.
+Use the canonical template call and its semantic helpers. Keep content and true
+one-off exceptions in the document. Do not add local `set` or `show` rules for
+behavior the template already owns.
 
-Make the smallest practical change at the correct layer. Do not restyle a
-document locally to work around a template defect.
+If a shared default is genuinely defective, template sources live under
+`~/git-repos/private/dotfiles/typst/packages/local`. Change the corresponding
+document template for type-specific behavior or `template-utils` for behavior
+shared by articles, books, and slides. Do not restyle one document to work
+around a template defect.
 
 ### 3. Write
 
@@ -86,16 +84,20 @@ Inspect structure and geometry:
 ```bash
 pdfinfo /tmp/output.pdf
 pdftotext -layout /tmp/output.pdf /tmp/output.txt
+qpdf --json --json-key=outlines /tmp/output.pdf
 pdftoppm -png -r 150 -f FIRST -l LAST /tmp/output.pdf /tmp/output
 ```
 
 Open the relevant rendered pages and check:
 
 - first-page proportions and title matter;
+- semantic heading hierarchy, including intentionally unnumbered headings;
 - line breaks, page breaks, and overall content flow;
 - float placement and unexplained blank space;
+- subfigure order, alignment, captions, and individual references;
 - table scale and legibility;
 - equation, figure, table, theorem, and appendix numbering;
+- PDF outline completeness, hierarchy, titles, and page destinations;
 - footnote rule, marker style, and wrapping;
 - citations and unresolved bibliography entries;
 - slide overflow, clipping, density, and visual hierarchy; and

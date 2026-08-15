@@ -1,22 +1,8 @@
 # Typst document patterns
 
-Read only the section for the selected document type or component. Inspect the
-corresponding template source for its full parameter list and implementation.
-
-## Figures and tables
-
-- In articles and books, ordinary image and table figures float to the top by
-  default so following text can use the remaining page. Omit `placement` for
-  ordinary figures; an explicit `placement: auto` overrides this default. Use
-  `placement: none` only when an object must remain at its source position.
-  When anchored and floating objects are mixed, verify their rendered order
-  and anchor a later dependent figure if needed.
-- Use `article-table` or `book-table` for compact native tables and wrap them in
-  a figure with `kind: table`.
-- Use `subfigure-grid` when panels need individual references.
-- Use the standalone template for reusable or complex figures and tables, then
-  import the compiled PDF into articles, books, or slides.
-- Diagnose blank space before adding page breaks or manual vertical spacing.
+Read only the section for the selected document type or component. Consult the
+corresponding template source only when the documented patterns do not expose a
+needed parameter or behavior.
 
 ## Articles
 
@@ -70,3 +56,18 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Keep the source next to its assets and compile it independently.
 - Import the resulting PDF so shared analytical content stays synchronized
   across document types.
+
+## Figures and tables
+
+- In articles and books, ordinary image and table figures float to the top by
+  default so following text can use the remaining page. Omit `placement` for
+  ordinary figures; an explicit `placement: auto` overrides this default. Use
+  `placement: none` only when an object must remain at its source position.
+  When anchored and floating objects are mixed, verify their rendered order
+  and anchor a later dependent figure if needed.
+- Use `article-table` or `book-table` for compact native tables and wrap them in
+  a figure with `kind: table`.
+- Use `subfigure-grid` when panels need individual references.
+- Use the standalone template for reusable or complex figures and tables, then
+  import the compiled PDF into articles, books, or slides.
+- Diagnose blank space before adding page breaks or manual vertical spacing.
