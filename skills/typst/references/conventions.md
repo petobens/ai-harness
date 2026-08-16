@@ -9,6 +9,7 @@ overrides them.
 - [Source style](#source-style)
 - [Structure and labels](#structure-and-labels)
 - [Lists](#lists)
+- [Math symbols](#math-symbols)
 - [Equations](#equations)
 - [Statements and proofs](#statements-and-proofs)
 - [Citations and bibliography](#citations-and-bibliography)
@@ -151,6 +152,17 @@ lines return to the text margin:
 #labeled-item[Second case][
   Second explanation.
 ]
+```
+
+## Math symbols
+
+Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
+for a negated weak-preference relation. For other relations without a matching
+glyph, cancel only the relation and restore its math class; do not cancel the
+operands.
+
+```typst
+$ x succ y arrow.l.r.double.long x succ.tilde y upright(" and ") y notsuccsim x $
 ```
 
 ## Equations
