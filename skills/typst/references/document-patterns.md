@@ -72,9 +72,17 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Use `latex-table` for compact Booktabs-style native tables and wrap it in a
   figure with `kind: table` when it needs a caption or reference.
 - Use `subfigure-grid` when panels need individual references.
+- For mixed-size subfigures, give the grid a shared `panel-height` and use
+  `width: 100%`, `height: 100%`, and `fit: "contain"` on each image. This aligns
+  the image bases and subcaptions without distorting their aspect ratios.
+- Default imported analytical assets to PDF. Preserve deliberate panel
+  proportions with explicit `columns` rather than forcing every panel to equal
+  width.
 - Use the standalone template for reusable or complex figures and tables, then
   import the compiled PDF into articles, books, or slides.
 - Diagnose blank space before adding page breaks or manual vertical spacing.
+- When preceding prose must stay before a figure, use `placement: none` and
+  verify the affected page; automatic floating may otherwise move the figure.
 
 `latex-table` accepts one tuple for the header and one tuple per body row:
 

@@ -93,6 +93,7 @@ Open the relevant rendered pages and check:
 - first-page proportions and title matter;
 - semantic heading hierarchy, including intentionally unnumbered headings;
 - line breaks, page breaks, and overall content flow;
+- list numbering, indentation, item spacing, and surrounding separation;
 - float placement and unexplained blank space;
 - subfigure order, alignment, captions, and individual references;
 - table scale and legibility;

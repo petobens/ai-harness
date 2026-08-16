@@ -8,6 +8,7 @@ overrides them.
 - [Document families](#document-families)
 - [Source style](#source-style)
 - [Structure and labels](#structure-and-labels)
+- [Lists](#lists)
 - [Equations](#equations)
 - [Statements and proofs](#statements-and-proofs)
 - [Citations and bibliography](#citations-and-bibliography)
@@ -115,6 +116,42 @@ Reference labels directly, for example `@sec:model`, `@fig:transition`, and
 
 Slide-local labels may instead use a descriptive `slide-...` name, as in
 `<slide-production>`, when section-based document labels add no value.
+
+## Lists
+
+Use native `+` and `-` markup for numbered and bulleted lists. Do not wrap a
+list in `#block` merely to scope a set rule; the extra block changes its
+surrounding vertical spacing.
+
+Scope custom numbering in a content block so it does not affect later lists:
+
+```typst
+#[
+  #set enum(numbering: "(i)", spacing: 1em)
+  + First property.
+
+  + Second property.
+]
+```
+
+Change `numbering` to any Typst numbering pattern, such as `"(a)"`, `"a)"`, or
+`"1."`. In markup lists, a blank line between items makes the list non-tight and
+allows `spacing` to control the gap. Omit the blank lines for a compact list, and
+verify the result in the rendered page.
+
+For named, run-in labels, use `labeled-item`. It inserts a blank line above the
+item, emphasizes the label, indents only the first line, and lets continuation
+lines return to the text margin:
+
+```typst
+#labeled-item[First case][
+  First explanation.
+]
+
+#labeled-item[Second case][
+  Second explanation.
+]
+```
 
 ## Equations
 
