@@ -57,21 +57,31 @@ heading levels differ:
 = Introduction
 <sec:introduction>
 
-== Policy implications
-<sub:policy_implications>
+== Methods
+<sub:methods>
 
-=== Identification assumptions
-<ssub:identification_assumptions>
+=== Implementation details
+<ssub:implementation_details>
 
 // Book
-= Consumer theory
-<cha:consumer_theory>
+= Chapter heading
+<cha:chapter_heading>
 
-== Preferences
-<sec:preferences>
+== Section heading
+<sec:section_heading>
 
-=== Utility representations
-<sub:utility_representations>
+=== Subsection heading
+<sub:subsection_heading>
+```
+
+Always leave one blank line after a heading label before the following text or
+other content:
+
+```typst
+= Chapter heading
+<cha:chapter_heading>
+
+The chapter text starts here.
 ```
 
 Use lowercase snake case derived from the title or caption. Never use generic
@@ -83,12 +93,12 @@ label prefix appropriate for the document family:
 
 ```typst
 // Article subsubsection
-#heading(level: 3, numbering: none)[Identification assumptions]
-<ssub:identification_assumptions>
+#heading(level: 3, numbering: none)[Additional details]
+<ssub:additional_details>
 
 // Book subsection
-#heading(level: 3, numbering: none)[Pure exchange economy]
-<sub:pure_exchange_economy>
+#heading(level: 3, numbering: none)[Supplementary material]
+<sub:supplementary_material>
 ```
 
 Use these prefixes consistently in articles and books:
@@ -112,11 +122,12 @@ Use these prefixes consistently in articles and books:
 | Exercise      | `exe:`  |
 | Remark        | `rem:`  |
 
-Reference labels directly, for example `@sec:model`, `@fig:transition`, and
-`@eq:production`. Use `#ref(<sec:model>, form: "page")` for a page reference.
+Reference labels directly, for example `@sec:methods`, `@fig:overview`, and
+`@eq:linear_relation`. Use `#ref(<sec:methods>, form: "page")` for a page
+reference.
 
 Slide-local labels may instead use a descriptive `slide-...` name, as in
-`<slide-production>`, when section-based document labels add no value.
+`<slide-overview>`, when section-based document labels add no value.
 
 ## Lists
 
@@ -157,12 +168,12 @@ lines return to the text margin:
 ## Math symbols
 
 Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
-for a negated weak-preference relation. For other relations without a matching
+for its dedicated negated relation. For other relations without a matching
 glyph, cancel only the relation and restore its math class; do not cancel the
 operands.
 
 ```typst
-$ x succ y arrow.l.r.double.long x succ.tilde y upright(" and ") y notsuccsim x $
+$ P arrow.l.r.double.long Q quad x notsuccsim y $
 ```
 
 ## Equations
@@ -171,7 +182,7 @@ Raw display math is intentionally unnumbered in articles and books:
 
 ```typst
 $
-  k^* = (s / (n + g + delta))^(1 / (1 - alpha))
+  f(x) = x^2 + 1
 $
 ```
 
@@ -179,8 +190,8 @@ Use `#equation(...)` when numbering is required:
 
 ```typst
 #equation($
-  Y_t = K_t^alpha (A_t L_t)^(1 - alpha)
-$) <eq:production>
+  y = a x + b
+$) <eq:linear_relation>
 ```
 
 Do not type equation numbers manually. The templates handle section-aware,
@@ -192,13 +203,13 @@ Use the exported semantic environments:
 
 ```typst
 #theorem(
-  note: [Conditional convergence],
+  note: [Even sum],
 )[
-  The economy converges to its steady state.
-] <thm:conditional_convergence>
+  The sum of two even integers is even.
+] <thm:even_sum>
 
 #proof[
-  Investment is concave and break-even investment is linear.
+  Let $a = 2m$ and $b = 2n$. Then $a + b = 2(m + n)$, so $a + b$ is even.
 ]
 ```
 
@@ -212,7 +223,7 @@ use `note:` for a parenthetical statement title.
 Continue a previously numbered example without incrementing its counter:
 
 ```typst
-#continued-example(<exa:lexicographic_preferences>)[
+#continued-example(<exa:sample_calculation>)[
   The same example continues here.
 ]
 ```
@@ -222,9 +233,9 @@ Continue a previously numbered example without incrementing its counter:
 Use citation keys from the project's `.bib` file:
 
 ```typst
-@kydland82
-#cite(<kydland82>, form: "prose")
-#cite(<kydland82>, form: "full")
+@doe24
+#cite(<doe24>, form: "prose")
+#cite(<doe24>, form: "full")
 ```
 
 Every cited key must exist. Fix missing keys in the document's bibliography
