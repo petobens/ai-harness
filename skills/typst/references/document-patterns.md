@@ -29,6 +29,8 @@ Article appendix sections remain level-two headings:
   openings, and chapter-based numbering.
 - Set omitted optional fields such as `subtitle`, `institution`, `department`,
   `logo`, `copyright`, `dedication`, and `preface` to `none`.
+- Put a document-specific preface in an adjacent `preface.typ` or `prefacio.typ`
+  file and pass it directly, for example `preface: include "preface.typ"`.
 - Split chapters with `#include` when useful.
 - Use `#appendix[...]` for appendix numbering.
 - Use `#chapter-bibliographies(read("references.bib", encoding: none))` for one
