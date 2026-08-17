@@ -32,6 +32,8 @@ Article appendix sections remain level-two headings:
 - Put a document-specific preface in an adjacent `preface.typ` or `prefacio.typ`
   file and pass it directly, for example `preface: include "preface.typ"`.
 - Split chapters with `#include` when useful.
+- Import `@local/latex-book:0.1.0` in every included chapter that uses its
+  helpers. Imports in the entry point do not propagate through `#include`.
 - Use `#appendix[...]` for appendix numbering.
 - Use `#chapter-bibliographies(read("references.bib", encoding: none))` for one
   bibliography per numbered chapter.

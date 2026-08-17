@@ -167,6 +167,12 @@ lines return to the text margin:
 
 ## Math symbols
 
+Write ordinary math punctuation and delimiters directly. Use `x, y` and
+`u(x, y)`, not `x\,y` or `u\(x\,y\)`. Reserve an escape for a character that
+must remain literal, such as deliberately non-scaling grouping or the
+mismatched delimiters in a half-open interval: `$x in\(0, 1\]$`. Do not remove
+such escapes mechanically.
+
 Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
 for its dedicated negated relation. For other relations without a matching
 glyph, cancel only the relation and restore its math class; do not cancel the
@@ -186,12 +192,28 @@ $
 $
 ```
 
-Use `#equation(...)` when numbering is required:
+Split a long displayed formula into a few rendered lines when a single line is
+hard to scan or approaches the text width. Break at a meaningful operator, keep
+closely related terms together, and use `&` to align the continuation. A source
+line break alone does not affect the output; insert `\` explicitly:
 
 ```typst
+$
+  f(x) &= a_0 + a_1 x + a_2 x^2 \
+  &quad + a_3 x^3 + a_4 x^4
+$
+```
+
+Use `#equation(...)` when numbering is required. Put every numbered display
+equation on its own source line; never append `#equation` to a prose sentence
+or list item. Do not add blank lines around it merely for separation:
+
+```typst
+The numbered relation is
 #equation($
   y = a x + b
 $) <eq:linear_relation>
+The discussion continues here.
 ```
 
 Do not type equation numbers manually. The templates handle section-aware,
@@ -219,6 +241,11 @@ Available environments are `theorem`, `proposition`, `lemma`, `corollary`,
 unnumbered remark, notation, or other statement instead of changing the
 template default. Use `title:` only to replace the localized environment name;
 use `note:` for a parenthetical statement title.
+
+Leave one blank source line after every statement environment before the next
+paragraph, statement, or proof. In particular, never place `#proof` directly
+after the closing line of a theorem, proposition, lemma, or corollary. Keep the
+blank line after the statement's label when it has one, as shown above.
 
 Continue a previously numbered example without incrementing its counter:
 
