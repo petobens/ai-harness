@@ -192,10 +192,11 @@ $
 $
 ```
 
-Split a long displayed formula into a few rendered lines when a single line is
-hard to scan or approaches the text width. Break at a meaningful operator, keep
-closely related terms together, and use `&` to align the continuation. A source
-line break alone does not affect the output; insert `\` explicitly:
+Keep each formula on one rendered line unless it approaches the text width or
+a multiline layout materially improves readability. Wrap the source with
+ordinary newlines as needed; they do not affect the rendered equation. For an
+intentional rendered split, insert `\`, break at a meaningful operator, keep
+closely related terms together, and use `&` to align the continuation:
 
 ```typst
 $
