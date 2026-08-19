@@ -173,6 +173,12 @@ must remain literal, such as deliberately non-scaling grouping or the
 mismatched delimiters in a half-open interval: `$x in\(0, 1\]$`. Do not remove
 such escapes mechanically.
 
+Leave a space between a symbol and a delimiter that follows it. Write
+`$x in (0, 1)$`, `$x in [0, 1]$` and `$x_n lt.eq (w\/p_n)$`, not `in(0, 1)`,
+`in[0, 1]` or `lt.eq(w\/p_n)`. Without the space the symbol parses as a call
+rather than a relation, which usually renders the same but sometimes drops the
+delimiters or the spacing around the relation, as `dot.op(y - x)` does.
+
 Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
 for its dedicated negated relation. For other relations without a matching
 glyph, cancel only the relation and restore its math class; do not cancel the
