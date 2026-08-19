@@ -62,8 +62,10 @@ durable preference or constraint becomes clear.
   extensibility: use inline code for single-use logic, avoid exporting helpers
   unless another file uses them, and introduce abstractions or intermediate
   variables only when they improve clarity.
-- Add comments only when truly necessary, and keep them as short and compact as
-  possible. Single-line code comments should not end with a period.
+- Add comments only to explain non-obvious behavior, and keep them short. Put
+  function-level comments above the function and use trailing comments only
+  when they apply narrowly to one statement. Single-line comments should not
+  end with a period.
 - Before changing code, find the repository root and read its `AGENTS.md`, if
   present. Do this once per repository per session.
 - Before finishing a code change, review the complete diff as if it were going
