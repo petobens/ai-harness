@@ -1,16 +1,16 @@
 ---
-name: performance-review
+name: mutt-perf-review
 description: >-
-    Draft concise mid-year or annual manager performance reviews from self
-    reviews, 1:1 notes, role expectations, and calibration context. Use when
-    asked to assess an employee, recommend a performance rating or promotion
-    readiness, or write public feedback and private calibration comments.
+    Draft concise Mutt mid-year or annual manager performance reviews from
+    self reviews, 1:1 notes, objectives, role expectations, and calibration
+    context. Use when asked to assess a Mutter, recommend a performance rating
+    or promotion readiness, or write public feedback and private comments.
 metadata:
-    short-description: Draft evidence-based performance reviews
+    short-description: Draft evidence-based Mutt performance reviews
     category: writing
 ---
 
-# Performance Review
+# Mutt Performance Review
 
 Write a candid, concise manager review grounded in the requested review period.
 Use the employee's self review as context, not as the outline: the manager
@@ -21,7 +21,9 @@ feedback should add judgment instead of repeating the employee's claims.
 Read the full relevant scope before drafting:
 
 - the self review and whether it is submitted or still a draft;
+- the objectives agreed for the period and any documented scope changes;
 - 1:1 notes from the review period;
+- relevant stakeholder feedback, when available;
 - the employee's role and seniority;
 - the manager's preliminary rating and observations; and
 - the form fields and who can see each one.
@@ -41,21 +43,23 @@ assessment. Otherwise infer the intended form and draft a recommendation.
 
 ## Review cadence
 
-Determine whether the form is a mid-year check or the full-year review. At Mutt,
-the mid-year review is a lightweight checkpoint within an annual performance
-cycle: its score is indicative, not the final annual verdict. Keep it brief and
-focus on progress during the first half, the clearest strengths or gaps, and one
-or two priorities for the second half. Do not force exhaustive coverage of every
-competency or treat six months of evidence as a completed annual trajectory.
+Determine whether the form is a mid-year check or the full-year review. The
+mid-year review is a lightweight checkpoint within an annual performance cycle:
+its score is indicative, not the final annual verdict. Keep it brief and focus
+on progress during the first half, the clearest strengths or gaps, and one or
+two priorities for the second half. Document material changes in priorities,
+role, or assignment so the annual review reflects the outcomes actually owned.
+Do not force exhaustive coverage of every competency or treat six months of
+evidence as a completed annual trajectory.
 
 Use the full-year review for a more comprehensive assessment of sustained
 performance, development across the year, and readiness for the next step.
 When a mid-year form includes a promotion field, assess current readiness only;
 do not turn it into a promise or forecast of an annual promotion decision.
 
-## Mutt competency matrix
+## Competency matrix
 
-For Mutt reviews, inspect the current
+Inspect the current
 [competency matrix](https://docs.google.com/spreadsheets/d/1D7z9RsdSSGlV75Rs5Q15bu1egE8EkWhJcKX3SjWA49g/edit?usp=sharing)
 before assessing the employee. Inspect the workbook structure first and use the
 latest sheet contents rather than copying its wording into this skill.
@@ -77,6 +81,10 @@ from the supplied role context rather than inventing its criteria.
 
 ## Assessment
 
+Anchor the rating primarily in the agreed objectives and outcomes actually
+owned during the period. Use the competency matrix and company values to assess
+the expected scope and how those outcomes were delivered.
+
 Assess performance against the expectations of the role, not effort, activity,
 or the employee's self-rating alone. Distinguish among:
 
@@ -90,16 +98,18 @@ Recommend the rating supported by the evidence, even when the user begins with a
 tentative view. Use the available scale exactly. For the common three-point
 scale:
 
-- `Partially meets expectations`: material role expectations were not met, even
-  if there were useful contributions or legitimate external constraints.
-- `Meets expectations`: solid impact at the expected level, with meaningful but
-  non-disqualifying areas to improve.
-- `Exceeds expectations`: sustained impact materially beyond the role, supported
-  by specific evidence rather than workload or breadth alone.
+- `Partially meets expectations`: delivered part of what was expected but missed
+  relevant objectives, required more support than expected, or executed
+  inconsistently against priorities.
+- `Meets expectations`: delivered the expected outcomes with the required
+  quality, ownership, and consistency. This is the normal successful result.
+- `Exceeds expectations`: clearly surpassed the most important objectives with
+  measurable impact beyond what the role required.
 
-Treat promotion readiness separately from performance. A strong or exceeds
-rating does not imply readiness for the next level; consider sustained evidence,
-scope, delegation, and time in role.
+Treat promotion readiness separately from performance. A Meets rating can
+support promotion when there is sustained next-level work, while Exceeds does
+not imply readiness by itself. Consider expanded scope, next-level
+responsibilities, competency alignment, sustained evidence, and business need.
 
 ## Writing the feedback
 
@@ -151,14 +161,17 @@ employee-visible field.
 
 ## Output
 
-Return only the fields the user requests or the form requires. When the complete
-form is requested, use:
+Return only the fields the user requests or the form requires. The current
+mid-year lead-review form uses:
 
-1. `Feedback para <nombre>`: two or three short paragraphs for mid-year, ready
-   to paste; expand only when a full-year review or the evidence warrants it.
-2. `Nota`: the exact rating label.
-3. `Promocion`: the exact readiness label.
-4. `Comentario privado`: one concise paragraph for calibration.
+1. `General Feedback & Objectives Follow Up`: two or three short paragraphs
+   ready to paste.
+2. `Orientation Score`: the exact rating label.
+3. `Promotion`: the exact readiness label.
+4. `General comments`: one concise private paragraph for additional context.
+
+For the annual review, inspect the current form instead of assuming these fields
+or the same level of detail.
 
 Keep field labels outside the paste-ready prose so the feedback itself does not
 gain unnecessary headings.
