@@ -85,7 +85,7 @@ Book appendices remain inside the current chapter and use level-two headings:
   `placement: none` only when an object must remain at its source position.
   When anchored and floating objects are mixed, verify their rendered order
   and anchor a later dependent figure if needed.
-- Use `latex-table` for compact Booktabs-style native tables and wrap it in a
+- Use `latex-table` for compact rules-only native tables and wrap it in a
   figure with `kind: table` when it needs a caption or reference.
 - Use `subfigure-grid` when panels need individual references.
 - For mixed-size subfigures, give the grid a shared `panel-height` and use

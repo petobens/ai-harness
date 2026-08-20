@@ -53,7 +53,7 @@ around a template defect.
 
 Start from the canonical import and template call for the selected document
 type. Follow the exact patterns in the applicable references, especially for
-labels, numbered equations, theorem environments, figures, tables, citations,
+labels, numbered equations, statement helpers, figures, tables, citations,
 appendices, and slide hierarchy.
 
 Put all cited entries in the `.bib` file and resolve every missing key. Reuse

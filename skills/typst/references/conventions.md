@@ -151,6 +151,30 @@ Change `numbering` to any Typst numbering pattern, such as `"(a)"`, `"a)"`, or
 allows `spacing` to control the gap. Omit the blank lines for a compact list, and
 verify the result in the rendered page.
 
+Scope custom bullet markers in the same way:
+
+```typst
+#[
+  #set list(marker: [–], spacing: 1em)
+  - First property.
+
+  - Second property.
+]
+```
+
+Use `wide-enum` for a compact numbered list whose wrapped lines return to the
+text margin instead of hanging under the item body:
+
+```typst
+#wide-enum(numbering: "(i)")[
+  + First property with a long explanation.
+  + Second property.
+]
+```
+
+The helper aligns markers in a fixed-width label column. Override `label-width`,
+`body-indent`, `above`, or `spacing` only when the rendered list needs it.
+
 For named, run-in labels, use `labeled-item`. It inserts a blank line above the
 item, emphasizes the label, indents only the first line, and lets continuation
 lines return to the text margin:
@@ -228,7 +252,7 @@ chapter-aware, slide-aware, and appendix-aware numbering and cross-references.
 
 ## Statements and proofs
 
-Use the exported semantic environments:
+Use the exported semantic statement helpers:
 
 ```typst
 #theorem(
@@ -242,14 +266,14 @@ Use the exported semantic environments:
 ]
 ```
 
-Available environments are `theorem`, `proposition`, `lemma`, `corollary`,
+Available helpers are `theorem`, `proposition`, `lemma`, `corollary`,
 `definition`, `example`, `exercise`, `remark`, `notation`, `solution`, and
 `proof`. Choose numbering per occurrence: pass `numbered: false` for an
 unnumbered remark, notation, or other statement instead of changing the
-template default. Use `title:` only to replace the localized environment name;
+template default. Use `title:` only to replace the localized statement name;
 use `note:` for a parenthetical statement title.
 
-Leave one blank source line after every statement environment before the next
+Leave one blank source line after every statement helper before the next
 paragraph, statement, or proof. In particular, never place `#proof` directly
 after the closing line of a theorem, proposition, lemma, or corollary. Keep the
 blank line after the statement's label when it has one, as shown above.
