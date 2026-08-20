@@ -1,10 +1,11 @@
 ---
 name: mutt-perf-review
 description: >-
-    Draft concise Mutt mid-year or annual manager performance reviews from
-    self reviews, 1:1 notes, objectives, role expectations, and calibration
-    context. Use when asked to assess a Mutter, recommend a performance rating
-    or promotion readiness, or write public feedback and private comments.
+    Draft concise Mutt mid-year or annual manager performance reviews in
+    the user's established voice, using self reviews, 1:1 notes, objectives,
+    role expectations, and calibration context as evidence. Use when asked to
+    assess a Mutter, recommend a performance rating or promotion readiness, or
+    write public feedback and private comments.
 metadata:
     short-description: Draft evidence-based Mutt performance reviews
     category: writing
@@ -15,6 +16,8 @@ metadata:
 Write a candid, concise manager review grounded in the requested review period.
 Use the employee's self review as context, not as the outline: the manager
 feedback should add judgment instead of repeating the employee's claims.
+Unless explicitly requested otherwise, draft manager-authored fields in Spanish
+and follow the established voice guide.
 
 ## Inputs
 
@@ -180,13 +183,9 @@ Avoid repeating a point across paragraphs or fields. Repeat it once only when th
 emphasis is genuinely useful. Do not list every project: choose the examples that
 best explain the rating.
 
-Match the manager's natural language and degree of informality. For Pedro's
-Spanish reviews, default to informal Argentine Spanish, use qualifiers such as
-`creo`, `me parece`, and `sospecho` where they reflect genuine judgment, and omit
-accent marks when producing paste-ready text unless he asks otherwise. Keep
-English role and business terms that he naturally uses, such as `ownership`,
-`client facing`, `heavy lifting`, `portfolio`, and `revenue`. Match intentional
-style choices, not accidental typos or unclear grammar.
+Read [references/voice.md](references/voice.md) before drafting. Apply it to the
+manager-authored fields only; never imitate the employee's self-review. Match
+intentional style choices, not accidental typos or unclear grammar.
 
 Before returning the draft, check that every material claim is traceable to the
 provided evidence, the rating follows from the written feedback, promotion is
