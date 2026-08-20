@@ -64,7 +64,7 @@ existing images or standalone Typst artifacts where practical.
 Format changed Typst sources:
 
 ```bash
-typstyle --inplace path/to/file.typ
+typstyle --line-width 80 --wrap-text=fill --inplace path/to/file.typ
 ```
 
 Compile from the project root. Supply `--root` whenever the source imports or

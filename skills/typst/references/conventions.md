@@ -36,7 +36,11 @@ hyphenation, localized names, dates, and theorem titles. Use
 
 ## Source style
 
-- Run `typstyle` rather than aligning or wrapping Typst by hand.
+- Keep every wrappable source line at or below 80 columns and run
+  `typstyle --line-width 80 --wrap-text=fill` rather than aligning or wrapping
+  Typst by hand. Reflow prose by paragraph, keeping inline references and
+  citations with their sentence whenever they fit. Typstyle does not always
+  reflow across these content nodes, so correct awkward breaks manually.
 - Use content blocks for formatted document content and strings for plain
   metadata or file paths, following the template signatures and examples.
 - Pass `none` to omit an optional template field or section. Do not use an
@@ -235,11 +239,16 @@ line. Reserve same-line `$...$` delimiters for inline math in prose. If
 Typstyle collapses an embedded display, put `// @typstyle off` immediately
 before that math node.
 
+The general 80-column source limit also applies to math. Break long source at
+logical boundaries with ordinary newlines; they do not affect the rendered
+equation. Never insert `\` merely to satisfy the source-width limit. If
+Typstyle recombines a manually wrapped formula, put `// @typstyle off`
+immediately before that math node.
+
 Keep each formula on one rendered line unless it approaches the text width or
-a multiline layout materially improves readability. Wrap the source with
-ordinary newlines as needed; they do not affect the rendered equation. For an
-intentional rendered split, insert `\`, break at a meaningful operator, keep
-closely related terms together, and use `&` to align the continuation:
+a multiline layout materially improves readability. For an intentional
+rendered split, insert `\`, break at a meaningful operator, keep closely
+related terms together, and use `&` to align the continuation:
 
 ```typst
 $
