@@ -214,7 +214,9 @@ glyph, cancel only the relation and restore its math class; do not cancel the
 operands.
 
 ```typst
-$ P arrow.l.r.double.long Q quad x notsuccsim y $
+$
+  P arrow.l.r.double.long Q quad x notsuccsim y
+$
 ```
 
 ## Equations
@@ -226,6 +228,12 @@ $
   f(x) = x^2 + 1
 $
 ```
+
+Put the opening delimiter, formula, and closing delimiter on separate source
+lines for every standalone display, even when the rendered formula fits on one
+line. Reserve same-line `$...$` delimiters for inline math in prose. If
+Typstyle collapses an embedded display, put `// @typstyle off` immediately
+before that math node.
 
 Keep each formula on one rendered line unless it approaches the text width or
 a multiline layout materially improves readability. Wrap the source with
