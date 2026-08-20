@@ -203,6 +203,11 @@ Leave a space between a symbol and a delimiter that follows it. Write
 rather than a relation, which usually renders the same but sometimes drops the
 delimiters or the spacing around the relation, as `dot.op(y - x)` does.
 
+Use `upright("...")` for ordinary text inside math. When a short phrase must
+remain unbroken, wrap it in a box, as in
+`#box[$upright("con igualdad si")$]`. Do not box ordinary math text
+unnecessarily because the box prevents line breaking.
+
 Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
 for its dedicated negated relation. For other relations without a matching
 glyph, cancel only the relation and restore its math class; do not cancel the
