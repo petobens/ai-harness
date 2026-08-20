@@ -51,12 +51,24 @@ Book appendices remain inside the current chapter and use level-two headings:
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
 - Use level-one headings for agenda sections and level-two headings for slides.
+- Use `#appendix[...]` with level-one appendix headings; do not type appendix
+  letters into their titles.
+- Appendix agenda entries and section chips use letters, and numbered objects
+  use the corresponding `A.1`, `A.2`, `B.1`, and similar forms.
 - Prefer `slide-subtitle`, `card`, `callout`, `formula`, `small`, `theorem`,
   `solution`, `proof`, and grids over ad hoc styling and boxes.
 - Treat every slide as a hard frame. Shorten or split content before reducing
   type size; accept no overflow, clipping, collisions, or title-chip overlap.
 - Supply figure captions for semantics and references even though the template
   hides them visually.
+
+```typst
+#appendix[
+  = Data details
+
+  == Variable definitions
+]
+```
 
 ## Standalone artifacts
 
