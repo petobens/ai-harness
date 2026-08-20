@@ -4,6 +4,10 @@ Read only the section for the selected document type or component. Consult the
 corresponding template source only when the documented patterns do not expose a
 needed parameter or behavior.
 
+Keep appendix bodies flush with `#appendix[` in the source. Put
+`// @typstyle off` immediately before the helper so Typstyle preserves that
+layout, as shown in the examples below.
+
 ## Articles
 
 - Import `@local/latex-article:0.1.0` and apply `latex-article.with(...)`.
@@ -16,9 +20,10 @@ needed parameter or behavior.
 Article appendix sections remain level-two headings:
 
 ```typst
+// @typstyle off
 #appendix[
-  == Data sources
-  <sub:data_sources>
+== Data sources
+<sub:data_sources>
 ]
 ```
 
@@ -41,9 +46,10 @@ Article appendix sections remain level-two headings:
 Book appendices remain inside the current chapter and use level-two headings:
 
 ```typst
+// @typstyle off
 #appendix[
-  == Kuhn-Tucker conditions
-  <sec:kuhn_tucker_conditions>
+== Kuhn-Tucker conditions
+<sec:kuhn_tucker_conditions>
 ]
 ```
 
@@ -63,10 +69,11 @@ Book appendices remain inside the current chapter and use level-two headings:
   hides them visually.
 
 ```typst
+// @typstyle off
 #appendix[
-  = Data details
+= Data details
 
-  == Variable definitions
+== Variable definitions
 ]
 ```
 
