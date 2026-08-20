@@ -74,8 +74,8 @@ heading levels differ:
 <sub:subsection_heading>
 ```
 
-Always leave one blank line after a heading label before the following text or
-other content:
+Whenever a heading has a label, always leave one blank line after it before the
+following text or other content. This applies to articles, books, and slides:
 
 ```typst
 = Chapter heading
