@@ -80,9 +80,14 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Standalone artifacts
 
 - Import `@local/standalone:0.1.0` and apply `standalone.with(...)`.
-- Keep the source next to its assets and compile it independently.
-- Import the resulting PDF so shared analytical content stays synchronized
-  across document types.
+- Store each standalone source and its compiled PDF together in the consuming
+  project: use `figures/` for figures and `tables/` for tables. Give the `.typ`
+  and `.pdf` matching basenames.
+- Compile every standalone entry point independently and write its PDF beside
+  its source. Import that PDF from articles, books, and slides; do not include
+  the standalone source or embed its CeTZ canvas directly.
+- Give each panel in a multi-panel CeTZ figure its own `.typ` and `.pdf` pair.
+  Panels may share drawing logic; import their PDFs into `subfigure-grid`.
 
 ## Figures and tables
 
