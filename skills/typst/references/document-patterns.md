@@ -86,6 +86,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 
 ## Figures and tables
 
+- Put a `#figure(...)` label on the same source line as the call's closing
+  parenthesis: `) <fig:sample>`. Use the corresponding prefix for figures with
+  another `kind`, such as `) <tab:sample>` for a table.
 - In articles and books, ordinary image and table figures float to the top by
   default so following text can use the remaining page. Omit `placement` for
   ordinary figures; an explicit `placement: auto` overrides this default. Use
