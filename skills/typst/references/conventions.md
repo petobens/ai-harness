@@ -7,6 +7,7 @@ overrides them.
 
 - [Document families](#document-families)
 - [Source style](#source-style)
+- [Paragraph indentation](#paragraph-indentation)
 - [Structure and labels](#structure-and-labels)
 - [Lists](#lists)
 - [Math symbols](#math-symbols)
@@ -50,6 +51,26 @@ hyphenation, localized names, dates, and theorem titles. Use
   to control paragraph wrapping.
 - Prefer semantic template helpers over local `set` and `show` rules.
 - Keep comments rare and explain only non-obvious implementation constraints.
+
+## Paragraph indentation
+
+Typst does not indent a paragraph immediately after a block when
+`par.first-line-indent.all` is `false`, even when a blank source line makes
+the following prose a new paragraph. When a display equation, anchored figure,
+or other block is followed by a genuinely new paragraph, restore the template
+indent before the blank line:
+
+```typst
+$
+  x + y = z
+$
+#restore-paragraph-indent
+
+This is a new paragraph.
+```
+
+Do not restore the indent when the following prose continues the same paragraph.
+Statement and proof helpers already restore it automatically.
 
 ## Structure and labels
 
