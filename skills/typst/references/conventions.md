@@ -321,7 +321,9 @@ Continue a previously numbered example without incrementing its counter:
 
 ## Citations and bibliography
 
-Use citation keys from the project's `.bib` file:
+Prefer Hayagriva YAML (`.yml` or `.yaml`) for new bibliography sources. Preserve
+an existing BibLaTeX or BibTeX (`.bib`) source unless conversion is requested.
+Use citation keys from the project's existing bibliography source:
 
 ```typst
 @doe24
@@ -332,11 +334,12 @@ Use citation keys from the project's `.bib` file:
 Every cited key must exist. Fix missing keys in the document's bibliography
 data, not in the template.
 
-Read bibliography sources as bytes, matching the shared template API:
+Read bibliography sources as bytes, matching the shared template API. This
+example uses Hayagriva YAML; a `.bib` source uses the same pattern:
 
 ```typst
 #bibliography(
-  read("references.bib", encoding: none),
+  read("references.yml", encoding: none),
   title: localized([Referencias], [References]),
 )
 ```

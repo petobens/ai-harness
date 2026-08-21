@@ -56,8 +56,10 @@ type. Follow the exact patterns in the applicable references, especially for
 labels, numbered equations, statement helpers, figures, tables, citations,
 appendices, and slide hierarchy.
 
-Put all cited entries in the `.bib` file and resolve every missing key. Reuse
-existing images or standalone Typst artifacts where practical.
+Prefer Hayagriva YAML (`.yml` or `.yaml`) for new bibliography sources. Preserve
+an existing `.bib` source unless conversion is requested. Put every cited entry
+in the bibliography source and resolve every missing key. Reuse existing images
+or standalone Typst artifacts where practical.
 
 ### 4. Format and compile
 
