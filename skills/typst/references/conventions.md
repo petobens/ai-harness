@@ -201,11 +201,22 @@ must remain literal, such as deliberately non-scaling grouping or the
 mismatched delimiters in a half-open interval: `$x in\(0, 1\]$`. Do not remove
 such escapes mechanically.
 
-Leave a space between a symbol and a delimiter that follows it. Write
-`$x in (0, 1)$`, `$x in [0, 1]$` and `$x_n lt.eq (w\/p_n)$`, not `in(0, 1)`,
-`in[0, 1]` or `lt.eq(w\/p_n)`. Without the space the symbol parses as a call
-rather than a relation, which usually renders the same but sometimes drops the
-delimiters or the spacing around the relation, as `dot.op(y - x)` does.
+Put spaces around binary operators and relations, after commas, and between
+adjacent multiplicative factors. Write `$x + y$`, `$f(x) gt.eq g(x)$`,
+`$nabla f(x) dot.op v$`, `$alpha (x + y)$`, and `$(1 - alpha) y$`. Keep spaces
+inside set braces, as in `$min { f(x), f(y) }$`.
+
+Do not insert a space between a function and its argument: write `$f(x)$`,
+`$g_k(x)$`, `$log(x)$`, and named functions such as `$pi(r)$`. Conversely,
+write `$alpha (x)$`, not `$alpha(x)$`, when `alpha` is a scalar multiplying a
+group. The latter parses as a function call and therefore receives function
+syntax highlighting. The same distinction applies after a styled or scripted
+factor: write `$tilde(beta)^t (1 + gamma)$` for multiplication.
+
+Relations followed by delimiters also need a space. Write `$x in (0, 1)$`,
+`$x in [0, 1]$`, and `$x_n lt.eq (w\/p_n)$`, not `in(0, 1)`, `in[0, 1]`, or
+`lt.eq(w\/p_n)`. Without the space the relation parses as a call, which can
+change its rendering as well as its highlighting.
 
 Use `upright("...")` for ordinary text inside math. When a short phrase must
 remain unbroken, wrap it in a box, as in
