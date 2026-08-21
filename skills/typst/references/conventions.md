@@ -206,6 +206,12 @@ adjacent multiplicative factors. Write `$x + y$`, `$f(x) gt.eq g(x)$`,
 `$nabla f(x) dot.op v$`, `$alpha (x + y)$`, and `$(1 - alpha) y$`. Keep spaces
 inside set braces, as in `$min { f(x), f(y) }$`.
 
+Group compound scripts with parentheses. A leading number may join the
+following letter, as in `$x_(1i)$`. Separate adjacent letter-led symbols so
+Typst does not parse them as an undefined identifier, as in `$omega_(n i)$`
+and `$omega_(n 1)$`. Do not write `$omega_1i$`, which leaves `i` on the
+baseline.
+
 Do not insert a space between a function and its argument: write `$f(x)$`,
 `$g_k(x)$`, `$log(x)$`, and named functions such as `$pi(r)$`. Conversely,
 write `$alpha (x)$`, not `$alpha(x)$`, when `alpha` is a scalar multiplying a
@@ -246,15 +252,13 @@ $
 
 Put the opening delimiter, formula, and closing delimiter on separate source
 lines for every standalone display, even when the rendered formula fits on one
-line. Reserve same-line `$...$` delimiters for inline math in prose. If
-Typstyle collapses an embedded display, put `// @typstyle off` immediately
-before that math node.
+line. Reserve same-line `$...$` delimiters for inline math in prose.
 
-The general 80-column source limit also applies to math. Break long source at
-logical boundaries with ordinary newlines; they do not affect the rendered
-equation. Never insert `\` merely to satisfy the source-width limit. If
-Typstyle recombines a manually wrapped formula, put `// @typstyle off`
-immediately before that math node.
+Within those delimiters, keep the formula on one source line when its indented
+line fits within the source-width limit. Otherwise break at logical boundaries
+with ordinary newlines, which do not affect the rendered equation. Never insert
+`\` merely to wrap the source. If Typstyle rewrites a compliant manual layout,
+put `// @typstyle off` immediately before the math node.
 
 Keep each formula on one rendered line unless it approaches the text width or
 a multiline layout materially improves readability. For an intentional
