@@ -245,9 +245,10 @@ Relations followed by delimiters also need a space. Write `$x in (0, 1)$`,
 `lt.eq(w\/p_n)`. Without the space the relation parses as a call, which can
 change its rendering as well as its highlighting.
 
-Use `upright("...")` for ordinary text inside math. When a short phrase must
-remain unbroken, wrap it in a box, as in
-`#box[$upright("con igualdad si")$]`. Do not box ordinary math text
+Use quoted strings for ordinary text inside math, as in `$x "para todo" y$`.
+Reserve `upright(...)` for mathematical letters that need a non-italic variant,
+such as `$upright(d) x$`. When a short phrase must remain unbroken, wrap it in a
+box, as in `#box[$"con igualdad si"$]`. Do not box ordinary math text
 unnecessarily because the box prevents line breaking.
 
 Use `arrow.l.r.double.long` for displayed logical equivalence and `notsuccsim`
