@@ -7,6 +7,7 @@ overrides them.
 
 - [Document families](#document-families)
 - [Source style](#source-style)
+- [Code](#code)
 - [Paragraph indentation](#paragraph-indentation)
 - [Structure and labels](#structure-and-labels)
 - [Lists](#lists)
@@ -52,6 +53,26 @@ hyphenation, localized names, dates, and theorem titles. Use
   to control paragraph wrapping.
 - Prefer semantic template helpers over local `set` and `show` rules.
 - Keep comments rare and explain only non-obvious implementation constraints.
+
+## Code
+
+Use native raw syntax for code. Enclose inline code in single backticks and use
+a fenced block with a language tag for syntax-highlighted code:
+
+````typst
+Use `add` for a short inline reference.
+
+```python
+def add(x, y):
+    return x + y
+```
+````
+
+Let the document template own the font, syntax theme, border, padding, and
+width. Do not add local raw-text styling. Code blocks inherit the surrounding
+background, span the text width in articles and books, and remain content-sized
+in Mutt slides. `standalone` is reserved for figures and tables, not code-block
+documents.
 
 ## Paragraph indentation
 
