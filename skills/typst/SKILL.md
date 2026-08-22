@@ -4,9 +4,9 @@ description: >-
   Generate, edit, review, compile, and visually verify Typst articles, books,
   and Mutt slide decks using the local templates and conventions for source
   structure, typography, layout, numbering, figures, tables, equations,
-  citations, and localization. Use for creating or modifying .typ documents,
-  resolving document layout or rendering problems, and fixing shared templates
-  when a defect belongs there.
+  citations, indexes, and localization. Use for creating or modifying .typ
+  documents, resolving document layout or rendering problems, and fixing shared
+  templates when a defect belongs there.
 ---
 
 # Typst
@@ -18,8 +18,8 @@ APIs and conventions instead of recreating typography or layout locally.
 ## Required context
 
 Read [conventions.md](references/conventions.md) before editing Typst. It is the
-authoritative core style for source structure, labels, math, citations, and
-localization.
+authoritative core style for source structure, labels, math, citations, indexes,
+and localization.
 
 Read [document-patterns.md](references/document-patterns.md) when creating or
 changing an article, book, slide deck, standalone artifact, figure, table,
@@ -54,7 +54,7 @@ around a template defect.
 Start from the canonical import and template call for the selected document
 type. Follow the exact patterns in the applicable references, especially for
 labels, numbered equations, statement helpers, figures, tables, citations,
-appendices, and slide hierarchy.
+indexes, appendices, and slide hierarchy.
 
 Prefer Hayagriva YAML (`.yml` or `.yaml`) for new bibliography sources. Preserve
 an existing `.bib` source unless conversion is requested. Put every cited entry
@@ -112,7 +112,9 @@ boundary and verify the displayed target numbers; successful compilation does
 not prove that cross-reference numbers are correct.
 
 For long documents, inspect every affected page plus representative unaffected
-pages. For slides, inspect every changed slide. Fix defects and render again.
+pages. For slides, inspect every changed slide and every overlay state; confirm
+that fixed layouts and logical slide numbering remain stable. Fix defects and
+render again.
 
 ## Guardrails
 

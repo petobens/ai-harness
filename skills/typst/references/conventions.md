@@ -13,6 +13,7 @@ overrides them.
 - [Math symbols](#math-symbols)
 - [Equations](#equations)
 - [Statements and proofs](#statements-and-proofs)
+- [Indexes](#indexes)
 - [Citations and bibliography](#citations-and-bibliography)
 
 ## Document families
@@ -344,6 +345,19 @@ Continue a previously numbered example without incrementing its counter:
   The same example continues here.
 ]
 ```
+
+## Indexes
+
+Only add index markers when an index is requested. To include a selected term,
+put an invisible index marker immediately after the visible term:
+
+```typst
+A selected term#index("selected term") appears in the text.
+```
+
+Pass a plain string as the index key. Do not put the visible term inside
+`#index[...]`: the marker does not render its argument. Repeat the marker at
+each page that should appear under the entry.
 
 ## Citations and bibliography
 
