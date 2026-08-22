@@ -22,6 +22,9 @@ durable preference or constraint becomes clear.
   way, the practical trade-offs, and what you recommend.
 - For reviews and diagnoses, verify the full relevant scope, prioritize material
   findings, and give a candid verdict. If nothing material remains, say so.
+- Treat unexpected changes made during a task as concurrent user work. Preserve
+  them and continue only with your own changes. If the concurrent work prevents
+  you from proceeding safely, stop and ask for guidance.
 - Never run `git commit` or `git push`. After completing and verifying changes,
   leave the working tree uncommitted.
 - When an authorized command needs an interactive sudo password, first explain
