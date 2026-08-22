@@ -7,15 +7,15 @@ overrides them.
 
 - [Document families](#document-families)
 - [Source style](#source-style)
-- [Code](#code)
-- [Paragraph indentation](#paragraph-indentation)
 - [Structure and labels](#structure-and-labels)
+- [Paragraph indentation](#paragraph-indentation)
 - [Lists](#lists)
+- [Code](#code)
 - [Math symbols](#math-symbols)
 - [Equations](#equations)
 - [Statements and proofs](#statements-and-proofs)
-- [Indexes](#indexes)
 - [Citations and bibliography](#citations-and-bibliography)
+- [Indexes](#indexes)
 
 ## Document families
 
@@ -53,46 +53,6 @@ hyphenation, localized names, dates, and theorem titles. Use
   to control paragraph wrapping.
 - Prefer semantic template helpers over local `set` and `show` rules.
 - Keep comments rare and explain only non-obvious implementation constraints.
-
-## Code
-
-Use native raw syntax for code. Enclose inline code in single backticks and use
-a fenced block with a language tag for syntax-highlighted code:
-
-````typst
-Use `add` for a short inline reference.
-
-```python
-def add(x, y):
-    return x + y
-```
-````
-
-Let the document template own the font, syntax theme, border, padding, and
-width. Do not add local raw-text styling. Code blocks inherit the surrounding
-background, span the text width in articles and books, and remain content-sized
-in Mutt slides. `standalone` is reserved for figures and tables, not code-block
-documents.
-
-## Paragraph indentation
-
-Typst does not indent a paragraph immediately after a block when
-`par.first-line-indent.all` is `false`, even when a blank source line makes
-the following prose a new paragraph. When a display equation, anchored figure,
-or other block is followed by a genuinely new paragraph, restore the template
-indent before the blank line:
-
-```typst
-$
-  x + y = z
-$
-#restore-paragraph-indent
-
-This is a new paragraph.
-```
-
-Do not restore the indent when the following prose continues the same paragraph.
-Statement and proof helpers already restore it automatically.
 
 ## Structure and labels
 
@@ -176,6 +136,26 @@ reference.
 Slide-local labels may instead use a descriptive `slide-...` name, as in
 `<slide-overview>`, when section-based document labels add no value.
 
+## Paragraph indentation
+
+Typst does not indent a paragraph immediately after a block when
+`par.first-line-indent.all` is `false`, even when a blank source line makes
+the following prose a new paragraph. When a display equation, anchored figure,
+or other block is followed by a genuinely new paragraph, restore the template
+indent before the blank line:
+
+```typst
+$
+  x + y = z
+$
+#restore-paragraph-indent
+
+This is a new paragraph.
+```
+
+Do not restore the indent when the following prose continues the same paragraph.
+Statement and proof helpers already restore it automatically.
+
 ## Lists
 
 Use native `+` and `-` markup for numbered and bulleted lists. Do not wrap a
@@ -235,6 +215,26 @@ lines return to the text margin:
   Second explanation.
 ]
 ```
+
+## Code
+
+Use native raw syntax for code. Enclose inline code in single backticks and use
+a fenced block with a language tag for syntax-highlighted code:
+
+````typst
+Use `add` for a short inline reference.
+
+```python
+def add(x, y):
+    return x + y
+```
+````
+
+Let the document template own the font, syntax theme, border, padding, and
+width. Do not add local raw-text styling. Code blocks inherit the surrounding
+background, span the text width in articles and books, and remain content-sized
+in Mutt slides. `standalone` is reserved for figures and tables, not code-block
+documents.
 
 ## Math symbols
 
@@ -367,19 +367,6 @@ Continue a previously numbered example without incrementing its counter:
 ]
 ```
 
-## Indexes
-
-Only add index markers when an index is requested. To include a selected term,
-put an invisible index marker immediately after the visible term:
-
-```typst
-A selected term#index("selected term") appears in the text.
-```
-
-Pass a plain string as the index key. Do not put the visible term inside
-`#index[...]`: the marker does not render its argument. Repeat the marker at
-each page that should appear under the entry.
-
 ## Citations and bibliography
 
 Prefer Hayagriva YAML (`.yml` or `.yaml`) for new bibliography sources. Preserve
@@ -404,3 +391,16 @@ example uses Hayagriva YAML; a `.bib` source uses the same pattern:
   title: localized([Referencias], [References]),
 )
 ```
+
+## Indexes
+
+Only add index markers when an index is requested. To include a selected term,
+put an invisible index marker immediately after the visible term:
+
+```typst
+A selected term#index("selected term") appears in the text.
+```
+
+Pass a plain string as the index key. Do not put the visible term inside
+`#index[...]`: the marker does not render its argument. Repeat the marker at
+each page that should appear under the entry.
