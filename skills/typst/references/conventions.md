@@ -232,8 +232,8 @@ def add(x, y):
 
 Let the document template own the font, syntax theme, border, padding, and
 width. Do not add local raw-text styling. Code blocks inherit the surrounding
-background, span the text width in articles and books, and remain content-sized
-in Mutt slides. `standalone` is reserved for figures and tables, not code-block
+background and span the available content width in articles, books, and Mutt
+slides. `standalone` is reserved for figures and tables, not code-block
 documents.
 
 ## Math symbols
