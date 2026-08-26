@@ -255,12 +255,15 @@ Typst does not parse them as an undefined identifier, as in `$omega_(n i)$`
 and `$omega_(n 1)$`. Do not write `$omega_1i$`, which leaves `i` on the
 baseline.
 
-Do not insert a space between a function and its argument: write `$f(x)$`,
-`$g_k(x)$`, `$log(x)$`, and named functions such as `$pi(r)$`. Conversely,
-write `$alpha (x)$`, not `$alpha(x)$`, when `alpha` is a scalar multiplying a
-group. The latter parses as a function call and therefore receives function
-syntax highlighting. The same distinction applies after a styled or scripted
-factor: write `$tilde(beta)^t (1 + gamma)$` for multiplication.
+Do not insert a space between an unadorned function and its argument: write
+`$f(x)$`, `$log(x)$`, and named functions such as `$pi(r)$`. A scripted
+function is a parsing exception: write `$g_k (x)$` or `$u_i (x_(1i), x_(2i))$`.
+Without the space, Typst parses the parenthesized expression as part of the
+script. Conversely, write `$alpha (x)$`, not `$alpha(x)$`, when `alpha` is a
+scalar multiplying a group. The latter parses as a function call and therefore
+receives function syntax highlighting. The same distinction applies after a
+styled or scripted factor: write `$tilde(beta)^t (1 + gamma)$` for
+multiplication.
 
 Relations followed by delimiters also need a space. Write `$x in (0, 1)$`,
 `$x in [0, 1]$`, and `$x_n lt.eq (w\/p_n)$`, not `in(0, 1)`, `in[0, 1]`, or
