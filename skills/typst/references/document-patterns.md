@@ -22,8 +22,8 @@ Article appendix sections remain level-two headings:
 ```typst
 // @typstyle off
 #appendix[
-== Data sources
-<sub:data_sources>
+== Appendix section
+<sub:appendix_section>
 ]
 ```
 
@@ -51,8 +51,8 @@ Book appendices remain inside the current chapter and use level-two headings:
 ```typst
 // @typstyle off
 #appendix[
-== Kuhn-Tucker conditions
-<sec:kuhn_tucker_conditions>
+== Appendix section
+<sec:appendix_section>
 ]
 ```
 
@@ -78,9 +78,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 ```typst
 // @typstyle off
 #appendix[
-= Data details
+= Appendix section
 
-== Variable definitions
+== Appendix slide
 ]
 ```
 
