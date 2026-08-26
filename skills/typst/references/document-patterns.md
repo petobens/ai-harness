@@ -109,6 +109,11 @@ Book appendices remain inside the current chapter and use level-two headings:
   and anchor a later dependent figure if needed.
 - Use `latex-table` for compact rules-only native tables and wrap it in a
   figure with `kind: table` when it needs a caption or reference.
+- When figures should appear side by side but retain separate numbers, captions,
+  and references, put a grid inside one floating `place`. Set each child
+  figure's `placement` to `auto` so it remains in its grid cell instead of
+  inheriting the template's top placement. Label each child with `fig:` and do
+  not add a parent caption.
 - Use `subfigure-grid` when panels need individual references.
 - For mixed-size subfigures, give the grid a shared `panel-height` and use
   `width: 100%`, `height: 100%`, and `fit: "contain"` on each image. This aligns
@@ -121,6 +126,28 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Diagnose blank space before adding page breaks or manual vertical spacing.
 - When preceding prose must stay before a figure, use `placement: none` and
   verify the affected page; automatic floating may otherwise move the figure.
+
+Use independently numbered side-by-side figures when each image is a complete
+figure rather than a panel of one combined figure:
+
+```typst
+#place(top, float: true)[
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    [#figure(
+      image("first.pdf", width: 100%),
+      placement: auto,
+      caption: [First figure],
+    ) <fig:first_figure>],
+    [#figure(
+      image("second.pdf", width: 100%),
+      placement: auto,
+      caption: [Second figure],
+    ) <fig:second_figure>],
+  )
+]
+```
 
 `latex-table` accepts one tuple for the header and one tuple per body row:
 
