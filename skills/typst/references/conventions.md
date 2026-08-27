@@ -382,6 +382,18 @@ Use citation keys from the project's existing bibliography source:
 #cite(<doe24>, form: "full")
 ```
 
+The templates color citations navy. When a citation has a textual supplement,
+restore the normal text color explicitly so only the bibliographic citation is
+highlighted. The supplement remains part of the citation link:
+
+```typst
+#cite(
+  <doe24>,
+  form: "prose",
+  supplement: text(fill: black)[Theorem 2],
+)
+```
+
 Every cited key must exist. Fix missing keys in the document's bibliography
 data, not in the template.
 
