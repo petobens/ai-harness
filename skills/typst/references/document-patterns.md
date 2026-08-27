@@ -101,6 +101,10 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Put a `#figure(...)` label on the same source line as the call's closing
   parenthesis: `) <fig:sample>`. Use the corresponding prefix for figures with
   another `kind`, such as `) <tab:sample>` for a table.
+- Keep a `figure(...)` call on one line only when the entire call fits. When it
+  spans multiple lines, put each argument on its own line. This convention is
+  specific to figures; do not expand concise statement calls such as
+  `#proof(title: [Custom proof])[...]` merely because they have a content body.
 - In articles and books, ordinary image and table figures float to the top by
   default so following text can use the remaining page. Omit `placement` for
   ordinary figures; an explicit `placement: auto` overrides this default. Use
