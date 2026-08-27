@@ -304,13 +304,28 @@ line. Reserve same-line `$...$` delimiters for inline math in prose.
 Within those delimiters, keep the formula on one source line when its indented
 line fits within the source-width limit. Otherwise break at logical boundaries
 with ordinary newlines, which do not affect the rendered equation. Never insert
-`\` merely to wrap the source. If Typstyle rewrites a compliant manual layout,
-put `// @typstyle off` immediately before the math node.
+`\` merely to wrap the source. Indent a source-only continuation by two spaces
+relative to the first line of its rendered row. Keep nested function arguments
+at their structural indentation.
+
+Use `\` only for an intentional rendered row break, always preceded by a space.
+Return the next rendered row to the base indentation. If Typstyle rewrites an
+intentional source layout, put `// @typstyle off` immediately before the math
+node; the directive affects formatting, not rendering.
+
+```typst
+$
+  a & = b + c + d +
+    e + f \
+  x & = y,
+    #h(2em) x > 0
+$
+```
 
 Keep each formula on one rendered line unless it approaches the text width or
-a multiline layout materially improves readability. For an intentional
-rendered split, insert `\`, break at a meaningful operator, keep closely
-related terms together, and use `&` to align the continuation:
+a multiline layout materially improves readability. Break at a meaningful
+operator, keep closely related terms together, and use `&` to align the
+continuation:
 
 ```typst
 $
