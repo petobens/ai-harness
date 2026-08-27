@@ -11,6 +11,9 @@ layout, as shown in the examples below.
 ## Articles
 
 - Import `@local/latex-article:0.1.0` and apply `latex-article.with(...)`.
+- The default base size is `11pt`; override it with `font-size` only when needed.
+  With `10pt` and `11pt` bases, body, small, and footnote roles adjust, and
+  captions use the small role. Established title and heading sizes remain fixed.
 - Let the template own page geometry, title matter, abstract width, typography,
   running heads, footnotes, floats, and section-based numbering.
 - Set omitted optional fields such as `abstract`, `keywords`, `jel`,
@@ -30,6 +33,10 @@ Article appendix sections remain level-two headings:
 ## Books
 
 - Import `@local/latex-book:0.1.0` and apply `latex-book.with(...)`.
+- The default base size is `10pt`; override it with `font-size` only when needed.
+  With `10pt` and `11pt` bases, body, small, and footnote roles adjust, and
+  captions use the small role. Established cover, chapter, and section sizes
+  remain fixed.
 - Let the template own front matter, page-number phases, running heads, chapter
   openings, and chapter-based numbering.
 - Set omitted optional fields such as `subtitle`, `institution`, `department`,
@@ -59,6 +66,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Mutt slides
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
+- The default base size is `14pt`; override it with `font-size` only when needed.
+  Slide typography scales proportionally with the base size, so recheck every
+  slide for overflow after changing it.
 - Use level-one headings for agenda sections and level-two headings for slides.
 - Use `#appendix[...]` with level-one appendix headings; do not type appendix
   letters into their titles.
