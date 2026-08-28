@@ -84,6 +84,8 @@ Book appendices remain inside the current chapter and use level-two headings:
   type size; accept no overflow, clipping, collisions, or title-chip overlap.
 - Supply figure captions for semantics and references even though the template
   hides them visually.
+- Use native `table` for slide tables so they retain the slide template's table
+  treatment. Use `latex-table` only when a rules-only table is intentional.
 
 ```typst
 // @typstyle off
@@ -97,6 +99,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Standalone artifacts
 
 - Import `@local/standalone:0.1.0` and apply `standalone.with(...)`.
+- In articles and books, default native Typst tables to standalone `.typ`
+  sources imported as compiled PDFs, even when they could be written inline,
+  unless the user requests an inline table.
 - Store each standalone source and its compiled PDF together in the consuming
   project: use `figures/` for figures and `tables/` for tables. Give the `.typ`
   and `.pdf` matching basenames.
@@ -106,23 +111,31 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Give each panel in a multi-panel CeTZ figure its own `.typ` and `.pdf` pair.
   Panels may share drawing logic; import their PDFs into `subfigure-grid`.
 
-## Figures and tables
+## Floats
 
-- Put a `#figure(...)` label on the same source line as the call's closing
-  parenthesis: `) <fig:sample>`. Use the corresponding prefix for figures with
-  another `kind`, such as `) <tab:sample>` for a table.
+- Use `#figure` as the shared captioned container for images and tables. Pass
+  `kind: table` when its content is a table.
+- Put the label on the same source line as the `#figure(...)` call's closing
+  parenthesis. Use `) <fig:sample>` for an image figure and `) <tab:sample>` for
+  a table figure.
 - Keep a `figure(...)` call on one line only when the entire call fits. When it
   spans multiple lines, put each argument on its own line. This convention is
   specific to figures; do not expand concise statement calls such as
   `#proof(title: [Custom proof])[...]` merely because they have a content body.
 - In articles and books, ordinary image and table figures float to the top by
-  default so following text can use the remaining page. Omit `placement` for
-  ordinary figures; an explicit `placement: auto` overrides this default. Use
-  `placement: none` only when an object must remain at its source position.
-  When anchored and floating objects are mixed, verify their rendered order
-  and anchor a later dependent figure if needed.
-- Use `latex-table` for compact rules-only native tables and wrap it in a
-  figure with `kind: table` when it needs a caption or reference.
+  default so following text can use the remaining page. Omit `placement`; an
+  explicit `placement: auto` overrides this default. Use `placement: none` only
+  when content must remain at its source position, such as when preceding prose
+  must stay before it, and verify the affected page. When anchored and floating
+  objects are mixed, verify their rendered order and anchor a later dependent
+  figure if needed.
+- Build reusable or complex figure and table content as a standalone `.typ`
+  source, compile it to a matching PDF, and import the PDF into `#figure` in the
+  consuming document.
+- Diagnose blank space before adding page breaks or manual vertical spacing.
+
+### Figures and subfigures
+
 - When figures should appear side by side but retain separate numbers, captions,
   and references, put a grid inside one floating `place`. Set each child
   figure's `placement` to `auto` so it remains in its grid cell instead of
@@ -135,11 +148,6 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Default imported analytical assets to PDF. Preserve deliberate panel
   proportions with explicit `columns` rather than forcing every panel to equal
   width.
-- Use the standalone template for reusable or complex figures and tables, then
-  import the compiled PDF into articles, books, or slides.
-- Diagnose blank space before adding page breaks or manual vertical spacing.
-- When preceding prose must stay before a figure, use `placement: none` and
-  verify the affected page; automatic floating may otherwise move the figure.
 
 Use independently numbered side-by-side figures when each image is a complete
 figure rather than a panel of one combined figure:
@@ -163,15 +171,30 @@ figure rather than a panel of one combined figure:
 ]
 ```
 
+### Tables
+
+- Default rules-only native tables to `latex-table`. In articles and books,
+  normally put the helper in a standalone source as described above. It owns
+  the standard table styling, including the top, header, and bottom rules.
+- Pass `table.cell` and `table.hline` entries through `latex-table`'s `header`
+  tuple for grouped headers, spanning cells, and partial header rules. Use raw
+  `table` only when the desired structure or rule treatment does not fit the
+  helper.
+- In `latex-table`, put each logical body row in its own tuple inside `rows`.
+  The helper flattens those row tuples into the cell stream expected by native
+  Typst. In raw `table`, pass cells directly; the declared column count
+  determines the row boundaries.
+
 `latex-table` accepts one tuple for the header and one tuple per body row:
 
 ```typst
 #latex-table(
   columns: (2fr, 1fr, 1fr),
   align: (left, right, right),
-  header: ([Indicator], [2020], [2025]),
+  header: ([Header 1], [Header 2], [Header 3]),
   rows: (
-    ([Productivity], [100], [114]),
+    ([Value 1], [Value 2], [Value 3]),
+    ([Value 4], [Value 5], [Value 6]),
   ),
 )
 ```
