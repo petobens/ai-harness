@@ -409,6 +409,10 @@ Continue a previously numbered example without incrementing its counter:
 
 Prefer Hayagriva YAML (`.yml` or `.yaml`) for new bibliography sources. Preserve
 an existing BibLaTeX or BibTeX (`.bib`) source unless conversion is requested.
+For new entries, build the citation key from the lowercase surname of the first
+author and the last two digits of the publication year, for example `surname90`.
+Keep the first key unsuffixed; if it already exists, append lowercase letters
+starting with `b`, as in `surname90b`, `surname90c`, and so on.
 Use citation keys from the project's existing bibliography source:
 
 ```typst
