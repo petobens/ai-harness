@@ -238,6 +238,13 @@ documents.
 
 ## Math symbols
 
+When asked to identify or write a Typst symbol, search Typst's official
+[symbol reference](https://typst.app/docs/reference/symbols/) by glyph or name
+instead of relying on memory. Give the shortest idiomatic math syntax when a
+shorthand exists, the canonical named form, and the `sym.` form when the symbol
+is needed outside math. For example, less-than-or-equal can be written as
+`<=` or `lt.eq` in math and as `#sym.lt.eq` outside math.
+
 Write ordinary math punctuation and delimiters directly. Use `x, y` and
 `u(x, y)`, not `x\,y` or `u\(x\,y\)`. Reserve an escape for a character that
 must remain literal, such as deliberately non-scaling grouping or the

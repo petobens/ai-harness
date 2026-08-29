@@ -112,6 +112,9 @@ Book appendices remain inside the current chapter and use level-two headings:
   the standalone source or embed its CeTZ canvas directly.
 - Give each panel in a multi-panel CeTZ figure its own `.typ` and `.pdf` pair.
   Panels may share drawing logic; import their PDFs into `subfigure-grid`.
+- Use filled double-chevron CeTZ arrowheads with `end: ">>"` and `fill: black`.
+  Use `scale: 1.5` for axes and a smaller scale when a vector should be less
+  prominent. Define the mark tuple once per canvas and reuse it.
 
 ## Floats
 
