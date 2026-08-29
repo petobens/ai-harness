@@ -99,6 +99,8 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Standalone artifacts
 
 - Import `@local/standalone:0.1.0` and apply `standalone.with(...)`.
+- Keep the content-sized defaults `width: auto`, `margin: 3pt`, and `fill: none`.
+  Set an explicit width only when the artifact needs a fixed canvas.
 - In articles and books, default native Typst tables to standalone `.typ`
   sources imported as compiled PDFs, even when they could be written inline,
   unless the user requests an inline table.
@@ -184,12 +186,14 @@ figure rather than a panel of one combined figure:
   The helper flattens those row tuples into the cell stream expected by native
   Typst. In raw `table`, pass cells directly; the declared column count
   determines the row boundaries.
+- Use `auto` columns for content-sized standalone tables. Use `fr` columns only
+  when deliberately distributing a fixed or otherwise constrained width.
 
 `latex-table` accepts one tuple for the header and one tuple per body row:
 
 ```typst
 #latex-table(
-  columns: (2fr, 1fr, 1fr),
+  columns: (auto, auto, auto),
   align: (left, right, right),
   header: ([Header 1], [Header 2], [Header 3]),
   rows: (
