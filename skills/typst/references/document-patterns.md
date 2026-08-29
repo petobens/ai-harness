@@ -30,6 +30,39 @@ Article appendix sections remain level-two headings:
 ]
 ```
 
+## Muttdata articles
+
+- Import `@local/mutt-article:0.1.0` and apply `mutt-article.with(...)`.
+- Use this family for Muttdata memos, RFCs, policies, proposals, and internal
+  long-form writing. Use `latex-article` for academic papers.
+- Keep the default US Letter page, 11 pt body, Muttdata logo, page margins,
+  footer, typography, links, title matter, and heading treatment.
+- Keep DM Sans for prose and headings and DM Mono for metadata. If either font
+  is unavailable, fix the local font installation instead of accepting a
+  fallback or overriding the document.
+- Supply `title`, `date`, `authors`, `audience`, and `revised-date`. Use
+  `subtitle: none` when the document has no subtitle.
+- Write the main title in title case. Write subtitles and headings in sentence
+  case.
+- Use level-one headings for numbered sections and level-two headings for
+  numbered subsections. Label them like academic article headings.
+- Use ordinary paragraph breaks. The template uses unindented, justified prose
+  and owns its paragraph rhythm.
+- Prefer embedded text links over raw URLs. The template renders links blue and
+  underlined.
+- Use `callout(title: none)[...]` only for a decision, principle, or other short
+  passage that genuinely needs emphasis.
+- Use `#appendix[...]` with level-one appendix headings. The helper handles
+  lettered headings and appendix-aware object numbering.
+
+```typst
+// @typstyle off
+#appendix[
+= Appendix section
+<sec:appendix_section>
+]
+```
+
 ## Books
 
 - Import `@local/latex-book:0.1.0` and apply `latex-book.with(...)`.
@@ -70,6 +103,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 - The default base size is `14pt`; override it with `font-size` only when needed.
   Slide typography scales proportionally with the base size, so recheck every
   slide for overflow after changing it.
+- Keep DM Sans for prose and references, DM Mono for branded metadata, DejaVu
+  Sans Mono for code, and the dedicated math font for equations. These roles
+  are intentional; do not replace them with one family for visual uniformity.
 - Use level-one headings for agenda sections and level-two headings for slides.
 - Use `#appendix[...]` with level-one appendix headings; do not type appendix
   letters into their titles.
@@ -102,9 +138,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 - Import `@local/standalone:0.1.0` and apply `standalone.with(...)`.
 - Keep the content-sized defaults `width: auto`, `margin: 3pt`, and `fill: none`.
   Set an explicit width only when the artifact needs a fixed canvas.
-- In articles and books, default native Typst tables to standalone `.typ`
-  sources imported as compiled PDFs, even when they could be written inline,
-  unless the user requests an inline table.
+- In academic articles and books, default native Typst tables to standalone
+  `.typ` sources imported as compiled PDFs, even when they could be written
+  inline, unless the user requests an inline table.
 - Store each standalone source and its compiled PDF together in the consuming
   project: use `figures/` for figures and `tables/` for tables. Give the `.typ`
   and `.pdf` matching basenames.
@@ -128,13 +164,13 @@ Book appendices remain inside the current chapter and use level-two headings:
   spans multiple lines, put each argument on its own line. This convention is
   specific to figures; do not expand concise statement calls such as
   `#proof(title: [Custom proof])[...]` merely because they have a content body.
-- In articles and books, ordinary image and table figures float to the top by
-  default so following text can use the remaining page. Omit `placement`; an
-  explicit `placement: auto` overrides this default. Use `placement: none` only
-  when content must remain at its source position, such as when preceding prose
-  must stay before it, and verify the affected page. When anchored and floating
-  objects are mixed, verify their rendered order and anchor a later dependent
-  figure if needed.
+- In academic articles and books, ordinary image and table figures float to the
+  top by default so following text can use the remaining page. Omit `placement`;
+  an explicit `placement: auto` overrides this default. Muttdata article figures
+  stay in flow by default; set `placement` only when floating is intentional.
+  Use `placement: none` when content must remain at its source position, and
+  verify the affected page. When anchored and floating objects are mixed,
+  verify their rendered order and anchor a later dependent figure if needed.
 - Build reusable or complex figure and table content as a standalone `.typ`
   source, compile it to a matching PDF, and import the PDF into `#figure` in the
   consuming document.
@@ -179,9 +215,9 @@ figure rather than a panel of one combined figure:
 
 ### Tables
 
-- Default rules-only native tables to `latex-table`. In articles and books,
-  normally put the helper in a standalone source as described above. It owns
-  the standard table styling, including the top, header, and bottom rules.
+- Default rules-only native tables to `latex-table`. In academic articles and
+  books, normally put the helper in a standalone source as described above. It
+  owns the standard table styling, including the top, header, and bottom rules.
 - Pass `table.cell` and `table.hline` entries through `latex-table`'s `header`
   tuple for grouped headers, spanning cells, and partial header rules. Use raw
   `table` only when the desired structure or rule treatment does not fit the

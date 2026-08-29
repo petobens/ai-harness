@@ -23,12 +23,14 @@ Choose one canonical local package:
 
 ```typst
 #import "@local/latex-article:0.1.0": *
+#import "@local/mutt-article:0.1.0": *
 #import "@local/latex-book:0.1.0": *
 #import "@local/mutt-slides:0.1.0": *
 #import "@local/standalone:0.1.0": *
 ```
 
 - `latex-article`: papers and article-like assignments.
+- `mutt-article`: branded Muttdata memos, RFCs, and internal long-form writing.
 - `latex-book`: books, notes, and long chaptered documents.
 - `mutt-slides`: branded 16:9 Muttdata presentations.
 - `standalone`: tightly cropped figures and tables reused as PDF assets.
@@ -56,37 +58,45 @@ hyphenation, localized names, dates, and theorem titles. Use
 
 ## Structure and labels
 
-Articles and books label every semantic heading on the following line. Their
-heading levels differ:
+Academic articles, Muttdata articles, and books label every semantic heading on
+the following line. Their heading levels differ:
 
 ```typst
-// Article
-= Introduction
-<sec:introduction>
+// Academic article
+= First section
+<sec:first_section>
 
-== Methods
-<sub:methods>
+== A subsection
+<sub:a_subsection>
 
-=== Implementation details
-<ssub:implementation_details>
+=== A subsubsection
+<ssub:a_subsubsection>
+
+// Muttdata article: same heading levels as an academic article
+= First section
+<sec:first_section>
+
+== A subsection
+<sub:a_subsection>
 
 // Book
-= Chapter heading
-<cha:chapter_heading>
+= First chapter
+<cha:first_chapter>
 
-== Section heading
-<sec:section_heading>
+== First section
+<sec:first_section>
 
-=== Subsection heading
-<sub:subsection_heading>
+=== A subsection
+<sub:a_subsection>
 ```
 
 Whenever a heading has a label, always leave one blank line after it before the
-following text or other content. This applies to articles, books, and slides:
+following text or other content. This applies to academic articles, Muttdata
+articles, books, and slides:
 
 ```typst
-= Chapter heading
-<cha:chapter_heading>
+= First chapter
+<cha:first_chapter>
 
 The chapter text starts here.
 ```
@@ -108,7 +118,8 @@ label prefix appropriate for the document family:
 <sub:supplementary_material>
 ```
 
-Use these prefixes consistently in articles and books:
+Use these prefixes consistently in academic articles, Muttdata articles, and
+books:
 
 | Object        | Prefix  |
 | ------------- | ------- |
@@ -129,9 +140,9 @@ Use these prefixes consistently in articles and books:
 | Exercise      | `exe:`  |
 | Remark        | `rem:`  |
 
-Reference labels directly, for example `@sec:methods`, `@fig:overview`, and
-`@eq:linear_relation`. Use `#ref(<sec:methods>, form: "page")` for a page
-reference.
+Reference labels directly, for example `@sec:first_section`,
+`@fig:first_figure`, and `@eq:first_equation`. Use
+`#ref(<sec:first_section>, form: "page")` for a page reference.
 
 Slide-local labels may instead use a descriptive `slide-...` name, as in
 `<slide-overview>`, when section-based document labels add no value.
@@ -141,8 +152,8 @@ Slide-local labels may instead use a descriptive `slide-...` name, as in
 Typst does not indent a paragraph immediately after a block when
 `par.first-line-indent.all` is `false`, even when a blank source line makes
 the following prose a new paragraph. When a display equation, anchored figure,
-or other block is followed by a genuinely new paragraph, restore the template
-indent before the blank line:
+or other block is followed by a genuinely new paragraph in an academic article
+or book, restore the template indent before the blank line:
 
 ```typst
 $
@@ -154,7 +165,8 @@ This is a new paragraph.
 ```
 
 Do not restore the indent when the following prose continues the same paragraph.
-Statement and proof helpers already restore it automatically.
+Statement and proof helpers already restore it automatically. Muttdata articles
+do not indent paragraphs and therefore do not use `restore-paragraph-indent`.
 
 ## Lists
 
@@ -232,9 +244,9 @@ def add(x, y):
 
 Let the document template own the font, syntax theme, border, padding, and
 width. Do not add local raw-text styling. Code blocks inherit the surrounding
-background and span the available content width in articles, books, and Mutt
-slides. `standalone` is reserved for figures and tables, not code-block
-documents.
+background and span the available content width in academic articles, Muttdata
+articles, books, and Mutt slides. `standalone` is reserved for figures and
+tables, not code-block documents.
 
 ## Math symbols
 
@@ -296,7 +308,8 @@ $
 
 ## Equations
 
-Raw display math is intentionally unnumbered in articles and books:
+Raw display math is intentionally unnumbered in academic articles, Muttdata
+articles, and books:
 
 ```typst
 $
@@ -436,9 +449,9 @@ highlighted. The supplement remains part of the citation link:
 Every cited key must exist. Fix missing keys in the document's bibliography
 data, not in the template.
 
-Pass bibliography filenames directly. In articles and Mutt slides, also pass a
-document-local reader to the template so Retrofit resolves bibliography files
-from the document rather than the package:
+Pass bibliography filenames directly. In academic articles and Mutt slides,
+also pass a document-local reader to the template so Retrofit resolves
+bibliography files from the document rather than the package:
 
 ```typst
 #show: latex-article.with(

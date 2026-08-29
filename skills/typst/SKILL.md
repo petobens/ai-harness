@@ -1,12 +1,12 @@
 ---
 name: typst
 description: >-
-  Generate, edit, review, compile, and visually verify Typst articles, books,
-  and Mutt slide decks using the local templates and conventions for source
-  structure, typography, layout, numbering, figures, tables, equations,
-  citations, indexes, and localization. Use for creating or modifying .typ
-  documents, resolving document layout or rendering problems, and fixing shared
-  templates when a defect belongs there.
+  Generate, edit, review, compile, and visually verify Typst academic articles,
+  Muttdata articles, books, Muttdata slide decks, and standalone artifacts using
+  the local templates and conventions for source structure, typography, layout,
+  numbering, figures, tables, equations, citations, indexes, and localization.
+  Use for creating or modifying .typ documents, resolving document layout or
+  rendering problems, and fixing shared templates when a defect belongs there.
 ---
 
 # Typst
@@ -30,12 +30,13 @@ float, title page, or appendix.
 ### 1. Inspect
 
 Inspect the target source, nearby `.typ` files, bibliography files, assets, and
-relevant rendered output. Classify the output as article, book, Mutt slides, or
-standalone artifact. Read the source first; use the rendered PDF for visual
-verification.
+relevant rendered output. Read the source first; use the rendered PDF for
+visual verification.
 
-Identify the document entry point before compiling. When editing an included
-chapter, compile the enclosing `main.typ`, not the chapter in isolation.
+Identify the document as an academic article, Muttdata article, book, Muttdata
+slide deck, or standalone artifact. Identify its entry point before compiling.
+When editing an included chapter, compile the enclosing `main.typ`, not the
+chapter in isolation.
 
 ### 2. Use the template API
 
@@ -46,8 +47,8 @@ behavior the template already owns.
 If a shared default is genuinely defective, template sources live under
 `~/git-repos/private/dotfiles/typst/packages/local`. Change the corresponding
 document template for type-specific behavior or `template-utils` for behavior
-shared by articles, books, and slides. Do not restyle one document to work
-around a template defect.
+shared by document families. Do not restyle one document to work around a
+template defect.
 
 ### 3. Write
 
