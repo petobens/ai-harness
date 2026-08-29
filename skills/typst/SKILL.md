@@ -122,7 +122,9 @@ render again.
   system.
 - Do not hard-code shared typography or numbering rules in individual documents.
 - Do not use raw display math when an equation must be numbered.
-- Do not use ordinary text reads for bibliography sources; use bytes.
+- Follow the document-family bibliography source patterns in
+  `references/conventions.md`; Retrofit backreferences and book chapter
+  bibliographies resolve project files differently.
 - Do not leave semantic headings unlabeled in articles or books.
 - Do not force floats with repeated page breaks or large manual spacing before
   diagnosing the underlying layout.

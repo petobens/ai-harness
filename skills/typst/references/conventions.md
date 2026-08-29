@@ -432,12 +432,25 @@ highlighted. The supplement remains part of the citation link:
 Every cited key must exist. Fix missing keys in the document's bibliography
 data, not in the template.
 
-Read bibliography sources as bytes, matching the shared template API. This
-example uses Hayagriva YAML; a `.bib` source uses the same pattern:
+Pass bibliography filenames directly. In articles and Mutt slides, also pass a
+document-local reader to the template so Retrofit resolves bibliography files
+from the document rather than the package:
+
+```typst
+#show: latex-article.with(
+  bibliography-read: path => read(path),
+)
+```
+
+This reader is Retrofit integration plumbing, not a document setting. It is
+required for both Hayagriva YAML and `.bib` filenames. Retrofit 0.2.0 cannot
+recover the YAML format from raw bytes and does not accept Typst `path` values.
+
+The bibliography call is the same for Hayagriva YAML and `.bib` sources:
 
 ```typst
 #bibliography(
-  read("references.yml", encoding: none),
+  "references.yml",
   title: localized([Referencias], [References]),
 )
 ```

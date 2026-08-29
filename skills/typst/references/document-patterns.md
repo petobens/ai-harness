@@ -50,8 +50,9 @@ Article appendix sections remain level-two headings:
 - Import `@local/latex-book:0.1.0` in every included chapter that uses its
   helpers. Imports in the entry point do not propagate through `#include`.
 - Use `#appendix[...]` for appendix numbering.
-- Use `#chapter-bibliographies(read("references.yml", encoding: none))` for one
-  bibliography per numbered chapter.
+- Use `#chapter-bibliographies(path("references.yml"))` for one bibliography per
+  numbered chapter. Constructing the path in the document keeps it valid when
+  the book package reads it.
 
 Book appendices remain inside the current chapter and use level-two headings:
 
