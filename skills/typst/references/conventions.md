@@ -309,9 +309,11 @@ relative to the first line of its rendered row. Keep nested function arguments
 at their structural indentation.
 
 Use `\` only for an intentional rendered row break, always preceded by a space.
-Return the next rendered row to the base indentation. If Typstyle rewrites an
-intentional source layout, put `// @typstyle off` immediately before the math
-node; the directive affects formatting, not rendering.
+Keep all rows of an aligned system in one display-math block so they share the
+same `&` alignment points. Return the next rendered row to the base indentation.
+If Typstyle rewrites an intentional source layout, put `// @typstyle off`
+immediately before the math node; the directive affects formatting, not
+rendering.
 
 ```typst
 $
@@ -331,6 +333,17 @@ continuation:
 $
   f(x) &= a_0 + a_1 x + a_2 x^2 \
   &quad + a_3 x^3 + a_4 x^4
+$
+```
+
+When opening and closing delimiters fall on different rendered rows, scale each
+one separately with a one-sided `lr(...)`. Escape the delimiter so Typst does
+not try to pair it within that row:
+
+```typst
+$
+  f(x) &= lr(\{ a + frac(b, c)) \
+  &quad lr(+ d + frac(e, h) \})
 $
 ```
 
