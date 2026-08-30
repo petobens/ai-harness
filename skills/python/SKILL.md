@@ -1,12 +1,12 @@
 ---
-name: python-development
+name: python
 description: >-
-  Create, modify, or review Python code that will remain in a repository or be
-  delivered to the user. Do not use for temporary agent or subagent helper
+  Creates, modifies, or reviews Python code that will remain in a repository or
+  be delivered to the user. Do not use for temporary agent or subagent helper
   scripts.
 ---
 
-# Python Development
+# Python
 
 Follow repository instructions when they differ from these defaults. If
 repository configuration conflicts with either, follow the configuration.

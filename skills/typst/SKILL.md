@@ -1,10 +1,11 @@
 ---
 name: typst
 description: >-
-  Generate, edit, review, compile, and visually verify Typst academic articles,
-  Muttdata articles, books, Muttdata slide decks, and standalone artifacts using
-  the local templates and conventions for source structure, typography, layout,
-  numbering, figures, tables, equations, citations, indexes, and localization.
+  Generates, edits, reviews, compiles, and visually verifies Typst academic
+  articles, Muttdata articles, books, Muttdata slide decks, and standalone
+  artifacts using the local templates and conventions for source structure,
+  typography, layout, numbering, figures, tables, equations, citations, indexes,
+  and localization.
   Use for creating or modifying .typ documents, resolving document layout or
   rendering problems, and fixing shared templates when a defect belongs there.
 ---

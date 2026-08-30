@@ -13,7 +13,7 @@ Use these commands and API patterns when working with Google Sheets through
 
 ## Files
 
-Use the `gdrive` skill to create, find, copy, rename, or trash spreadsheet
+Use the `google-drive` skill to create, find, copy, rename, or trash spreadsheet
 files. A spreadsheet's mimeType is
 `application/vnd.google-apps.spreadsheet`; pass it when creating, and confirm
 the target matches it before copy, rename, or trash.

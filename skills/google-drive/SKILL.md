@@ -1,10 +1,10 @@
 ---
-name: gdrive
+name: google-drive
 description: >-
-    Find and manage Google Drive files with gws. Use to search Drive, list a
+    Finds and manages Google Drive files with gws. Use to search Drive, list a
     folder, or create, copy, rename, or trash a file (Docs, Sheets, Slides, or
-    any Drive file). The gdocs, gsheets, and gslides skills defer their
-    file-lifecycle operations here.
+    any Drive file). The google-docs, google-sheets, and google-slides skills
+    defer their file-lifecycle operations here.
 metadata:
     short-description: Search, list, and manage Google Drive files with gws
     category: productivity
@@ -17,7 +17,7 @@ metadata:
 
 Use `gws` for file-type-agnostic Drive operations: searching, listing folders,
 and the file lifecycle (create, copy, rename, trash). Content editing lives in
-the type-specific skills (`gdocs`, `gsheets`, `gslides`).
+the type-specific skills (`google-docs`, `google-sheets`, `google-slides`).
 
 ## Rules
 
@@ -48,7 +48,7 @@ the type-specific skills (`gdocs`, `gsheets`, `gslides`).
 
 `application/pdf` and other non-Google types are ordinary blobs: search, list,
 copy, rename, and trash work the same way. Reading a PDF's contents lives in the
-`pdf` skill, which downloads the bytes (below) and reads them.
+`read-pdf` skill, which downloads the bytes (below) and reads them.
 
 ## Commands
 

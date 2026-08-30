@@ -1,9 +1,9 @@
 ---
-name: gdocs
+name: google-docs
 description: >-
-    Create, read, edit, and manage Google Docs with gws. Use when the user asks
-    to draft, update, inspect, copy, rename, or trash a Google Doc, preserve or
-    reproduce formatting, or produce a polished document from prose/Markdown.
+    Creates, reads, edits, and manages Google Docs with gws. Use when the user
+    asks to draft, update, inspect, copy, rename, or trash a Google Doc, preserve
+    or reproduce formatting, or produce a polished document from prose/Markdown.
 metadata:
     short-description: Read, write, and manage Google Docs with gws
     category: productivity
@@ -55,8 +55,8 @@ structure, formatting, and final polish.
 
 ## Files (create, find, copy, rename, trash)
 
-For copy, rename, trash, and Drive search/listing, use the `gdrive` skill. A
-Google Doc's mimeType is `application/vnd.google-apps.document`; confirm the
+For copy, rename, trash, and Drive search/listing, use the `google-drive` skill.
+A Google Doc's mimeType is `application/vnd.google-apps.document`; confirm the
 target matches it before copy, rename, or trash.
 
 ## Commands

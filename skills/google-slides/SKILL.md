@@ -1,7 +1,7 @@
 ---
-name: gslides
+name: google-slides
 description: >-
-    Read, inspect, edit, and build Google Slides with gws. Use when the user
+    Reads, inspects, edits, and builds Google Slides with gws. Use when the user
     asks to read or inspect a deck, replace or restyle slide text, add,
     duplicate, or delete slides, copy a template slide, or render slides to
     check them. New slides are built template-first from the Muttdata deck,
@@ -81,7 +81,7 @@ Muttdata template deck:
 
 ## Files (create, find, copy, rename, trash)
 
-Use the `gdrive` skill for these. A presentation's mimeType is
+Use the `google-drive` skill for these. A presentation's mimeType is
 `application/vnd.google-apps.presentation`; pass it when creating, and confirm
 the target matches it before copy, rename, or trash. (Note: "copy" here means
 copying a whole presentation file in Drive, a different operation from copying

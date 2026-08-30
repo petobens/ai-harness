@@ -1,7 +1,7 @@
 ---
-name: gsheets
+name: google-sheets
 description: >-
-    Create, read, edit, and analyze Google Sheets with gws. Use when the user
+    Creates, reads, edits, and analyzes Google Sheets with gws. Use when the user
     asks to build, update, inspect, copy, rename, or trash a Google Sheet,
     write formulas, or produce a polished spreadsheet that follows the
     documented formula and visual conventions.

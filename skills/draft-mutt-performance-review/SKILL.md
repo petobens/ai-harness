@@ -1,7 +1,7 @@
 ---
-name: mutt-perf-review
+name: draft-mutt-performance-review
 description: >-
-    Draft concise Mutt mid-year or annual manager performance reviews in
+    Drafts concise Mutt mid-year or annual manager performance reviews in
     the user's established voice, using self reviews, 1:1 notes, objectives,
     role expectations, and calibration context as evidence. Use when asked to
     assess a Mutter, recommend a performance rating or promotion readiness, or
@@ -11,7 +11,7 @@ metadata:
     category: writing
 ---
 
-# Mutt Performance Review
+# Draft Mutt Performance Review
 
 Write a candid, concise manager review grounded in the requested review period.
 Use the employee's self review as context, not as the outline: the manager

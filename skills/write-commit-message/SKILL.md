@@ -1,7 +1,7 @@
 ---
-name: conventional-commit
+name: write-commit-message
 description: >-
-    Generate a git commit message from a diff, matching the repository's
+    Generates a git commit message from a diff, matching the repository's
     existing commit style. Use when asked to write or generate a commit
     message. Analyzes recent history and defaults to Conventional Commits.
 metadata:
@@ -12,7 +12,7 @@ metadata:
             - git
 ---
 
-# Conventional Commit
+# Write Commit Message
 
 Generate a single commit message for a set of changes. Output the message in a
 single fenced `text` code block; do not run `git commit`.

@@ -1,7 +1,7 @@
 ---
 name: finish-change
 description: >-
-    Finish an in-progress code change by refining and simplifying the initial
+    Finishes an in-progress code change by refining and simplifying the initial
     implementation, validating review feedback, running relevant checks, and
     giving a clear commit-readiness verdict. Use when asked to simplify, compact,
     polish, re-review, apply another agent's review, or get a change ready to

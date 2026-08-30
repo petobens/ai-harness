@@ -1,7 +1,7 @@
 ---
-name: diff-review
+name: review-diff
 description: >-
-    Review a git diff and return structured, GitHub Copilot-style feedback
+    Reviews a git diff and returns structured, GitHub Copilot-style feedback
     (overview, reviewed changes, comments, recommendations, and readiness
     verdict) without changing files. Use when asked for a review-only assessment
     of changes, a diff, or a branch before merging. Do not use when asked to
@@ -14,7 +14,7 @@ metadata:
             - git
 ---
 
-# Diff Review
+# Review Diff
 
 Give constructive, actionable, concise feedback in the style of a GitHub Copilot
 code review. Preserve the structured format while prioritizing material findings

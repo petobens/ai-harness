@@ -1,10 +1,10 @@
 ---
-name: pdf
+name: read-pdf
 description: >-
-    Read a PDF and answer questions about its contents, whether the PDF is a
+    Reads a PDF and answers questions about its contents, whether the PDF is a
     local file or lives in Google Drive. Use when the user wants to read,
     inspect, extract from, or summarize a PDF. For a Drive PDF, download it
-    first (delegating discovery to the gdrive skill), then read it.
+    first (delegating discovery to the google-drive skill), then read it.
 metadata:
     short-description: Read local or Google Drive PDFs
     category: productivity
@@ -97,8 +97,8 @@ absolute path and, for anything beyond a short file, a `pages` range (e.g.
 A Drive PDF is a binary blob; download the bytes, then read the local copy using
 the agent-appropriate path above.
 
-1. Find the file with the `gdrive` skill if you only have a name. Confirm its
-   `mimeType` is `application/pdf`.
+1. If you only have a name, find the file with the `google-drive` skill. Confirm
+   its `mimeType` is `application/pdf`.
 2. Download the bytes to the current working directory. `gws`'s `-o` must
    resolve **inside the current directory** — it rejects `/tmp` and other
    outside paths, so use a relative path:

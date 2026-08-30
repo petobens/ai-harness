@@ -1,7 +1,7 @@
 ---
-name: changelog
+name: write-changelog
 description: >-
-    Write a Keep a Changelog-style entry from git commit messages. Use when
+    Writes a Keep a Changelog-style entry from git commit messages. Use when
     asked to generate a changelog or release notes from recent commits or a
     set of commits.
 metadata:
@@ -12,7 +12,7 @@ metadata:
             - git
 ---
 
-# Changelog
+# Write Changelog
 
 Act as a release manager. Write a changelog entry in the
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) style from a set of
