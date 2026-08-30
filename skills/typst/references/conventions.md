@@ -48,6 +48,11 @@ hyphenation, localized names, dates, and theorem titles. Use
   reflow across these content nodes, so correct awkward breaks manually.
 - Use content blocks for formatted document content and strings for plain
   metadata or file paths, following the template signatures and examples.
+- When creating a full-document example, explicitly pass every named template
+  argument except `body`, which the show rule supplies, and the exclusions
+  documented for that family in `document-patterns.md`. Always pass `language`
+  and `font-size`, even when they match the defaults. Standalone artifacts
+  follow their separate argument convention.
 - Pass `none` to omit an optional template field or section. Do not use an
   empty string or empty content block as the control signal, even when a
   template tolerates those values.

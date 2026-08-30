@@ -11,9 +11,10 @@ layout, as shown in the examples below.
 ## Articles
 
 - Import `@local/latex-article:0.1.0` and apply `latex-article.with(...)`.
-- The default base size is `11pt`; override it with `font-size` only when needed.
-  With `10pt` and `11pt` bases, body, small, and footnote roles adjust, and
-  captions use the small role. Established title and heading sizes remain fixed.
+- Full-document example exclusions: `metadata-date`.
+- The default base size is `11pt`; use another value only when needed. With
+  `10pt` and `11pt` bases, body, small, and footnote roles adjust, and captions
+  use the small role. Established title and heading sizes remain fixed.
 - Let the template own page geometry, title matter, abstract width, typography,
   running heads, footnotes, floats, and section-based numbering.
 - Set omitted optional fields such as `abstract`, `keywords`, `jel`,
@@ -33,6 +34,7 @@ Article appendix sections remain level-two headings:
 ## Muttdata articles
 
 - Import `@local/mutt-article:0.1.0` and apply `mutt-article.with(...)`.
+- Full-document example exclusions: `metadata-date`, `logo`, and `footer`.
 - Use this family for Muttdata memos, RFCs, policies, proposals, and internal
   long-form writing. Use `latex-article` for academic papers.
 - Keep the default US Letter page, 11 pt body, Muttdata logo, page margins,
@@ -66,10 +68,12 @@ Article appendix sections remain level-two headings:
 ## Books
 
 - Import `@local/latex-book:0.1.0` and apply `latex-book.with(...)`.
-- The default base size is `10pt`; override it with `font-size` only when needed.
-  With `10pt` and `11pt` bases, body, small, and footnote roles adjust, and
-  captions use the small role. Established cover, chapter, and section sizes
-  remain fixed.
+- Full-document example exclusions: `metadata-date`, `half-title`,
+  `preface-title`, and `index-title`.
+- The default base size is `10pt`; use another value only when needed. With
+  `10pt` and `11pt` bases, body, small, and footnote roles adjust, and captions
+  use the small role. Established cover, chapter, and section sizes remain
+  fixed.
 - Let the template own front matter, page-number phases, running heads, chapter
   openings, and chapter-based numbering.
 - Set omitted optional fields such as `subtitle`, `institution`, `department`,
@@ -100,9 +104,10 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Mutt slides
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
-- The default base size is `14pt`; override it with `font-size` only when needed.
-  Slide typography scales proportionally with the base size, so recheck every
-  slide for overflow after changing it.
+- Full-document example exclusions: none.
+- The default base size is `14pt`; use another value only when needed. Slide
+  typography scales proportionally with the base size, so recheck every slide
+  for overflow after changing it.
 - Keep DM Sans for prose and references, DM Mono for branded metadata, DejaVu
   Sans Mono for code, and the dedicated math font for equations. These roles
   are intentional; do not replace them with one family for visual uniformity.
@@ -136,6 +141,9 @@ Book appendices remain inside the current chapter and use level-two headings:
 ## Standalone artifacts
 
 - Import `@local/standalone:0.1.0` and apply `standalone.with(...)`.
+- In a standalone example, explicitly pass `width` and `margin`. Override
+  `fill`, `font`, `math-font`, `font-size`, or `language` only when the artifact
+  needs a non-default value.
 - Keep the content-sized defaults `width: auto`, `margin: 3pt`, and `fill: none`.
   Set an explicit width only when the artifact needs a fixed canvas.
 - In academic articles and books, default native Typst tables to standalone
