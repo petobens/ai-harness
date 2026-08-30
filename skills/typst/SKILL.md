@@ -83,12 +83,39 @@ sufficient.
 
 ### 5. Verify the render
 
-Inspect structure and geometry:
+#### Inspect document data
+
+Check metadata, extracted text, and the PDF outline:
 
 ```bash
 pdfinfo /tmp/output.pdf
 pdftotext -layout /tmp/output.pdf /tmp/output.txt
 qpdf --json --json-key=outlines /tmp/output.pdf
+```
+
+When inspecting document structure or debugging references, query element
+selectors as Typst code and label selectors as labels:
+
+```bash
+typst eval --root PROJECT_ROOT \
+  'query(heading.where(level: 1))' --in source.typ
+typst eval --root PROJECT_ROOT \
+  'query(<sec:sample_section>)' --in source.typ
+```
+
+Do not wrap element selectors such as `heading`, `outline`, `enum`, or
+`footnote` in angle brackets. Angle brackets select a specific label.
+
+When changing a font family or weight, run `pdffonts /tmp/output.pdf` to verify
+the embedded face. If it is unexpected, use `fc-match` or `fc-query` to resolve
+the installed family and style before changing Typst styling again. Do not
+infer the selected font or weight from visual similarity alone.
+
+#### Inspect rendered pages
+
+Render the relevant pages to images:
+
+```bash
 pdftoppm -png -r 150 -f FIRST -l LAST /tmp/output.pdf /tmp/output
 ```
 
