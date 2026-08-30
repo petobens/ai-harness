@@ -79,26 +79,15 @@ durable preference or constraint becomes clear.
   Check naming and structure, then run the relevant formatters, linters, and tests.
   Keep the review scoped to changed code.
 
-### Python
+### Scope and Precedence
 
-These defaults apply to Python code that will remain in a repository or be
-user-facing. They do not apply to temporary scripts written only to support
-agent work during a task. Repository configuration and instructions override
-these defaults where they conflict.
+Conventions for specific languages and tools apply only to code that will remain
+in a repository or otherwise be delivered to the user. They do not apply to
+temporary scripts used only to support agent or subagent work.
 
-- Target Python 3.14+ syntax.
-- Always include type hints, using built-in generics (`list`, `dict`) and
-  `X | None` unions rather than `typing.List` or `Optional`.
-- Prefer `pathlib` over `os.path`.
-- Prefer double quotes for text and interpolation, and single quotes for short
-  symbol-like strings, unless the repository formatter enforces another style.
-- Write NumPy-style docstrings: a summary line, then `Parameters`/`Returns`
-  sections, omitting types since they are in the signature. Skip boilerplate
-  docstrings for obvious one-off code.
-- Before finishing, format and lint with Ruff and type-check with `zmypy`
-  (Zuban), falling back to `mypy` if `zmypy` is not installed.
-- For non-trivial Python changes, add or update pytest tests when the repository
-  has a test suite or the behavior can be meaningfully tested.
+Formatting, linting, type-checking, and testing requirements follow the same
+scope. Repository instructions override general preferences and skill defaults;
+repository configuration overrides all three.
 
 ## Agent Memory
 
