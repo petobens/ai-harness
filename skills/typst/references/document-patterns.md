@@ -54,14 +54,15 @@ Article appendix sections remain level-two headings:
   underlined.
 - Use `callout(title: none)[...]` only for a decision, principle, or other short
   passage that genuinely needs emphasis.
-- Use `#appendix[...]` with level-one appendix headings. The helper handles
-  lettered headings and appendix-aware object numbering.
+- Use `#appendix[...]`; it inserts a localized appendix title and handles
+  lettered headings and appendix-aware object numbering. Appendix sections
+  remain level-two headings.
 
 ```typst
 // @typstyle off
 #appendix[
-= Appendix section
-<sec:appendix_section>
+== Appendix section
+<sub:appendix_section>
 ]
 ```
 
