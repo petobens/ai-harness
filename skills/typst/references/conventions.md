@@ -335,8 +335,10 @@ at their structural indentation.
 
 Use `\` only for an intentional rendered row break, always preceded by a space.
 Keep all rows of an aligned system in one display-math block so they share the
-same `&` alignment points. Return the next rendered row to the base indentation.
-If Typstyle rewrites an intentional source layout, put `// @typstyle off`
+same `&` alignment points. Academic articles, Muttdata articles, and books make
+these blocks page-breakable, so do not split long systems or add document-local
+breakability rules. Return the next rendered row to the base indentation. If
+Typstyle rewrites an intentional source layout, put `// @typstyle off`
 immediately before the math node; the directive affects formatting, not
 rendering.
 
