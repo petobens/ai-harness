@@ -66,10 +66,13 @@ durable preference or constraint becomes clear.
   unless another file uses them, and introduce abstractions or intermediate
   variables only when they improve clarity.
 - Add comments only to explain non-obvious behavior. Write them in plain,
-  human language that describes what the code does and why it matters; avoid
-  cryptic shorthand. Keep them short. Put function-level comments above the
-  function and use trailing comments only when they apply narrowly to one
-  statement. Single-line comments should not end with a period.
+  human language that describes what the code does and why it matters.
+  - Be precise about the concrete behavior or limitation; avoid broad claims
+    when only one syntax case or code path is relevant.
+  - Avoid cryptic shorthand and keep comments short.
+  - Put function-level comments above the function. Use trailing comments only
+    when they apply narrowly to one statement. Single-line comments should not
+    end with a period.
 - Before changing code, find the repository root and read its `AGENTS.md`, if
   present. Do this once per repository per session.
 - Before finishing a code change, review the complete diff as if it were going
