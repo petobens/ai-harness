@@ -40,28 +40,31 @@ def _codex_events(record: dict[str, Any]) -> Iterator[dict[str, Any]]:
     if not isinstance(payload, dict):
         return
     common = {"timestamp": record.get("timestamp")}
-    if record.get("type") == "event_msg":
-        kind = payload.get("type")
-        role = (
-            {"user_message": "user", "agent_message": "assistant"}.get(kind)
-            if isinstance(kind, str)
-            else None
-        )
-        if role:
-            yield common | {
-                "kind": "message",
-                "role": role,
-                "event_id": record.get("timestamp"),
-                "text": str(payload.get("message", "")),
-            }
-        return
-
     if record.get("type") != "response_item":
         return
     kind = payload.get("type")
     if not isinstance(kind, str):
         return
-    if kind in {"function_call", "custom_tool_call"}:
+    if kind == "message":
+        role = payload.get("role")
+        if role not in {"user", "assistant"}:
+            return
+        kinds = payload.get("internal_chat_message_metadata_passthrough", {}).get(
+            "content_item_kinds", []
+        )
+        if (
+            role == "user"
+            and kinds
+            and not any(item.startswith("user.") for item in kinds)
+        ):
+            return
+        yield common | {
+            "kind": "message",
+            "role": role,
+            "event_id": payload.get("id", record.get("timestamp")),
+            "text": _output_text(payload.get("content")),
+        }
+    elif kind in {"function_call", "custom_tool_call"}:
         yield common | {
             "kind": "tool_call",
             "role": "assistant",
