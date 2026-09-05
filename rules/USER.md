@@ -70,9 +70,11 @@ durable preference or constraint becomes clear.
   - Be precise about the concrete behavior or limitation; avoid broad claims
     when only one syntax case or code path is relevant.
   - Avoid cryptic shorthand and keep comments short.
-  - Put function-level comments above the function. Use trailing comments only
-    when they apply narrowly to one statement. Single-line comments should not
-    end with a period.
+  - Place comments as close as practical to the specific code they explain. Put
+    comments about an entire function or method above its definition. When syntax
+    allows, keep comments about only part of a larger construct within that
+    construct. Use trailing comments only when they apply narrowly to one
+    statement. Single-line comments should not end with a period.
 - Before changing code, find the repository root and read its `AGENTS.md`, if
   present. Do this once per repository per session.
 - Before finishing a code change, review the complete diff as if it were going
