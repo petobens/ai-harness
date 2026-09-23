@@ -1,10 +1,7 @@
 # Context for AI Agents
 
 This file contains durable context about me, my preferences, and how I like to
-work.
-
-Read it before starting work. Update the "Agent Memory" section only when a new
-durable preference or constraint becomes clear.
+work. Read it before starting work.
 
 ## About Me
 
@@ -13,6 +10,39 @@ durable preference or constraint becomes clear.
 - I use Arch Linux and Neovim.
 - I have a background in Economics.
 - I'm the Co-Founder and COO of Muttdata, a Data + AI services company.
+
+## Work Environment
+
+The desktop is Hyprland on Wayland. X11 tools such as `xdotool`, `xclip`, and
+`scrot` are not installed.
+
+- Sandboxing can block access to Hyprland's local control socket. If a read-only
+  `hyprctl` query fails with a socket error, retry with expanded permissions
+  before concluding that the running session is unavailable.
+- When a package or plugin lookup reports a DNS or network failure, treat any
+  subsequent "not found" output as inconclusive. Retry with network access when
+  available; otherwise report that the lookup could not be verified.
+
+### Command-Line Tools
+
+Many command-line tools are installed. This list is not exhaustive; it only
+highlights tools that are easy to overlook or that differ from common defaults.
+Use them when they fit the task:
+
+- `ast-grep` searches and rewrites code by its syntax tree. Prefer it over `rg`
+  and `sed` when formatting varies, such as calls split across lines, or for
+  renames across many files.
+- `grim` (with `slurp` to select a region) takes screenshots, and `wl-copy` and
+  `wl-paste` access the clipboard.
+- `hyperfine` benchmarks commands.
+- `ouch` compresses and extracts most archive formats.
+- `pdftotext`, `pdfinfo` (poppler), and `qpdf` inspect PDFs.
+- `rga` (ripgrep-all) searches inside PDFs, Office documents, and archives.
+- `tesseract` runs OCR with English and Spanish data.
+- `wdotool` automates keyboard, mouse, and window actions on Wayland with
+  xdotool-compatible commands. On Hyprland it cannot read window geometry or
+  the pointer position; use `hyprctl clients` and `hyprctl cursorpos` instead.
+- `yq` is mikefarah's Go version with jq-like syntax, not the Python wrapper.
 
 ## General Preferences
 
@@ -94,26 +124,3 @@ temporary scripts used only to support agent or subagent work.
 Formatting, linting, type-checking, and testing requirements follow the same
 scope. Repository instructions override general preferences and skill defaults;
 repository configuration overrides all three.
-
-## Available Tools
-
-Many command-line tools are installed. This list is not exhaustive; it only
-highlights tools that are easy to overlook or that differ from common defaults.
-Use them when they fit the task:
-
-- `ast-grep` searches and rewrites code by its syntax tree. Prefer it over `rg`
-  and `sed` when formatting varies, such as calls split across lines, or for
-  renames across many files.
-- `hyperfine` benchmarks commands.
-- `ouch` compresses and extracts most archive formats.
-- `pdftotext`, `pdfinfo` (poppler), and `qpdf` inspect PDFs.
-- `rga` (ripgrep-all) searches inside PDFs, Office documents, and archives.
-- `tesseract` runs OCR with English and Spanish data.
-- `yq` is mikefarah's Go version with jq-like syntax, not the Python wrapper.
-
-## Agent Memory
-
-> [!NOTE]
-> Update this section only with durable information likely to matter again.
-> Include stable preferences, recurring constraints, and long-term facts.
-> Exclude temporary task details, transient project state, and vague traits.
