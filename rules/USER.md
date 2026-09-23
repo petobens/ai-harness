@@ -65,8 +65,9 @@ durable preference or constraint becomes clear.
   extensibility: use inline code for single-use logic, avoid exporting helpers
   unless another file uses them, and introduce abstractions or intermediate
   variables only when they improve clarity.
-- Add comments only to explain non-obvious behavior. Write them in plain,
-  human language that describes what the code does and why it matters.
+- Add comments only to explain non-obvious behavior. Use simple, concrete
+  language that a beginner can follow. Explain what happens and why without
+  assuming knowledge of tool internals.
   - Be precise about the concrete behavior or limitation; avoid broad claims
     when only one syntax case or code path is relevant.
   - Avoid cryptic shorthand and keep comments short.
@@ -93,6 +94,22 @@ temporary scripts used only to support agent or subagent work.
 Formatting, linting, type-checking, and testing requirements follow the same
 scope. Repository instructions override general preferences and skill defaults;
 repository configuration overrides all three.
+
+## Available Tools
+
+Many command-line tools are installed. This list is not exhaustive; it only
+highlights tools that are easy to overlook or that differ from common defaults.
+Use them when they fit the task:
+
+- `ast-grep` searches and rewrites code by its syntax tree. Prefer it over `rg`
+  and `sed` when formatting varies, such as calls split across lines, or for
+  renames across many files.
+- `hyperfine` benchmarks commands.
+- `ouch` compresses and extracts most archive formats.
+- `pdftotext`, `pdfinfo` (poppler), and `qpdf` inspect PDFs.
+- `rga` (ripgrep-all) searches inside PDFs, Office documents, and archives.
+- `tesseract` runs OCR with English and Spanish data.
+- `yq` is mikefarah's Go version with jq-like syntax, not the Python wrapper.
 
 ## Agent Memory
 
