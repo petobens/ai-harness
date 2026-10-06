@@ -106,19 +106,50 @@ Book appendices remain inside the current chapter and use level-two headings:
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
 - Full-document example exclusions: none.
-- The default base size is `14pt`; use another value only when needed. Slide
-  typography scales proportionally with the base size, so recheck every slide
-  for overflow after changing it.
+- Use the template's 720 × 405 pt canvas, `14pt` body, and `24pt` content
+  titles. Typography scales with `font-size`; keep the default unless the user
+  requests a change, and recheck every slide after changing it. Do not reduce
+  individual titles to fit.
 - Keep DM Sans for prose and references, DM Mono for branded metadata, DejaVu
   Sans Mono for code, and the dedicated math font for equations. These roles
   are intentional; do not replace them with one family for visual uniformity.
-- Use level-one headings for agenda sections and level-two headings for slides.
+- Use level-one headings for sections and level-two headings for content
+  slides. The default `section-style: "agenda"` restores the white progressive
+  outline: the current section is blue and bold, and other sections are muted.
+  Use `section-style: "navy"` for title-only branded dividers. `#agenda()` adds
+  a separate full outline when useful; it is optional with progressive dividers.
+- Use `subtitle: none` by default. Set `cover-chip: [Short label]` when useful,
+  or `none` to omit it. Put `#slide-chip[Short label]` after a content heading
+  for an optional header chip; no chip is added automatically. Keep labels to
+  one to three words and action titles to at most two lines.
+- Leave `slide-numbers: false` for the standard Mutt footer, or set it to `true`
+  for logical slide numbers. The cover and dividers count; overlays do not.
+- When rendering a generated outline, omit the internal plan, Markdown slide
+  labels, and HTML comments. Map its cover to `title`, sections to level one,
+  and content slides to level two; preserve the argument and source notes.
 - Use `#appendix[...]` with level-one appendix headings; do not type appendix
   letters into their titles.
-- Appendix agenda entries and section chips use letters, and numbered objects
-  use the corresponding `A.1`, `A.2`, `B.1`, and similar forms.
-- Prefer `slide-subtitle`, `card`, `callout`, `formula`, `small`, `theorem`,
-  `solution`, `proof`, and grids over ad hoc styling and boxes.
+- Appendix agenda entries use letters, and numbered objects use the
+  corresponding `A.1`, `A.2`, `B.1`, and similar forms.
+- Use `card-grid(items)` for 2–6 cards. Items have `title` and `body`, with
+  optional `accent` and `fill`. Defaults are a single row for 2–3 cards, 2 × 2
+  for four, and three columns for five or six. Override `columns` for another
+  arrangement; `height` controls the whole grid, not each card.
+- Card variants include `"rounded"` (default, asymmetric corners and arrow),
+  `"panel"` (floating header label), and `"soft"` (pale fill). Use short labels
+  for panels and shorter copy in grids with two rows. Prefer `"soft"` for
+  compact grids. Use `card` and native grids for custom compositions.
+- Use `timeline(items)` or `process(items)` for short sequences of `title` and
+  `body` items. `process` defaults to `height: 200pt`; increase the height
+  when needed instead of shrinking text. `metrics(items)` takes `value`,
+  `title`, optional `body`, and
+  optional `accent`. `comparison(headers, rows)` takes a header tuple and a
+  tuple of row tuples, with optional `columns` for column widths.
+- Use `formula-definitions(expression, definitions)` for a formula panel and
+  columns of `title`/`body` definitions. Raw display math and formula panels are
+  unnumbered; use `equation` for numbered mathematics. `callout`, `small`,
+  `theorem`, `solution`, and `proof` retain their semantic roles. Reserve
+  `slide-subtitle` for an explicitly requested subtitle.
 - Use native overlays for progressive content: `#pause` reveals following
   content, `#uncover("2-")[...]` preserves hidden layout space, and
   `#only("2")[...]` removes hidden content from the layout. Inside `grid`,
