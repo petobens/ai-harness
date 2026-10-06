@@ -350,6 +350,15 @@ to exactly the keys you changed.
 For anything the above do not cover — shapes, images, tables, geometry,
 recoloring — build the requests directly against the Slides `batchUpdate` API.
 
+### Rendering a slide outline
+
+When the input includes an internal plan, slide-number labels, or HTML comments,
+use them to guide construction without rendering them as slide copy. Preserve
+content hierarchy when mapping claims and supporting text into lists or cards.
+A Markdown table can supply a comparison, timeline, or chart; follow any visual
+specification and preserve its relationships and source notes. Render chart
+input data as the chart, without duplicating the input table unless requested.
+
 ### Text replacement and fitting
 
 - For newly generated decks, use titles and optional chips instead of subtitles,
