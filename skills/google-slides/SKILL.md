@@ -4,8 +4,8 @@ description: >-
     Reads, inspects, edits, and builds Google Slides with gws. Use when the user
     asks to read or inspect a deck, replace or restyle slide text, add,
     duplicate, or delete slides, copy a template slide, or render slides to
-    check them. New slides are built template-first from the Muttdata deck,
-    preserving its visual design. Visual execution, not content strategy.
+    check their visual fit. Supports any deck, with Muttdata defaults for new
+    presentations. Visual execution, not content strategy.
 metadata:
     short-description: Read, edit, and build Google Slides with gws
     category: productivity
@@ -19,22 +19,17 @@ metadata:
 
 # Google Slides
 
-You interact with Google Slides through `gws`: reading and inspecting decks,
-editing text and styling, adding, duplicating, and deleting slides, and
-rendering slides to check their fit. Reads and edits work on any deck. When you
-create or add a slide, do it template-first — start from a slide in the Muttdata
-template deck and preserve its visual design, rather than building a layout from
-scratch.
+Use `gws` to read, inspect, edit, build, and render Google Slides. For existing
+decks, preserve their design unless the user requests a restyle. For new decks,
+use the user's chosen template or design; default to the Muttdata conventions
+below when none is specified. Adding slides to an existing deck should follow
+that deck's design, including when it is not a Muttdata deck.
 
 The work is visual execution, not content strategy. Content — storyline, titles,
 chips, bullets, template recommendations — may already be decided upstream. Do
 not invent the argument; render the provided content by changing only the text
 needed. When the content names a recommended template slide, treat that as a
 visual hint, not a content instruction.
-
-Muttdata template deck:
-`1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`
-(`https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit`).
 
 ## Role boundaries
 
@@ -49,11 +44,33 @@ Muttdata template deck:
   content pass is needed rather than expanding the argument yourself. At most
   make minimal wording fixes for fit, grammar, truncation, or parallelism.
 
+## Muttdata decks
+
+These defaults apply when creating a Muttdata deck, maintaining its template
+library, or creating a new deck without another specified design. They do not
+restyle unrelated decks.
+
+Muttdata template deck:
+`1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`
+(`https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit`).
+
+- Build new Muttdata slides from the best matching template slide and preserve
+  its design. Template-library expansion may use user-specified reference decks.
+- In the Muttdata template, content-slide titles use DM Sans bold, 24 pt on a
+  720 × 405 pt slide; scale proportionally for other page sizes. Keep this size
+  consistent instead of shrinking individual titles to fit. Use two lines or
+  adjust the layout when needed. Covers, section dividers, and hero statements
+  retain their separate display hierarchy.
+- Preserve the original rounded title-marker image from the template layout.
+  When a copied layout needs a replacement, reuse that asset and its placement
+  rather than rebuilding it with rectangular shapes.
+
 ## Rules
 
-- Confirm before creating a presentation, copying a slide into a deck, or
-  trashing a presentation. Do not ask for extra permission before normal text
-  edits to an existing deck.
+- Creating a presentation, copying a slide into a deck, or trashing a
+  presentation requires user authorization. Use authorization already given in
+  the request or conversation; ask only when the action is outside that scope.
+  Normal text edits to an existing deck need no extra confirmation.
 - Do not ask for task-level permission before safe local prep, such as
   inspecting a deck, building request JSON in `/tmp`, or running `--dry-run`. If
   the environment requires sandbox approval, request it as a tool permission
@@ -186,6 +203,10 @@ From the output, note for each shape you intend to edit: its `objectId`, the
 `startIndex`/`endIndex` (zero-based, end exclusive — these are the ranges you
 target for styling), and its position/size. Element order is z-order.
 
+For layout checks, use the element's transformed bounds, not raw `size`: Slides
+may normalize dimensions and store the visible scale in `transform`. Compose
+parent transforms for grouped elements and account for the declared units.
+
 When post-processing this output programmatically, account for two quirks:
 `startIndex` is omitted entirely when it is `0` (read it as `.get("startIndex",
 0)`, never index directly), and `gws` prints a `Using keyring backend` banner to
@@ -200,8 +221,9 @@ template-first and covered below.
 ### Text and style edits
 
 Every edit below is one `gws slides presentations batchUpdate` call (requests
-apply atomically; one invalid request rolls back the whole batch). Validate
-layout-sensitive bodies with `--dry-run` first. For non-trivial JSON, write
+apply atomically; one invalid request rolls back the whole batch). Preview
+requests with `--dry-run`; it does not replace API read-back or visual
+verification. For non-trivial JSON, write
 `/tmp/slides.json` and pass `--json "$(cat /tmp/slides.json)"`.
 
 ```bash
@@ -232,9 +254,12 @@ swap template placeholder text. Scope it to one slide with `pageObjectIds`.
 }
 ```
 
-**Replace a single shape's text while preserving its style.** Read the shape's
-first text-run style and paragraph style from the inspect step, then delete all
-text, insert the new text, and reapply the captured styles over the full range:
+**Replace a uniformly styled shape's text.** Read its text-run and paragraph
+styles, then delete all text, insert the replacement, and reapply those styles.
+For mixed formatting, preserve each run's emphasis and paragraph/bullet structure;
+applying the first run's style to the whole shape flattens the original design.
+Map emphasis to complete words in the replacement, not proportional character
+offsets that can split words across styles. The example below uses uniform text:
 
 ```json
 {
@@ -327,10 +352,18 @@ recoloring — build the requests directly against the Slides `batchUpdate` API.
 
 ### Text replacement and fitting
 
+- For newly generated decks, use titles and optional chips instead of subtitles,
+  unless the user requests subtitles. Remove unused subtitle placeholders from
+  copied layouts and rebalance the body when their removal leaves an awkward gap.
+  Compare the visible gap below the title with the space above the footer; move
+  the complete content group, including cards, labels, text, icons, and arrows.
+  Check layout-inherited elements too. Before changing a shared layout or
+  master, identify every slide it affects; include those slides in visual
+  verification afterward.
 - Change text content but preserve formatting. Take particular care not to flip
   bold to regular or regular to bold, and preserve font family, size, color,
-  emphasis, alignment, and text-box structure unless a small change is required
-  for fit.
+  emphasis, alignment, and text-box structure unless the user requests a restyle
+  or a small change is required for fit.
 - A `**Chip:**` field is a short pill-style context label (e.g. "Overall
   Outlook"), not a subtitle or second title. Render it in an existing
   chip/badge/pill/tag element; if the copied template has none, choose a template
@@ -346,29 +379,43 @@ recoloring — build the requests directly against the Slides `batchUpdate` API.
 - If replacement text overflows, first remove unnecessary manual breaks or excess
   paragraph spacing. If it still does not fit, prefer a better template slide or
   split the content rather than forcing denser copy or shrinking type.
-- Make geometry adjustments only to prevent overflow, overlap, or clipping —
-  never restyle, recolor, reshape, or stretch elements otherwise.
+- For content-only edits, adjust geometry to fix overflow, overlap, clipping, or
+  unbalanced space. Broader design changes should follow the user's request.
 - Before finishing, review every edited text box for overflow, clipped text,
   empty lines, unnatural wrapping, and over-dense copy.
 
+### Maintaining the template library
+
+When the user explicitly asks to expand or clean the template deck, source slides
+may come from their specified reference decks. Copy them natively, compare with
+existing layouts to avoid near-duplicates, and place additions in the matching
+section. Use structural titles so future agents can select layouts by purpose.
+
+When lorem ipsum is requested, replace complete text fields or paragraphs, not
+substrings inside words. Keep numbering and use consistent dummy values for
+metrics. Inspect grouped text, table cells, speaker notes, links, and labels baked
+into images for source content. Clear or neutralize source-specific content within
+the authorized cleanup scope, preserving brand assets and reusable icons.
+
 ## Creating slides (template-first)
 
-- Every new slide must start from an existing slide in the template deck. To add
-  a slide, copy the best structural match from the template deck (see _Copying a
-  template slide across decks_), then edit only the text content needed.
-- Do not recreate template slides manually unless copying is impossible.
+- Choose the source design using the scope rules above. Prefer a suitable slide
+  in the target deck or selected template; copy the best structural match (see
+  _Copying a template slide across decks_) and adapt its content.
+- Preserve native elements when copying a layout. Build a new layout when the
+  requested design has no suitable source or copying is unavailable.
 - Treat the copied slide as the source of truth for layout, spacing, typography,
   shapes, containers, alignment, emphasis, and footer behavior.
-- Treat template slide titles as structural labels (the layout/content pattern),
-  not as content to reproduce; use them as a selection signal.
+- In layout libraries, use structural slide titles as selection signals rather
+  than content to reproduce.
 - If an existing target slide is a poor fit, prefer replacing it with a copied
   template slide rather than redesigning it by hand.
-- Keep all original visual styling unless a minimal adjustment is required to
-  prevent a layout defect.
+- Preserve the source styling unless the user requests a design change or an
+  adjustment is needed to prevent a layout defect.
 
 ### Template slide selection
 
-Before adding a slide, review the template deck and pick the slide whose
+Before adding a slide, review the selected source deck and pick the slide whose
 structure best matches the content. Match by layout, not superficial text
 similarity. Common structures: title, section divider, slide with a top-right
 chip/badge, single statement, 2-column comparison, 3-column framework, card grid,
@@ -408,7 +455,7 @@ url="$(pass show gcloud/appscript/copy-slides/webapp-url)"
 secret="$(pass show gcloud/appscript/copy-slides/webapp-secret)"
 jq -nc \
     --arg secret "$secret" \
-    --arg src 1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo \
+    --arg src SOURCE_PRES_ID \
     --arg dst DEST_PRES_ID \
     --arg slide SOURCE_SLIDE_OBJECT_ID \
     '{secret:$secret, sourcePresentationId:$src, destinationPresentationId:$dst, sourceSlideObjectId:$slide}' |
@@ -438,9 +485,9 @@ url="$(gws slides presentations pages getThumbnail \
 curl -sSL "$url" -o /tmp/slide.png
 ```
 
-Then open `/tmp/slide.png` with the Read tool and inspect it for overflow,
-clipping, collisions, awkward wrapping, and overall fit. Fix any defect and
-re-render before finishing.
+Then open `/tmp/slide.png` with an image-viewing tool and inspect it for overflow,
+clipping, collisions, awkward wrapping, contrast, and vertical balance between
+the title, body, and footer. Fix any defect and re-render before finishing.
 
 `getThumbnail` is an expensive read request for quota, so use it as a final
 visual check per created or edited slide, not after every intermediate edit.
@@ -449,9 +496,9 @@ verifying content and styling; the render is specifically for visual fit.
 
 ## What to avoid
 
-- Creating slides from scratch when a template slide could be copied.
-- Using screenshots, deck-style inference, palette invention, or new visual
-  systems as primary guidance.
+- Rebuilding a suitable native source slide without a reason.
+- Inferring a design from screenshots when native source elements are available.
+- Imposing Muttdata styling on a deck with another specified design.
 - Reformatting copied slides unnecessarily, or carelessly changing bolding,
   emphasis, shape geometry, or layout rhythm.
 - Overlapping text, icons, or shapes; text overflow, clipping, truncated
