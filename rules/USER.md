@@ -81,6 +81,10 @@ Use them when they fit the task:
   math, do not put operators such as `=`, `+`, or `-` alone on a line because
   Markdown renderers may interpret them as headings or list markers.
   - Use fenced `latex` code blocks only when raw LaTeX source is useful.
+- In Markdown prose and tables, escape literal dollar signs as `\$` (for
+  example, `**\$10.2K**`) so currency amounts do not become math spans and
+  break highlighting. Keep `$...$` and `$$...$$` for actual math, and leave
+  dollar signs unchanged inside inline code and code blocks.
 
 ## Coding Preferences
 
