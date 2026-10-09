@@ -61,6 +61,14 @@ Muttdata template deck:
   consistent instead of shrinking individual titles to fit. Use two lines or
   adjust the layout when needed. Covers, section dividers, and hero statements
   retain their separate display hierarchy.
+- Keep section chips compact and visually secondary to the title. On a
+  720 × 405 pt slide, start with 8 pt text and roughly 16 pt height for one
+  line or 23 pt for two; scale proportionally for other page sizes. Keep
+  typography, alignment, and modest padding consistent across the deck. Check
+  the longest label before applying a shared width.
+- Use unbulleted card headings above regular body bullets. When adapting a
+  template, remove decorative bullet circles beside those headings and reclaim
+  their indentation. Preserve meaningful icons and timeline markers.
 - Preserve the original rounded title-marker image from the template layout.
   When a copied layout needs a replacement, reuse that asset and its placement
   rather than rebuilding it with rectangular shapes.
@@ -363,7 +371,8 @@ input data as the chart, without duplicating the input table unless requested.
 
 - For newly generated decks, use titles and optional chips instead of subtitles,
   unless the user requests subtitles. Remove unused subtitle placeholders from
-  copied layouts and rebalance the body when their removal leaves an awkward gap.
+  copied layouts.
+- When a title takes fewer lines or a subtitle is removed, rebalance the body.
   Compare the visible gap below the title with the space above the footer; move
   the complete content group, including cards, labels, text, icons, and arrows.
   Check layout-inherited elements too. Before changing a shared layout or
@@ -377,8 +386,9 @@ input data as the chart, without duplicating the input table unless requested.
   Outlook"), not a subtitle or second title. Render it in an existing
   chip/badge/pill/tag element; if the copied template has none, choose a template
   slide that does rather than adding a subtitle box. Keep chip text short (one to
-  three words) and preserve its fill, corner radius, typography, alignment, and
-  position.
+  three words) and preserve its fill, corner radius, alignment, and position.
+  Preserve typography and sizing for content-only edits; when creating or
+  restyling Muttdata slides, apply the compact-chip defaults above.
 - Treat each text box or shape as a hard bounding box: text must fit fully inside
   without overflow, clipping, or collision. Use the template's original text as
   the practical maximum density.
