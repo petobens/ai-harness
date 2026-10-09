@@ -50,13 +50,21 @@ These defaults apply when creating a Muttdata deck, maintaining its template
 library, or creating a new deck without another specified design. They do not
 restyle unrelated decks.
 
-Muttdata template deck:
+Default Muttdata template deck:
 `1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`
 (`https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit`).
 
+Lighter variant: **Muttdata Slides Library**:
+`12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc`
+(`https://docs.google.com/presentation/d/12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc/edit`).
+
+Use this deck when the user requests a lighter Muttdata design; otherwise keep
+the default above. Preserve the selected variant's source styling. The specific
+typography, chip, and title-marker defaults below apply to the default template.
+
 - Build new Muttdata slides from the best matching template slide and preserve
   its design. Template-library expansion may use user-specified reference decks.
-- In the Muttdata template, content-slide titles use DM Sans bold, 24 pt on a
+- In the default template, content-slide titles use DM Sans bold, 24 pt on a
   720 × 405 pt slide; scale proportionally for other page sizes. Keep this size
   consistent instead of shrinking individual titles to fit. Use two lines or
   adjust the layout when needed. Covers, section dividers, and hero statements
@@ -388,7 +396,8 @@ input data as the chart, without duplicating the input table unless requested.
   slide that does rather than adding a subtitle box. Keep chip text short (one to
   three words) and preserve its fill, corner radius, alignment, and position.
   Preserve typography and sizing for content-only edits; when creating or
-  restyling Muttdata slides, apply the compact-chip defaults above.
+  restyling slides using the default Muttdata template, apply the compact-chip
+  defaults above.
 - Treat each text box or shape as a hard bounding box: text must fit fully inside
   without overflow, clipping, or collision. Use the template's original text as
   the practical maximum density.
