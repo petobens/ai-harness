@@ -21,6 +21,8 @@ repository configuration conflicts with either, follow the configuration.
   sections, omitting types already present in the signature. Skip boilerplate
   docstrings for obvious one-off code.
 - Before finishing a change, format and lint with Ruff and type-check with
-  `ty check`.
+  `ty check`. Run configured hooks through the repository recipe (for example,
+  `just hooks`). For uv projects using prek without a recipe, use
+  `uv run --no-sync prek run --all-files` after syncing dependencies.
 - For non-trivial changes, add or update pytest tests when the repository has a
   test suite or the behavior can be meaningfully tested.
