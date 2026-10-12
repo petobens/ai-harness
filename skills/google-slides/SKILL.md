@@ -14,6 +14,7 @@ metadata:
             - gws
             - curl
             - jq
+            - magick
             - pass
 ---
 
@@ -80,6 +81,10 @@ typography, chip, and title-marker defaults below apply to the default template.
 - Preserve the original rounded title-marker image from the template layout.
   When a copied layout needs a replacement, reuse that asset and its placement
   rather than rebuilding it with rectangular shapes.
+- Vertically center a content-slide title with its title marker; check this
+  after moving a title or changing its size.
+- Center text inside chips, pills, and badges both horizontally (paragraph
+  `alignment: CENTER`) and vertically (shape `contentAlignment: MIDDLE`).
 
 ## Rules
 
@@ -365,6 +370,19 @@ to exactly the keys you changed.
 
 For anything the above do not cover — shapes, images, tables, geometry,
 recoloring — build the requests directly against the Slides `batchUpdate` API.
+To add another item like an existing bullet or card, use `duplicateObject` with
+an `objectIds` map, then move the copy and replace its text.
+
+**Batch pitfalls.** Requests in a batch run in order against the changing deck,
+but indices and transforms you computed come from your earlier read:
+
+- Send one combined `updatePageElementTransform` per element. A later absolute
+  transform built from the original read silently undoes an earlier move.
+- Do not mix `replaceAllText` with index-based edits (`deleteText` ranges,
+  `insertText` indices) on the same shape in one batch; the replacement shifts
+  the indices. Re-read between the two batches.
+- `gws` passes `--json` as one argument, which fails above about 128 KB
+  ("Argument list too long"). Split large request lists into several batches.
 
 ### Rendering a slide outline
 
@@ -400,7 +418,10 @@ input data as the chart, without duplicating the input table unless requested.
   defaults above.
 - Treat each text box or shape as a hard bounding box: text must fit fully inside
   without overflow, clipping, or collision. Use the template's original text as
-  the practical maximum density.
+  the practical maximum density, unless the user asks for denser slides. Then
+  add only facts already in the deck (speaker notes or other slides), keep body
+  text at or above the template's size, enlarge boxes where space allows, and
+  render to confirm the fit.
 - Let the container wrap text naturally. Do not add manual line breaks, paragraph
   breaks, or blank lines to force wrapping unless they are already in the
   template. Preserve the original paragraph structure when possible.
@@ -469,6 +490,23 @@ the exact same template slide only when it is clearly the best fit or when
 consistency across a repeated sequence is desirable. When in doubt, choose the
 more restrained option and stay as close to the original template as possible.
 
+When the user asks for layout variety, list the source layout of every slide in
+the deck, including slides you did not edit, before claiming that no layout
+repeats.
+
+### Replacing a slide with a different layout
+
+To change an existing slide's layout, copy the new template slide (it is
+appended), fill it, then:
+
+1. Copy the old slide's speaker notes into the new slide's notes shape
+   (`slideProperties.notesPage.notesProperties.speakerNotesObjectId`).
+2. In one batch, `updateSlidesPosition` the new slide into the old slide's index
+   and `deleteObject` the old slide.
+3. Re-read the deck, confirm the slide count, and renumber any "NN / total" page
+   footers on every slide whose position changed.
+4. Render the new slide.
+
 ### Copying a template slide across decks
 
 The Slides API cannot copy a slide between presentations while preserving its
@@ -493,6 +531,11 @@ jq -nc \
 A success response is `{"ok":true,"newSlideObjectId":"..."}`; failure is
 `{"ok":false,"error":"..."}` or an HTTP status ≥ 400. After copying, inspect the
 new slide and replace only the text content needed.
+
+Run the command as written. Adding `-X POST` makes `curl -L` re-send a POST to
+the redirect, which returns a Drive "file not found" HTML page even when the
+copy succeeded. On any unexpected response, check the destination's slide count
+before retrying, so a retry does not create a duplicate slide.
 
 ## Verifying
 
@@ -521,6 +564,27 @@ the title, body, and footer. Fix any defect and re-render before finishing.
 visual check per created or edited slide, not after every intermediate edit.
 Structured read-back (text runs, indices, styles) stays the right tool for
 verifying content and styling; the render is specifically for visual fit.
+
+Each render takes several seconds, so a whole deck rendered one slide at a time
+can exceed a command timeout. For many slides, render a few in parallel into a
+fresh directory and stack them into contact sheets for review:
+
+```bash
+out="$(mktemp -d)"
+jq -r '.slides | to_entries[] | "\(.key + 1) \(.value.objectId)"' \
+    /tmp/slides-read.json |
+    xargs -P 6 -L 1 sh -c '
+        url=$(gws slides presentations pages getThumbnail \
+            --params "{\"presentationId\":\"PRES_ID\",\"pageObjectId\":\"$1\"}" \
+            2> /dev/null | jq -r .contentUrl)
+        curl -sSL "$url" -o "$(printf "%s/slide_%02d.png" "'"$out"'" "$0")"'
+# One sheet per group of about six slides; repeat for later groups
+magick "$out"/slide_0[1-6].png -resize 50% -append "$out/sheet_1.png"
+```
+
+Finish the render and review before reporting. Do not hand off with a render
+still running in the background, and do not run two render jobs that write the
+same files.
 
 ## What to avoid
 
