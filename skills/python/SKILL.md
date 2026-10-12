@@ -17,9 +17,13 @@ repository configuration conflicts with either, follow the configuration.
 - Prefer `pathlib` over `os.path`.
 - Prefer double quotes for text and interpolation, and single quotes for short
   symbol-like strings, unless the repository formatter enforces another style.
-- Write NumPy-style docstrings: a summary line, then `Parameters` and `Returns`
-  sections, omitting types already present in the signature. Skip boilerplate
+- Write Google-style docstrings with Markdown prose and `Args:`, `Returns:`,
+  and `Raises:` sections where useful. Omit types already present in the
+  signature. Use raw docstrings for LaTeX backslashes. Skip boilerplate
   docstrings for obvious one-off code.
+- In Zensical projects, keep API rendering, notebook execution, and math support
+  aligned with the documentation recipes. Run the strict documentation build
+  after changing docstrings or documentation configuration.
 - Before finishing a change, format and lint with Ruff and type-check with
   `ty check`. Run configured hooks through the repository recipe (for example,
   `just hooks`). For uv projects using prek without a recipe, use
