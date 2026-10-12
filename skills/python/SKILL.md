@@ -21,6 +21,6 @@ repository configuration conflicts with either, follow the configuration.
   sections, omitting types already present in the signature. Skip boilerplate
   docstrings for obvious one-off code.
 - Before finishing a change, format and lint with Ruff and type-check with
-  `zmypy`, falling back to `mypy` if `zmypy` is unavailable.
+  `ty check`.
 - For non-trivial changes, add or update pytest tests when the repository has a
   test suite or the behavior can be meaningfully tested.
