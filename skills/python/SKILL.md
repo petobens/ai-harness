@@ -24,6 +24,9 @@ repository configuration conflicts with either, follow the configuration.
 - In Zensical projects, keep API rendering, notebook execution, and math support
   aligned with the documentation recipes. Run the strict documentation build
   after changing docstrings or documentation configuration.
+- Use the project's installed tool versions. In uv projects, prepare the
+  environment with `uv sync --locked`, then run checks with `uv run --no-sync`.
+  Do not regenerate lockfiles or upgrade dependencies unless the task requires it.
 - Before finishing a change, format and lint with Ruff and type-check with
   `ty check`. Run configured hooks through the repository recipe (for example,
   `just hooks`). For uv projects using prek without a recipe, use
