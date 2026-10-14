@@ -15,8 +15,8 @@ repository configuration conflicts with either, follow the configuration.
 - Always include type hints, using built-in generics (`list`, `dict`) and
   `X | None` unions rather than `typing.List` or `Optional`.
 - Prefer `pathlib` over `os.path`.
-- Prefer double quotes for text and interpolation, and single quotes for short
-  symbol-like strings, unless the repository formatter enforces another style.
+- Prefer double quotes for Python strings, including short symbol-like strings
+  and f-strings. Follow the repository formatter when it specifies another style.
 - Write Google-style docstrings with Markdown prose and `Args:`, `Returns:`,
   and `Raises:` sections where useful. Omit types already present in the
   signature. Use raw docstrings for LaTeX backslashes. Skip boilerplate
