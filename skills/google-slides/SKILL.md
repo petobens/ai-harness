@@ -51,22 +51,22 @@ These defaults apply when creating a Muttdata deck, maintaining its template
 library, or creating a new deck without another specified design. They do not
 restyle unrelated decks.
 
-Default Muttdata template deck:
-`1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`
-(`https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit`).
+Default: [Muttdata Slides Library (light)](https://docs.google.com/presentation/d/12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc/edit).
+Presentation ID: `12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc`.
 
-Lighter variant: **Muttdata Slides Library**:
-`12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc`
-(`https://docs.google.com/presentation/d/12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc/edit`).
+Alternative: [original Muttdata template](https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit).
+Presentation ID: `1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`.
 
-Use this deck when the user requests a lighter Muttdata design; otherwise keep
-the default above. Preserve the selected variant's source styling. The specific
-typography, chip, and title-marker defaults below apply to the default template.
+Use the default template for new decks unless the user requests the alternative
+or another design; existing decks keep their current design. Preserve the
+selected template's source styling. The chip-size and title-marker-image rules
+below apply only to the alternative template.
 
 - Build new Muttdata slides from the best matching template slide and preserve
   its design. Template-library expansion may use user-specified reference decks.
-- In the default template, content-slide titles use DM Sans bold, 24 pt on a
-  720 × 405 pt slide; scale proportionally for other page sizes. Keep this size
+- Content-slide titles use DM Sans bold, 21 pt in the default template and
+  24 pt in the alternative.
+  These sizes assume a 720 × 405 pt slide; scale for other page sizes. Keep them
   consistent instead of shrinking individual titles to fit. Use two lines or
   adjust the layout when needed. Covers, section dividers, and hero statements
   retain their separate display hierarchy.
@@ -83,7 +83,7 @@ typography, chip, and title-marker defaults below apply to the default template.
   rather than rebuilding it with rectangular shapes.
 - Vertically center a content-slide title with its title marker; check this
   after moving a title or changing its size.
-- Center text inside chips, pills, and badges both horizontally (paragraph
+- Center text inside boxed chips, pills, and badges horizontally (paragraph
   `alignment: CENTER`) and vertically (shape `contentAlignment: MIDDLE`).
 
 ## Rules
@@ -397,7 +397,9 @@ input data as the chart, without duplicating the input table unless requested.
 
 - For newly generated decks, use titles and optional chips instead of subtitles,
   unless the user requests subtitles. Remove unused subtitle placeholders from
-  copied layouts.
+  copied layouts. In the default template, the DM Mono 10.5 pt `>` line below
+  the title is a subtitle placeholder, not a chip. Remove it unless subtitles
+  are explicitly requested.
 - When a title takes fewer lines or a subtitle is removed, rebalance the body.
   Compare the visible gap below the title with the space above the footer; move
   the complete content group, including cards, labels, text, icons, and arrows.
@@ -408,13 +410,13 @@ input data as the chart, without duplicating the input table unless requested.
   bold to regular or regular to bold, and preserve font family, size, color,
   emphasis, alignment, and text-box structure unless the user requests a restyle
   or a small change is required for fit.
-- A `**Chip:**` field is a short pill-style context label (e.g. "Overall
-  Outlook"), not a subtitle or second title. Render it in an existing
-  chip/badge/pill/tag element; if the copied template has none, choose a template
-  slide that does rather than adding a subtitle box. Keep chip text short (one to
-  three words) and preserve its fill, corner radius, alignment, and position.
-  Preserve typography and sizing for content-only edits; when creating or
-  restyling slides using the default Muttdata template, apply the compact-chip
+- A `**Chip:**` field is a short context label (e.g. "Overall Outlook"),
+  not a subtitle or second title. Keep it to one to three words; it classifies
+  the slide rather than extending the title's argument.
+  Render it in an existing chip/badge/pill/tag element. If the selected layout
+  has none, choose a suitable layout with one; never repurpose the `>` subtitle
+  line as a chip. Preserve the element's styling and position. When creating or
+  restyling slides using the alternative template, apply the compact-chip
   defaults above.
 - Treat each text box or shape as a hard bounding box: text must fit fully inside
   without overflow, clipping, or collision. Use the template's original text as
