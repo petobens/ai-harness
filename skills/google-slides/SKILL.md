@@ -85,6 +85,14 @@ below apply only to the alternative template.
   after moving a title or changing its size.
 - Center text inside boxed chips, pills, and badges horizontally (paragraph
   `alignment: CENTER`) and vertically (shape `contentAlignment: MIDDLE`).
+  When the label is a separate text box layered over the pill shape, also
+  align the box's center with the pill's center.
+- When source or assumption notes are needed, place them just below the footer
+  rule with a small readable gap. Align the visible text with the rule's left
+  edge, accounting for text-box padding, and leave room above the slide edge.
+  Each note should clarify that slide, such as its sources, example basis, or
+  what a figure excludes. Remove footers that only repeat deck-wide date, unit,
+  or status labels.
 
 ## Rules
 
@@ -378,9 +386,17 @@ but indices and transforms you computed come from your earlier read:
 
 - Send one combined `updatePageElementTransform` per element. A later absolute
   transform built from the original read silently undoes an earlier move.
+- For a `RELATIVE` move that aligns one element with another, compute
+  `translateX` as target minus current (for example, pill center minus label
+  center). The reverse sign moves the element further away.
 - Do not mix `replaceAllText` with index-based edits (`deleteText` ranges,
   `insertText` indices) on the same shape in one batch; the replacement shifts
   the indices. Re-read between the two batches.
+- `replaceAllText` matches its text anywhere in scope, including inside longer
+  strings, so a short find such as `15%` also rewrites body copy. Use a find
+  string that is unique within `pageObjectIds` and check each reply's
+  `occurrencesChanged`. An unexpected count means a collision; 0 usually means
+  someone edited the text after your read, so re-read before retrying.
 - `gws` passes `--json` as one argument, which fails above about 128 KB
   ("Argument list too long"). Split large request lists into several batches.
 
@@ -410,6 +426,9 @@ input data as the chart, without duplicating the input table unless requested.
   bold to regular or regular to bold, and preserve font family, size, color,
   emphasis, alignment, and text-box structure unless the user requests a restyle
   or a small change is required for fit.
+- When reusing a duplicated table or card for different content, reset emphasis
+  that belonged to the source content, such as a bold, filled total row that
+  now holds an ordinary row.
 - A `**Chip:**` field is a short context label (e.g. "Overall Outlook"),
   not a subtitle or second title. Keep it to one to three words; it classifies
   the slide rather than extending the title's argument.
