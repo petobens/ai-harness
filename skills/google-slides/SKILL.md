@@ -82,11 +82,18 @@ below apply only to the alternative template.
   When a copied layout needs a replacement, reuse that asset and its placement
   rather than rebuilding it with rectangular shapes.
 - Vertically center a content-slide title with its title marker; check this
-  after moving a title or changing its size.
-- Center text inside boxed chips, pills, and badges horizontally (paragraph
-  `alignment: CENTER`) and vertically (shape `contentAlignment: MIDDLE`).
-  When the label is a separate text box layered over the pill shape, also
-  align the box's center with the pill's center.
+  after moving a title or changing its size. Titles copied from other slides
+  can carry different line or paragraph spacing, which shifts the text even
+  when the box position matches. Give every title the template's paragraph
+  style and check the alignment on the render of every slide. Judge each title
+  against its marker, not against other slides: an offset shared by every
+  slide is still misaligned.
+- Center text inside boxed chips, pills, badges, and number circles
+  horizontally (paragraph `alignment: CENTER`) and vertically (shape
+  `contentAlignment: MIDDLE`). When the label is a separate text box layered
+  over the shape, also align the box's center with the shape's center. Check
+  every such label in the deck, not only the one reported, and confirm it on
+  the render.
 - When source or assumption notes are needed, place them just below the footer
   rule with a small readable gap. Align the visible text with the rule's left
   edge, accounting for text-box padding, and leave room above the slide edge.
