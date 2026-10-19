@@ -51,8 +51,8 @@ These defaults apply when creating a Muttdata deck, maintaining its template
 library, or creating a new deck without another specified design. They do not
 restyle unrelated decks.
 
-Default: [Muttdata Slides Library (light)](https://docs.google.com/presentation/d/12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc/edit).
-Presentation ID: `12yYhkkfGKB7u0PqmMDrE8r_35AKishzTL8hOL9Dz8wc`.
+Default: [Muttdata Slides Library (light)](https://docs.google.com/presentation/d/12G7M0_faRN2twRY0zrVaZOpvFOvx6h_3EK5gsRvFB4M/edit).
+Presentation ID: `12G7M0_faRN2twRY0zrVaZOpvFOvx6h_3EK5gsRvFB4M`.
 
 Alternative: [original Muttdata template](https://docs.google.com/presentation/d/1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo/edit).
 Presentation ID: `1_dE4_JqjIfj-aL30WJvxpV0YCgoPbJsQHOr8z1gJHCo`.
