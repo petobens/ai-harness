@@ -62,6 +62,8 @@ Use them when they fit the task:
   open a small Kitty or Ghostty terminal running only that exact command so I can
   authenticate, and verify completion afterward instead of asking me to run it
   manually.
+- Use subagents when independent subtasks would materially improve speed or review
+  quality. Skip delegation for small tasks or tightly coupled work.
 - Wait for long-running commands and subagents to finish before ending your
   turn, polling in the foreground if needed. My clients do not always resume
   the agent when background work completes, so a turn that ends with a promise
