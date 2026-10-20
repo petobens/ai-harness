@@ -396,6 +396,9 @@ but indices and transforms you computed come from your earlier read:
 - For a `RELATIVE` move that aligns one element with another, compute
   `translateX` as target minus current (for example, pill center minus label
   center). The reverse sign moves the element further away.
+- An `ABSOLUTE` transform also replaces the scale. Text boxes often store their
+  size as a fixed base times `scaleX`/`scaleY`, so moving one with `scaleX: 1`
+  shrinks it. Copy the current scale from your read, or use a `RELATIVE` move.
 - Do not mix `replaceAllText` with index-based edits (`deleteText` ranges,
   `insertText` indices) on the same shape in one batch; the replacement shifts
   the indices. Re-read between the two batches.
@@ -406,6 +409,18 @@ but indices and transforms you computed come from your earlier read:
   someone edited the text after your read, so re-read before retrying.
 - `gws` passes `--json` as one argument, which fails above about 128 KB
   ("Argument list too long"). Split large request lists into several batches.
+
+**Table pitfalls.**
+
+- A row cannot shrink below its text plus the template's fixed cell padding
+  (about 350,000 EMU per row at 11 pt); a smaller `minRowHeight` is ignored.
+  Before adding rows or a second header row, check that the table still clears
+  the caption and footer. If not, move the table up or shorten the caption
+  rather than shrinking type.
+- `mergeTableCells` appends the text of every merged cell to the upper-left
+  cell, and inserted rows and columns copy the reference row's or column's
+  fill and emphasis. Clear old text before merging, insert new text after, and
+  reset fills and bold on inserted cells.
 
 ### Rendering a slide outline
 
