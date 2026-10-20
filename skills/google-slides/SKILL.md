@@ -78,6 +78,8 @@ below apply only to the alternative template.
 - Use unbulleted card headings above regular body bullets. When adapting a
   template, remove decorative bullet circles beside those headings and reclaim
   their indentation. Preserve meaningful icons and timeline markers.
+- For the light template, reuse an existing native rounded title marker and
+  preserve its size and placement.
 - Preserve the original rounded title-marker image from the template layout.
   When a copied layout needs a replacement, reuse that asset and its placement
   rather than rebuilding it with rectangular shapes.

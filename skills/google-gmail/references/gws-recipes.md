@@ -88,6 +88,22 @@ is sufficient for drafting here but cannot save a Gmail draft. Google bundles
 draft management and sending in `gmail.compose`, so the skill's never-send rule
 is an instruction boundary, not a draft-only OAuth permission.
 
+For ordinary prose drafts, prefer `multipart/alternative` with matching plain-text
+and simple HTML bodies, unless the user requests plain text. Plain-text-only
+messages can acquire hard line breaks when sent through Gmail, leaving a narrow
+column even in a wide window. Escape prose before inserting it into HTML and use
+paragraph blocks without fixed widths or whitespace-preserving styles. Add `<br>`
+only for intentional line breaks, such as within a signature. With Python's
+`EmailMessage`, use
+`set_content(text)` followed by `add_alternative(html, subtype="html")`; see the
+[email message documentation](https://docs.python.org/3/library/email.message.html).
+
+Keep prose paragraphs unwrapped in the source. MIME transfer-encoding soft breaks
+are not visible line breaks; inspect decoded bodies when diagnosing wrapping.
+On readback, verify both alternatives contain the same text and intended paragraph
+breaks. If a Gmail preview is available, check its layout too; MIME verification
+alone does not prove how the sent message will render.
+
 Build a MIME message with an email library, then base64url-encode its bytes into
 `message.raw`. Resolve the intended To/Cc recipients, honoring `Reply-To` when
 appropriate; do not assume reply-all. For a reply, supply `message.threadId`
