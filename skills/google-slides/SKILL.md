@@ -132,7 +132,9 @@ below apply only to the alternative template.
   after `/presentation/d/`) to `gws`.
 - Use `gws schema slides.presentations.METHOD` or `gws slides --help` when unsure
   about params or request bodies.
-- Report final title, ID, URL, and operations performed.
+- Report final title, ID, URL, and operations performed. Identify substantive
+  changes by slide number; include before/after values when meaningful figures
+  change.
 
 ## Files (create, find, copy, rename, trash)
 
@@ -478,6 +480,9 @@ input data as the chart, without duplicating the input table unless requested.
 - If replacement text overflows, first remove unnecessary manual breaks or excess
   paragraph spacing. If it still does not fit, prefer a better template slide or
   split the content rather than forcing denser copy or shrinking type.
+- When highlighting values in a comparison table, fit the highlight to the value
+  and preserve consistent alignment across the whole grid, including unhighlighted
+  cells. Check both text centering within the highlight and alignment with peers.
 - For content-only edits, adjust geometry to fix overflow, overlap, clipping, or
   unbalanced space. Broader design changes should follow the user's request.
 - Before finishing, review every edited text box for overflow, clipped text,
@@ -588,6 +593,11 @@ copy succeeded. On any unexpected response, check the destination's slide count
 before retrying, so a retry does not create a duplicate slide.
 
 ## Verifying
+
+Before a final readiness verdict, re-read the live deck, especially when another
+session may be editing it. Preserve concurrent changes and verify their effect
+on the reviewed content. Render newly changed slides whose visual fit has not
+been checked; do not repeat unchanged renders solely for this read-back.
 
 The deck JSON cannot reveal whether text overflows its box, collides, or wraps
 badly — only a render can. For each slide you created or edited, render it and

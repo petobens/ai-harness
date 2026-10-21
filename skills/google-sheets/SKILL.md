@@ -51,6 +51,13 @@ formatting and layout unless the user requests a restyle.
 - After any edit, read the edited ranges and surrounding boundaries in both
   formula and displayed-value modes. Scan for formula errors and confirm relevant
   totals, invariant outputs, and downstream summaries reconcile.
+- After changing model inputs or logic, check dependent narrative cells and any
+  companion deck in scope for stale figures and conclusions, not just formula
+  errors. Derive embedded figures from model cells where practical; review
+  qualitative claims separately.
+- Before a final readiness verdict, use a fresh live read of the relevant scope.
+  If concurrent edits appear, preserve them and verify affected outputs; render
+  any changed layout or text whose fit is uncertain.
 - After structural or formatting edits, also compare merges, named ranges,
   conditional-format ranges, data validation, hyperlinks and rich-text runs, row
   heights, column widths, and `effectiveFormat`. Inspect shifted dependents and
@@ -76,7 +83,9 @@ formatting and layout unless the user requests a restyle.
   spreadsheet ID (the segment after `/spreadsheets/d/`) to `gws`.
 - Use `gws schema sheets.spreadsheets.METHOD` or `gws sheets --help` when unsure
   about params, request bodies, or supported commands.
-- Report final title, ID, URL, and operations performed.
+- Report final title, ID, URL, and operations performed. Identify substantive
+  changes by tab and cell/range; include before/after values when meaningful
+  outputs change.
 
 ## Formula standards
 
@@ -100,7 +109,9 @@ formatting and layout unless the user requests a restyle.
   reliable and easier to audit.
 - Maintain one calculation engine for each modeled metric. Make summaries,
   scenarios, dashboards, and presentation outputs derive from the same logic
-  instead of independently recreating calculations.
+  instead of independently recreating calculations. Reconcile repeated metrics
+  after confirming their definitions, denominators, periods, and scenarios match;
+  similar labels alone do not imply equal values.
 - When one tab shows an active case and another compares several cases,
   parameterize the same model logic for every case rather than substituting
   simplified assumptions that can diverge. After model changes, validate every

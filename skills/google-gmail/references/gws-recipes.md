@@ -65,7 +65,10 @@ backward until it contains at least N matches, then sort that smaller set.
 `parts` recursively. Decode `body.data` as base64url, restoring padding if
 needed, and honor the MIME charset. Prefer `text/plain`; use sanitized HTML
 text when no plain body exists. Avoid duplicating multipart alternatives and
-quoted history in summaries. Never fetch remote HTML images just to read mail.
+quoted history in summaries. When a message refers to a table or exhibit, or
+relevant figures are missing from its text, inspect embedded image MIME parts
+(including inline attachments referenced by `cid:`). They may contain evidence
+absent from the decoded text. Never fetch remote HTML images just to read mail.
 
 Parts with `body.attachmentId` need a separate read, including body parts whose
 content is stored externally:

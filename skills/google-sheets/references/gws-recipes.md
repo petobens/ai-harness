@@ -182,10 +182,11 @@ slow, so use it sparingly:
   measures each text with Arial font metrics, allows left-aligned text to spill
   into empty cells to its right, and prints the cells that do not fit.
   Overshoots under about 10 px may still look fine in the render. The script
-  skips wrapped cells: rows without a fixed height grow to fit, so only the
-  render shows whether they clip. Include complete merges and blank columns to
-  the right for overflow; the check only sees the requested ranges. Measurements
-  assume Arial and do not account for rich-text runs or hidden columns.
+  skips wrapped cells: wrapping does not guarantee that all text is visible,
+  especially in merged cells or fixed-height rows. Shorten the text or adjust
+  row heights as needed, then check the render. Include complete merges and blank
+  columns to the right for overflow; the check only sees the requested ranges.
+  Measurements assume Arial and do not account for rich-text runs or hidden columns.
 
   ```bash
   uv run scripts/check_fit.py SHEET_ID "'Model'!A1:Z80" "'Inputs'!A1:J40"

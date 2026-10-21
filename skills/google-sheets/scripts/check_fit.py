@@ -6,8 +6,8 @@
 """Flag single-line Google Sheets cells whose text is wider than its cell.
 
 Text is measured with real font metrics (Arial or a metric-compatible font such
-as Liberation Sans). Wrapped cells are skipped: rows without a fixed height grow
-to fit them, so only a render shows whether they clip.
+as Liberation Sans). Wrapped cells are skipped. Wrapping does not guarantee
+visible text, especially in merged cells or fixed-height rows; check the render.
 """
 
 import argparse
