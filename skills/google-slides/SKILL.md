@@ -423,6 +423,11 @@ but indices and transforms you computed come from your earlier read:
   cell, and inserted rows and columns copy the reference row's or column's
   fill and emphasis. Clear old text before merging, insert new text after, and
   reset fills and bold on inserted cells.
+- `tableCells` omits cells hidden by a merge, so a cell's position in that list
+  is not its column. Address `cellLocation` with each cell's
+  `location.rowIndex` and `location.columnIndex`; merged cells also carry
+  `rowSpan` and `columnSpan`. `deleteText` with `type: ALL` on an empty cell
+  fails and rejects the whole batch; skip the delete for empty cells.
 
 ### Rendering a slide outline
 

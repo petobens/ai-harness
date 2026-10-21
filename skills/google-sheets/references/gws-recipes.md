@@ -10,6 +10,7 @@ Use these commands and API patterns when working with Google Sheets through
 - [Metadata inspection](#metadata-inspection)
 - [Writing](#writing)
 - [Raw batchUpdate](#raw-batchupdate)
+- [Rendering](#rendering)
 
 ## Files
 
@@ -96,9 +97,12 @@ Group related writes into as few atomic requests as practical, rather than
 issuing one network command per cell or formatting change.
 
 Prefer the `values` endpoints for content-only edits because they preserve
-existing formatting. With `updateCells` or `repeatCell`, use the narrowest
-possible `fields` mask and include `userEnteredFormat` only when intentionally
-changing formatting.
+existing cell formatting. They do not preserve rich text: writing a cell through
+`values` replaces its `textFormatRuns`, so in-cell bold, colors, and links are
+lost. Before rewriting a cell, check it for runs; if it has any, follow the
+rich-text guidance in [Raw batchUpdate](#raw-batchupdate). With `updateCells`
+or `repeatCell`, use the narrowest possible `fields` mask and include
+`userEnteredFormat` only when intentionally changing formatting.
 
 ## Raw batchUpdate
 
@@ -125,6 +129,24 @@ Use `moveDimension` to reorder complete rows or columns instead of copying and
 clearing them. It preserves formatting and lets Sheets update dependent formulas;
 re-read the moved range and its dependents afterward.
 
+To move a block that does not span complete rows or columns, such as one table
+beside others, use `cutPaste`. Sheets updates formulas that reference the moved
+cells, including from other tabs.
+
+- When the source and destination overlap, cut the block to an empty staging
+  area first, then cut it to the destination. Keep the staging area inside the
+  sheet's `gridProperties.rowCount` and `columnCount`; a destination outside
+  the grid fails.
+- Cell addresses written inside text are not updated: notes, labels, and string
+  literals in formulas such as `"(D32:F46)"`, `"(B20)"`, or `"row 52"`. After
+  every move, search the workbook's text and formulas for the old addresses and
+  update them.
+- Row heights and column widths stay with the grid, not the moved cells. Reset
+  them for the block's new rows and columns.
+- When porting a formula from one tab to a parallel tab with a similar layout,
+  resolve every address again on the target tab instead of reusing the source
+  tab's coordinates, then read the displayed result to confirm it.
+
 ```bash
 gws sheets spreadsheets batchUpdate --dry-run \
     --params '{"spreadsheetId":"SHEET_ID"}' \
@@ -148,3 +170,58 @@ their link URIs.
 
 Colors are RGB floats in `0..1`, e.g. dark gray 1 `#b7b7b7` is
 `{"red":0.717,"green":0.717,"blue":0.717}`.
+
+## Rendering
+
+Values reads do not show clipped labels, wrapped headers, or misaligned tables,
+so layout edits need a visual check. Exporting and rasterizing the workbook is
+slow, so use it sparingly:
+
+- While editing, check single-line cells from metadata with
+  `scripts/check_fit.py`, resolved relative to the skill's `SKILL.md`. It
+  measures each text with Arial font metrics, allows left-aligned text to spill
+  into empty cells to its right, and prints the cells that do not fit.
+  Overshoots under about 10 px may still look fine in the render. The script
+  skips wrapped cells: rows without a fixed height grow to fit, so only the
+  render shows whether they clip. Include complete merges and blank columns to
+  the right for overflow; the check only sees the requested ranges. Measurements
+  assume Arial and do not account for rich-text runs or hidden columns.
+
+  ```bash
+  uv run scripts/check_fit.py SHEET_ID "'Model'!A1:Z80" "'Inputs'!A1:J40"
+  ```
+
+- Render once, after layout and formatting edits are complete and before
+  handing off. Skip it for value-only edits. If the render shows defects, fix
+  them and render again.
+
+The export shrinks each tab to the page width, so render at about 450 dpi and
+crop to the table under review. Compute the crop instead of guessing: after
+trimming, scale is image width divided by the tab's used column width in
+pixels, and a cell's offset is scale times the column widths to its left and
+the row heights above it. Offsets drift slightly down the page, so add about
+one row of margin above and below. A tab that spans several pages restarts the
+row offset on each page.
+
+```bash
+render_dir=$(mktemp -d)
+# gws requires the output path to stay inside its working directory
+cd "$render_dir"
+gws drive files export \
+    --params '{"fileId":"SHEET_ID","mimeType":"application/pdf"}' \
+    -o ./sheet.pdf
+# Tabs export in tab order; find the tab's page by text unique to that tab,
+# since tabs can share titles
+pdftotext -f 3 -l 3 ./sheet.pdf - | head -1
+pdftoppm -r 450 -png -f 3 -l 3 ./sheet.pdf ./p
+# Output is p-3.png; pdftoppm zero-pads it (p-03.png) in 10+ page PDFs
+# Trim the margins, then crop the computed WIDTHxHEIGHT+X+Y region
+magick ./p-3.png -trim +repage -crop WIDTHxHEIGHT+X+Y +repage \
+    -resize 1500x ./crop.png
+```
+
+Open the crop with the agent's image viewer (Codex: `view_image`; Claude: `Read`)
+and inspect it before reporting the visual check complete.
+
+The export covers every tab and needs Drive access. Re-export after fixing
+defects; do not reuse an earlier PDF.
