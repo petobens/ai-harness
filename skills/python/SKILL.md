@@ -31,5 +31,8 @@ repository configuration conflicts with either, follow the configuration.
   `ty check`. Run configured hooks through the repository recipe (for example,
   `just hooks`). For uv projects using prek without a recipe, use
   `uv run --no-sync prek run --all-files` after syncing dependencies.
+- Run Ruff and ty with the project's normal configuration and declared
+  dependencies. Report any overrides or environment differences that affect
+  validation.
 - For non-trivial changes, add or update pytest tests when the repository has a
   test suite or the behavior can be meaningfully tested.
