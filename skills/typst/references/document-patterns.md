@@ -106,7 +106,7 @@ Book appendices remain inside the current chapter and use level-two headings:
 
 - Import `@local/mutt-slides:0.1.0` and apply `mutt-slides.with(...)`.
 - Full-document example exclusions: none.
-- Use the template's 720 × 405 pt canvas, `14pt` body, and `24pt` content
+- Use the template's 720 × 405 pt canvas, `14pt` body, and `21pt` content
   titles. Typography scales with `font-size`; keep the default unless the user
   requests a change, and recheck every slide after changing it. Do not reduce
   individual titles to fit.
@@ -122,6 +122,11 @@ Book appendices remain inside the current chapter and use level-two headings:
   or `none` to omit it. Put `#slide-chip[Short label]` after a content heading
   for an optional header chip; no chip is added automatically. Keep labels to
   one to three words and action titles to at most two lines.
+- Content titles use the light library's native rounded toggle marker. Center
+  the marker vertically against both one- and two-line titles.
+- Use `#slide-note[Source or assumption]` for a short slide-specific note below
+  the footer rule. Keep it to one or two lines; explain sources, assumptions,
+  or exclusions rather than repeating deck-wide dates, units, or status.
 - Leave `slide-numbers: false` for the standard Mutt footer, or set it to `true`
   for logical slide numbers. The cover and dividers count; overlays do not.
 - When rendering a generated outline, omit the internal plan, Markdown slide
@@ -156,6 +161,9 @@ Book appendices remain inside the current chapter and use level-two headings:
   `table`, or another function call, pass `pause,` as an argument.
 - Treat every slide as a hard frame. Shorten or split content before reducing
   type size; accept no overflow, clipping, collisions, or title-chip overlap.
+- Check title-marker alignment and centered labels in chips, badges, and
+  number circles on the render. For highlighted table values, center the text
+  inside each highlight and preserve alignment with unhighlighted cells.
 - Supply figure captions for semantics and references even though the template
   hides them visually.
 - Use native `table` for slide tables so they retain the slide template's table
