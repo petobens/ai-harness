@@ -78,11 +78,19 @@ below apply only to the alternative template.
 - Use unbulleted card headings above regular body bullets. When adapting a
   template, remove decorative bullet circles beside those headings and reclaim
   their indentation. Preserve meaningful icons and timeline markers.
-- For the light template, reuse an existing native rounded title marker and
-  preserve its size and placement.
-- Preserve the original rounded title-marker image from the template layout.
-  When a copied layout needs a replacement, reuse that asset and its placement
-  rather than rebuilding it with rectangular shapes.
+- For the light template, keep the native pill-shaped title marker that comes
+  with a copied template slide, with its size and placement. Never delete and
+  recreate it: the Slides API cannot set corner radius, so `createShape` with
+  `ROUND_RECTANGLE` gives a much smaller default radius that looks square.
+  When a slide lacks the marker, start from a template slide that already has
+  one. The [copy service](#copying-a-template-slide-across-decks) copies whole
+  slides, not individual elements.
+  Check the corners on a zoomed render; full-slide thumbnails hide the
+  difference.
+- For the alternative template, preserve the original rounded title-marker
+  image from the template layout. When a copied layout needs a replacement,
+  reuse that asset and its placement rather than rebuilding it with
+  rectangular shapes.
 - Vertically center a content-slide title with its title marker; check this
   after moving a title or changing its size. Titles copied from other slides
   can carry different line or paragraph spacing, which shifts the text even
@@ -102,6 +110,24 @@ below apply only to the alternative template.
   Each note should clarify that slide, such as its sources, example basis, or
   what a figure excludes. Remove footers that only repeat deck-wide date, unit,
   or status labels.
+
+### Visual emphasis
+
+Use these preferences when selecting Muttdata layouts or adapting their design
+within the requested scope:
+
+- Make the supplied relationship visible: contrast through paired panels,
+  progression through stages, hierarchy through layers, or flow through arrows.
+- Give each slide a clear focal point. Use scale, placement, and selective
+  saturated color to separate the main message from supporting detail.
+- Give equivalent items equal visual weight; use asymmetry when the supplied
+  content warrants emphasis. Keep quantitative chart proportions accurate.
+- When supplied content includes a takeaway, give it a distinct place without
+  competing with the title. Do not invent one or require a takeaway bar on
+  every slide.
+- Review the sequence as well as individual slides. Keep recurring navigation,
+  such as progress dots, consistent. When a run of dense slides needs a pause,
+  suggest a section divider or statement slide rather than adding one.
 
 ## Rules
 
