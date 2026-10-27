@@ -29,9 +29,12 @@ dominio está en `references/`: abrir el que corresponda antes de escribir SQL.
 
 - Acceso read-only vía MCP `postgres` (`execute_sql`, `list_objects`,
   `explain_query`). El MCP llega a la base por un túnel SSM con login SSO de
-  AWS, que vence a las 8 horas. Si no conecta, pedir al usuario que reinicie
-  el MCP (o el agente) y complete el login en el navegador. No reintentar ni
-  conectarse por otra vía.
+  AWS. El túnel y, si hace falta, el login se inician al usar una herramienta
+  de la base, no al iniciar el agente. Pedir al usuario que complete el login
+  en el navegador mientras la llamada espera; normalmente no hace falta
+  reiniciar el MCP. Si la llamada falla durante la autenticación, reintentar
+  una vez después de completar el login. Si vuelve a fallar, informar el
+  error sin seguir reintentando ni conectarse por otra vía.
 - `date_trunc('month', date)::date` para agrupar por mes;
   `to_char(date, 'YYYYMM')::int` para la clave `period` que usan varias vistas.
 - Las materializadas las refresca un workflow de Appsmith que corre todos los
