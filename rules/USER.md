@@ -55,8 +55,14 @@ Use them when they fit the task:
 - Treat unexpected changes made during a task as concurrent user work. Preserve
   them and continue only with your own changes. If the concurrent work prevents
   you from proceeding safely, stop and ask for guidance.
-- Never run `git commit` or `git push`. After completing and verifying changes,
-  leave the working tree uncommitted.
+- Do not commit, push, merge, or delete remote branches unless explicitly
+  authorized by the user for the current change. Authorization covers only the
+  agreed repositories and actions. Otherwise, leave changes uncommitted.
+- Use `ship-change` only when I invoke it by name or confirm using it. If an
+  agent selects it automatically, ask before starting its workflow. Ask once
+  for any missing action authorization after preparing and validating the
+  change; do not ask again for actions already explicitly authorized. A skill
+  does not grant permission by itself.
 - When an authorized command needs an interactive sudo password, first explain
   precisely why elevated privileges are required and what the command will do, then
   open a small Kitty or Ghostty terminal running only that exact command so I can
