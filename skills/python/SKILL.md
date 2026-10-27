@@ -34,5 +34,9 @@ repository configuration conflicts with either, follow the configuration.
 - Run Ruff and ty with the project's normal configuration and declared
   dependencies. Report any overrides or environment differences that affect
   validation.
+- When a script runs in a separate application environment, run `ty check`
+  both with the repository's default configuration, as the editor does, and
+  with the application's Python (`--python`). Passing one does not imply the
+  other.
 - For non-trivial changes, add or update pytest tests when the repository has a
   test suite or the behavior can be meaningfully tested.
