@@ -3,7 +3,7 @@
 Réplica de HubSpot en Postgres. Portal ID **22714877**; URL de un deal:
 `https://app.hubspot.com/contacts/22714877/deal/{deal_id}`.
 
-## `hubspot.deals` (1.471 filas, 40 columnas)
+## `hubspot.deals` (1.571 filas al 2026-10-06, 40 columnas)
 
 Ver `references/entities.md` para el detalle de columnas.
 
@@ -17,7 +17,7 @@ Campos que cambian el cálculo de revenue:
 | `pricing_structure` | modalidad de facturación |
 | `length_of_contract`, `headcount` | dimensionamiento |
 
-## `hubspot.line_items` (890 filas)
+## `hubspot.line_items` (961 filas al 2026-10-06)
 
 `line_item_id`, `line_item`, `amount`, `price`, `quantity`, `start_date`,
 `end_date`, `deal_id`, `description`, `vuriltek_invoice_id`, `sas_invoice_id`.

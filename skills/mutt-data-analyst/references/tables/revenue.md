@@ -69,10 +69,12 @@ en lugar de NULL para agrupar.
 ## Snapshots [VERIFICADO 2026-09-28]
 
 - `revenue_versions`: snapshot de `view_revenue` por `version_date`.
-  **Es la tabla de análisis** (Pipeline Evolution). 40 versiones desde
-  2025-12-15, ~40k filas cada una (≈1,6M filas en total): semanales hasta
-  mediados de septiembre 2026 y diarias desde el 24/09. No trae `headcount` ni
-  `mix_id`. **Filtrar siempre `version_date` y `date`.**
+  **Es la tabla de análisis** (Pipeline Evolution). [VERIFICADO 2026-10-30]
+  Versiones desde 2025-12-15, **semanales, los jueves** (workflow "DB:
+  PipelineVersions", 11 h de Buenos Aires; `version_date` queda en 14:00 UTC);
+  ~40–45k filas cada una. `version_date` es timestamp: castear `::date` para
+  filtrar por día. No trae `headcount` ni `mix_id`.
+  **Filtrar siempre `version_date` y `date`.**
 - `revenue_versions_changes` (vista): diferencias entre versiones.
 - `revenue_versions_pbi` (vista): formato para Power BI.
 - `revenue_versions_weekly` **ya no existe en la base.** Si aparece en código o
@@ -89,12 +91,14 @@ en lugar de NULL para agrupar.
 
 ## Commit
 
-- `revenue_commit_q3` (196 filas): **baseline congelado**, Jul–Sep 2026. Es la
-  tabla de comparación contra el forecast.
+- **Fuente vigente: los planes `commit` de `simulation_revenue`**
+  (`revenue_plans`, `revenue_plan_months`, `revenue_plan_lines`). Cubren Q1 a Q4
+  2026. Reglas y SQL en `metrics.md` § Forecast vs commit. [VERIFICADO
+  2026-10-30]
+- `pipeline.revenue_commit_q3` (`period`, `deal_id`, `account_id`, `project_id`,
+  `amount`): baseline de Jul–Sep 2026. Coincide al peso con el plan de Q3.
 - `revenue_commit` (el commit rolling) **ya no existe en la base.** [VERIFICADO
-  2026-09-28] `revenue_commit_q3` es la única tabla de commit.
-
-Ambas: `period`, `deal_id`, `account_id`, `project_id`, `amount`.
+  2026-09-28]
 
 ## Simulación
 
@@ -107,6 +111,8 @@ Ambas: `period`, `deal_id`, `account_id`, `project_id`, `amount`.
 | `simulation_revenue.revenue_scenario_monthly` | Líneas × mes de una simulación: montos base, `manual_amount`, `simulation_amount`, `current_amount`, overrides `auto_*`, `is_removed`, `is_user_edited`, `edited_by/at` |
 | `simulation_revenue.revenue_scenario_sources` | Fuentes de revenue disponibles para simular |
 | `simulation_revenue.revenue_simulation_source_monthly` | Pipeline vivo por fuente y mes (`current_amount`, `unweighted_amount`) para comparar |
+| `simulation_revenue.revenue_plans`, `revenue_plan_months`, `revenue_plan_lines` | Planes promovidos (hoy, los commits por trimestre). Ver § Commit |
+| `simulation_revenue.revenue_admins`, `revenue_viewers` | Listas de acceso de la app (`email`, `added_at`, `added_by`) |
 | `revenue_scenario_create(name, start, end, email, base_id)` | Función: crea una simulación (opcionalmente copiando otra) |
 | `revenue_scenario_mutate(id, revision, action, payload jsonb, email)` | Función: aplica un cambio; `revision` es control de concurrencia |
 

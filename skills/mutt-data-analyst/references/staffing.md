@@ -18,7 +18,24 @@ Power BI: `staffed_cost`, `staffed_cost_weighted`, `staffed_headcount_cost`,
 `staffed_dedication`, `staffed_headcount`, `staffed_standard_rate` y sus
 variantes `_weighted`, más `employee_cost_of_revenue`. [VERIFICADO]
 
-La fórmula interna de las ponderaciones `_weighted` no está leída todavía.
+### Cómo calcula `deals_assignments_metrics` [VERIFICADO 2026-10-06]
+
+- **Grano diario** (empleado × deal × día hábil), sin Closed Lost.
+- **Tres fuentes:** `oas_views.deals_assignments`; vacantes de
+  `oas_views.deals_vacants`, con costo fijo 4.000, standard rate 8.000 y 8 h; y
+  `oas_views.manual_revenue_assignments` (proyectos), con tasa 100.
+- **`staffed_cost` diario** = salario × `dedication`/100 / días hábiles del mes,
+  redondeado a entero. El salario es el último de `finance.view_salary_cost`
+  hasta ese mes, si no el último disponible, si no el standard cost del step.
+- **`_weighted`** = métrica × tasa / 100. La tasa es 100 si el deal tiene
+  kickoff y el día es anterior al fin del mes en curso; si no,
+  `pipeline.deals_info.realistic_rate`, que es la
+  **tasa de la matriz sin override manual y sin umbral de 60**.
+
+Consecuencia: el costo staffeado ponderado equivale a **full weighted**, no al
+Forecast. Un deal con tasa 25 aporta 25% de su costo aunque aporte 0 al
+`realistic_amount`, y un `conversion_rate_manual` se ignora. No comparar
+`_weighted` contra `realistic_amount` sin aclararlo.
 
 ## Definiciones [SQL APP]
 
@@ -60,8 +77,35 @@ bench, decir cuál de las tres.
 - La asignación comercial se actualiza en `hubspot.deals`, columnas `account_id`
   y **`projectid`** (sin guion bajo).
 
+## Modelo nuevo: schema `staffing` [EN CONSTRUCCIÓN — VERIFICADO 2026-10-30]
+
+Lo está armando el equipo de Augusto para reemplazar el staffing por deal con un
+modelo de **posiciones**. La estructura cambió por completo entre el 13/10 y el
+30/10, así que
+**no usarlo para métricas ni compararlo con `oas.deals_assignments`** sin
+confirmar con Augusto, y leer las columnas antes de cada consulta.
+
+Conceptos a hoy:
+
+- **`positions`**: posición por deal o proyecto, con rol, step mínimo, inglés
+  mínimo, fluidez US, `hc`, bill rate y moneda, fase y continuidad
+  (`continues_position_id`).
+- **`assignments`**: persona (o placeholder, o candidato de Lever) en una
+  posición, con `status`, `dedication`, fechas y `tentative_until`.
+  `assignment_interviews` registra entrevistas con el cliente.
+- **`position_requests`**: pedidos de posición generados desde los deals, que se
+  revisan y aprueban (`approved_position_id`). `position_request_requirements` y
+  `position_requirements` piden capacidades con nivel mínimo e importancia.
+- **Taxonomía de capacidades extendida**: `capabilities_ext`, `practices_ext` y
+  `capability_terms` (sinónimos), que apuntan a las oficiales de `development`.
+- **Perfil de proyectos desde ClickUp**: `project_profile_people`,
+  `project_profile_capabilities`, `project_industries` y `evidence_levels`.
+- **`v_demand_without_supply`**: capacidades pedidas en deals que hoy no tienen
+  oferta.
+
 ## Riesgos
 
+- Usar el schema `staffing` como fuente vigente.
 - Equiparar los tres benches.
 - Contar vacantes como personas.
 - Leer `Match` como igualdad de dedicación.

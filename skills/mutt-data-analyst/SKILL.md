@@ -21,6 +21,9 @@ dominio está en `references/`: abrir el que corresponda antes de escribir SQL.
 | Joins y catálogos entre entidades | `references/entities.md` |
 | Fórmula SQL de un KPI puntual | `references/metrics.md` |
 | Columnas de una tabla concreta | `references/tables/` |
+| Investigar una anomalía (salto de forecast, margen raro, diferencia entre pantallas) | `references/diagnostico.md` |
+| KPIs del Scorecard (manuales y staffing semanal) | `references/scorecard.md` |
+| Frescura de datos, workflows de carga y reglas que impone la base (triggers) | `references/workflows.md` |
 | Qué falta definir y quién lo define | `references/pendientes.md` |
 
 ---
@@ -37,8 +40,10 @@ dominio está en `references/`: abrir el que corresponda antes de escribir SQL.
   error sin seguir reintentando ni conectarse por otra vía.
 - `date_trunc('month', date)::date` para agrupar por mes;
   `to_char(date, 'YYYYMM')::int` para la clave `period` que usan varias vistas.
-- Las materializadas las refresca un workflow de Appsmith que corre todos los
-  días. No hay `pg_cron` en la base.
+- Las materializadas las refresca el workflow de Appsmith "DB: Refresh All",
+  **cada hora de 8 a 21** (hora de Buenos Aires). No hay `pg_cron` en la base.
+  Para saber cuándo corrió cada carga y si falló: `oas.workflows_catalog` +
+  `oas.workflow_runs` (ver `references/workflows.md`).
 - Cuando no sepas la definición de una vista, leerla:
   `pg_get_viewdef('schema.objeto'::regclass, true)`. Es preferible a suponer la
   fórmula.
@@ -68,8 +73,8 @@ La excepción son los line items: algunos se cargan con `price` en ARS y
 
 - **`price` de un line item no es comparable entre filas.** Usar siempre
   `price * quantity`.
-- Los line items en ARS se reconocen por `quantity < 1`: 134 de 890, con mínima
-  0,000621 (tasa ≈ 1.610).
+- Los line items en ARS se reconocen por `quantity < 1`: 137 de 961 al
+  2026-10-06, con mínima 0,000621 (tasa ≈ 1.610).
 - **Esta regla no se extiende a compensaciones ni a RDG.** Esos dominios sí
   tienen `currency`, `official_usd` y parámetros `_ars` / `_usd` propios.
 
@@ -88,9 +93,9 @@ ambos. Los flags `is_hubspot` / `is_project` lo indican y `related_id` /
 `related` dan el identificador unificado — usar esos para agrupar sin ramificar
 por origen.
 
-**Verificado: los espacios de IDs no colisionan.** 291 proyectos y 1.479 deals,
-cero IDs compartidos. Resolver `related_id` contra ambos es seguro hoy, aunque
-nada en el schema lo garantiza a futuro.
+**Verificado 2026-10-06: los espacios de IDs no colisionan.** 293 proyectos y
+1.571 deals, cero IDs compartidos. Resolver `related_id` contra ambos es seguro
+hoy, aunque nada en el schema lo garantiza a futuro.
 
 Ojo con `hubspot.deals`: la columna del proyecto se llama
 **`projectid`, sin guion bajo**. No existe `project_id` en esa tabla.
@@ -105,13 +110,12 @@ responder la pregunta, buscar el equivalente vigente.
 
 | Schema | Qué es | Equivalente vigente |
 |---|---|---|
-| `archive` | Backup, se va a borrar | — |
 | `compensations_calculator` | Modelo viejo de simulación de aumentos | `compensations` |
 | `dev` | Vistas para devs | — |
 | `orgchart` | Organigrama, desactualizado | `bamboo.employees_joined` (`supervisor_id`) |
 | `people_reporting` | Vistas que alimentan a People | `people`, `bamboo` |
 | `performance_review` | Modelo viejo de skills y performance review | `development` |
-| `public` | Sin uso (0 objetos) | — |
+| `public` | Sin tablas: solo funciones de triggers y de `postgres_fdw` | — |
 | `sales` | Sin uso | `hubspot`, `pipeline` |
 | `security_tracking` | Solo lo usa Muttito | — |
 | `staffy` | Lo usaron devs (0 objetos visibles) | — |
@@ -132,8 +136,14 @@ recruiting sobre `lever` sin validarlas antes con Augusto, y decirlo en la
 respuesta.
 
 Los schemas de análisis son `bamboo`, `compensations`, `development`, `finance`,
-`hubspot`, `muttito`, `oas`, `oas_views`, `people`, `pipeline`,
-`simulation_revenue`, `time_tracking` y `time_tracking_old`.
+`hubspot`, `muttito`, `oas`, `oas_views`, `people`, `pipeline`, `scorecard`,
+`simulation_revenue`, `time_tracking` y `time_tracking_old`. El schema `archive`
+ya no existe [VERIFICADO 2026-10-30].
+
+**`staffing` es el modelo nuevo de posiciones** y está en construcción
+[VERIFICADO 2026-10-30]: su estructura cambió por completo en dos semanas. No
+usarlo para métricas; el staffing vigente sigue en `oas.deals_assignments` (ver
+`references/staffing.md`).
 
 ## Año fiscal
 
@@ -154,13 +164,20 @@ Coincide con el calendario.
 - **Recalcular un cociente promediando cocientes.** Márgenes, utilización y
   realization se recalculan sobre los totales.
 - **Usar `revenue_versions_weekly` o `revenue_commit` (rolling).** Ya no
-  existen: los snapshots están en `pipeline.revenue_versions` y el commit en
-  `revenue_commit_q3`.
+  existen: los snapshots están en `pipeline.revenue_versions` y el commit en los
+  planes de `simulation_revenue` (ver `references/metrics.md` § Forecast vs
+  commit).
+- **Decir que no hay commit de Q4.** Existe desde el 2026-10-20, en
+  `simulation_revenue.revenue_plans`.
 - **Agrupar por cuenta sin la regla de deals (HS)** de
   `oas_views.deals_resolved`: los totales por cliente o cuenta no van a
   coincidir con las apps ni con el Power BI.
-- **Usar objetos `*_backup`** (`hubspot.deals_backup`, `line_items_backup`,
-  `development.review_latest_backup`). Son respaldos históricos.
+- **Usar objetos `*_backup` o `bkp_*`** (`hubspot.deals_backup`,
+  `line_items_backup`, `oas.deals_assignments_backup`,
+  `development.review_latest_backup`, `oas.bkp_deal_model_20260924`,
+  `time_tracking.bkp_forms_fix_20260924`, `people.pulse_survey_backup_20260603`,
+  `compensations.bkp_paid_salaries_rdd_20261103`). Son respaldos: los primeros
+  tres los pisa un workflow semanal.
 - **Usar un schema fuera de alcance** (tabla de arriba), en especial
   `performance_review` en lugar de `development`, o `compensations_calculator`
   en lugar de `compensations`.
@@ -171,6 +188,18 @@ Coincide con el calendario.
   `forecast = false` en `compensations.view_parameters`.
 - **Reportar hacia afuera la utilización delivery.** La externa es
   `kpis_utilization`.
+- **Comparar el costo staffeado `_weighted` contra `realistic_amount`.** El
+  `_weighted` de staffing pondera como full weighted (sin umbral 60 ni override
+  manual). Ver `references/staffing.md`.
+- **Tratar como error los deals con `stage_id` NULL.** Son etapas muy tempranas
+  sin mapear a propósito.
+- **Dar un número sin chequear la frescura** de la carga que lo alimenta, si la
+  pregunta es sobre hoy o esta semana. Ver `references/workflows.md`.
+- **Usar el schema `staffing` para métricas** mientras esté en construcción.
+- **Cruzar respuestas de Voice of Mutters con personas.** La encuesta es anónima
+  por diseño (ver `references/dominios-sin-verificar.md`).
+- **Tomar los conteos de esta skill como dato actual.** Llevan fecha y son
+  orientativos: reconsultar la base antes de citarlos.
 
 ## Procedencia del contenido
 

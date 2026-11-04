@@ -54,10 +54,40 @@ Consecuencias:
 - **`dedication` viene en 0–100** en esta vista. El Power BI la divide por 100
   al cargarla.
 
+## De dónde salen los insumos de `mv_master` [VERIFICADO 2026-10-06]
+
+| Columna | Origen |
+|---|---|
+| `salary_cost` | Último `finance.view_salary_cost` con mes ≤ al mes del día. **Arrastra el último salario conocido** |
+| `has_salary_cost` | Hay salario cargado para ese mes exacto |
+| `standard_rate`, `standard_cost` | Step vigente en `bamboo.career_path` → `oas_views.steps` |
+| `department`, `employee_department_id`, `employee_cost_of_revenue` | Último `bamboo.view_job_information` del mes → `oas.departments`, **unido por nombre** (`lower(trim())`) |
+| `working_hours` | Último `bamboo.compensation_scheme`; 8 si es 0 o NULL |
+| `weekly_days` | Días hábiles del mes |
+
+**`finance.view_salary_cost`:** hasta 2025 sale de `finance.salary_costs`. Desde
+2026 es `total_compensation_cost` de `compensations.paid_and_payroll_salaries`,
+hasta el **mes calendario anterior** y excluyendo `employee_id >= 900000` (los
+planificados de `payroll_needs`). Usa criterio calendario, no el flag
+`forecast`.
+
+Consecuencias:
+
+- **El mes en curso se costea con el salario del mes anterior**, y
+  `used_standard_cost` no lo marca: solo es `true` cuando la persona no tiene
+  ningún salario previo. Para distinguir el arrastre, mirar
+  `has_salary_cost = false`.
+- **El join de departamento por nombre es frágil.** Hoy no deja horas sin
+  categoría, pero si cambia el nombre de un departamento en Bamboo,
+  `employee_cost_of_revenue` queda NULL y esas horas salen de las cuatro
+  categorías de delivery.
+
 ## Reglas del workflow [SQL APP]
 
 - El envío exige `SUM(dedication) = 100` por formulario, y exactamente uno de
-  `project_id` o `deal_id` por línea.
+  `project_id` o `deal_id` por línea. La suma 100 la impone además un trigger de
+  `time_tracking.dedications` en insert, update y delete [VERIFICADO
+  2026-10-30].
 - La validación de Muttito admite hasta 20 líneas y múltiplos de 5, y permite
   cero en una línea; la vía administrativa exige valores positivos. Son dos
   caminos con validaciones distintas.

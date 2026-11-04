@@ -93,13 +93,19 @@ El pool CoR es el **non-delivery cost**: costo de HR de los departamentos de
 delivery que no quedó imputado a horas delivery. Definición de negocio: HR cost
 allocated = costo total de HR − delivery cost. [CONFIRMADO POR AUGUSTO]
 
-**3. Prorrateo:**
+**3. Prorrateo:** [VERIFICADO 2026-11-04 en `view_project_metrics_monthly`]
 
-- **CoR:** por participación en el revenue dentro de la BU
-  (`cor_revenue_share`). Si la BU no tiene revenue en el mes, partes iguales
-  entre sus filas.
-- **Operativo:** por participación en el revenue de toda la compañía
-  (`operating_revenue_share`). Sin revenue, por costo.
+- **CoR:** `cor_revenue_share` = revenue de la fila / revenue del mes de su
+  departamento CoR (`cor_department_id`, que sigue a la BU). Si ese departamento
+  no tiene revenue en el mes, partes iguales entre sus filas. Filas sin
+  `cor_department_id`: 0.
+- **Operativo:** `operating_revenue_share` = revenue de la fila / revenue total
+  del mes. Si no hay revenue, por `cost_allocation_basis`
+  (`delivery_cost + staffed_delivery_cost_forecast + overhead_cost`); si tampoco
+  hay costo, 0. Los pools operativos (gastos y HR a prorratear) excluyen los
+  departamentos 1, 2 y 9.
+- **Dentro de la cuenta:** `account_allocation_share`, con la misma lógica a
+  nivel cuenta.
 
 **El pool cierra exacto.** En los 12 meses de 2026, la suma de
 `cor_hr_cost_allocated` en la MV es igual al pool CoR, con diferencia 0. Ningún
@@ -124,20 +130,76 @@ pagados.
 - La vista exige además filas en `finance.finance_salaries`, pero
   **esa tabla ya tiene montos para los meses futuros** [VERIFICADO 2026-10-01],
   así que en la práctica decide solo `forecast`.
-- Al 2026-10-01: enero–agosto cerrados; septiembre en adelante con
-  `forecast = true`.
+- Al 2026-10-06: enero–septiembre cerrados; octubre en adelante con
+  `forecast = true`. Consultar siempre la tabla antes de asumir.
 - **No usar el criterio calendario** ("todo mes anterior al actual") para P&L ni
-  gross profit: septiembre ya pasó y todavía no está cerrado.
+  gross profit: un mes pasado puede seguir abierto hasta que se cargan los
+  salarios pagados.
 - Algunas pantallas de compensaciones usan criterio calendario (ver
   `dominios-sin-verificar.md`). Es la regla de esa pantalla, no la definición de
   cierre.
+
+## País y región (P&L by Geo)
+
+**Criterio de negocio [CONFIRMADO POR AUGUSTO 2026-10-06]:** el país es el de la
+cuenta; si el deal no tiene cuenta real, el de su compañía en HubSpot. Un deal
+HS (cargado sobre la cuenta genérica de un portfolio) cuenta como "sin cuenta
+real". Es la regla de `oas_views.deals_resolved`, y la aplica el Power BI.
+
+**La vista del P&L ya lo aplica [VERIFICADO 2026-11-04].** En
+`view_project_metrics_monthly` y su MV, los deals HS toman el país y la región
+de `deals_resolved`, así que el revenue por región del P&L coincide al peso con
+el revenue por región de `view_revenue` resuelto con `deals_resolved` (2026:
+LATAM, North America y Europe iguales). No hace falta resolver el país por
+fuera.
+
+Hasta octubre 2026 la vista los dejaba en Argentina (la cuenta genérica), y por
+eso el revenue por región no cuadraba con los márgenes por región. Un análisis o
+una captura anterior a ese cambio puede mostrar esa diferencia.
+
+- El país de la compañía de HubSpot es el de la **casa matriz**: multinacionales
+  como Syngenta o Adecco caen en el país de su HQ aunque el deal se venda en
+  otro mercado.
+- Una compañía sin país cargado produce una fila de país vacía.
+- Deals HS en preventa generan filas con costo (horas o staffing) y sin revenue.
+- **Excepción [VERIFICADO 2026-11-04]:** `delivery_cost_by_employee_monthly_mv`
+  todavía toma país y región de la cuenta, así que ahí los deals HS siguen en
+  Argentina (2026: 46 deals, ~35K de delivery cost). Un corte por región del
+  detalle por persona no cuadra con el P&L por esos deals.
+- **Comparar geos y BU por gross margin, no por delivery gross margin.** Mixilo
+  Services tiene delivery cost estructuralmente bajo y absorbe mucho CoR HR; su
+  DGM sale alto en cualquier país donde pese.
+- En meses forecast hay deals con revenue y sin staffing cargado, lo que infla
+  márgenes de oct–dic. Para un P&L by Geo, usar meses cerrados.
+- `delivery_expenses` vale 0 en todo 2026 [VERIFICADO 2026-10-06].
+
+## Costo delivery por empleado [VERIFICADO 2026-11-04]
+
+`time_tracking.delivery_cost_by_employee_monthly_mv` compara lo reportado contra
+lo staffeado, por mes × cuenta × proyecto o deal × empleado.
+
+- **Reportado** (de `view_master_final`): `delivery_hours`,
+  `delivery_standard_rate` y `delivery_cost` suman `assigned_*` solo si el
+  empleado es CoR y la cuenta es billable (misma regla que la clasificación de
+  horas).
+- **Staffeado** (de `oas_views.deals_assignments_metrics`):
+  `staffing_delivery_cost` y `staffing_delivery_hours`, con el mismo filtro. Usa
+  `staffed_cost_weighted`, que pondera como full weighted (ver `staffing.md`).
+- **`deviation_cost`** = `delivery_cost − staffing_delivery_cost`;
+  **`deviation_pct`** = desvío / |staffeado|, NULL si no hubo staffing.
+- `avg_dedication`, `assigned_pct` y los pesos (`dedication_weight`,
+  `staffing_dedication_weight`) sirven para ponderar; `salary_cost`,
+  `has_salary_cost` y `used_standard_cost` vienen de `mv_master` (ver
+  `time-tracking.md`).
+- Excluye filas sin costo, horas ni staffing. País y región salen de la cuenta
+  (ver la excepción en § País y región).
 
 ## Otros objetos [VERIFICADO]
 
 | Objeto | Tipo | Para qué |
 |---|---|---|
-| `time_tracking.delivery_cost_by_employee_monthly_mv` | MV | Detalle y desvíos por empleado, cuenta y mes |
-| `time_tracking.company_delivery_utilization_employee_monthly_mv` | MV | Utilización por empleado y mes |
+| `time_tracking.delivery_cost_by_employee_monthly_mv` | MV | Detalle y desvíos por empleado, cuenta, proyecto/deal y mes. Ver § Costo delivery por empleado |
+| `time_tracking.company_delivery_utilization_employee_monthly_mv` | MV | Horas y costo por empleado y mes en las 4 categorías (`delivery_`, `non_delivery_`, `overhead_`, `internal_`, `total_`). **No precalcula utilización**: las dos se derivan de estas columnas. Trae `employee_billable_tag`, `employee_cost_of_revenue`, `pending_forms`, `used_standard_cost` y `refreshed_at` [VERIFICADO 2026-10-06] |
 | `finance.expenses` | tabla | Gastos: `expense_id`, `period`, `account_id`, `type`, `amount` |
 | `oas.control_center_user_account_access_mv` | MV | Alcance de cuentas por usuario: `work_email`, `account_id`, `is_admin` |
 
@@ -171,7 +233,10 @@ Target usa solo la 3.
 consultas de la app, pero **no en el reporte de utilización**. Es alcance
 implementado consulta por consulta, no una política de permisos de la base.
 
-## Clasificación de horas y costo [SQL APP — medidas DAX]
+## Clasificación de horas y costo
+
+[VERIFICADO 2026-10-06 — misma regla en el DAX y en
+`company_delivery_utilization_employee_monthly_mv`]
 
 Cruza dos flags, no uno:
 
@@ -185,14 +250,19 @@ Cruza dos flags, no uno:
 Usa `business_units[account_billable]` y
 `dedications[employee_cost_of_revenue]`, **no** el tag `employees[billable]`.
 
-## Utilización: son dos medidas distintas [SQL APP]
+## Utilización y variante billable [SQL APP]
 
 - **Utilización delivery** = horas delivery / (horas delivery + horas
   non-delivery).
 - **`kpis_utilization`** = horas delivery / todas las horas imputadas.
+- **Utilización delivery billable** = la utilización delivery, restringida a
+  empleados con `employee_billable_tag = 'Billable'` [CONFIRMADO POR AUGUSTO
+  2026-10-06]. Valores del tag: `Billable` y `Non Billable`. La usan Gross
+  Profit y el Scorecard.
 
-No son intercambiables y aparecen las dos en el Power BI. Con denominador cero
-devuelven `null`, no cero.
+No son intercambiables y aparecen en el Power BI y en las apps. Con denominador
+cero devuelven `null`, no cero. Recalcular siempre sobre horas sumadas, nunca
+promediando utilizaciones por empleado.
 
 **La que se reporta hacia afuera es `kpis_utilization`.** [CONFIRMADO POR
 AUGUSTO 2026-10-01] Si piden "la utilización" sin aclarar, usar esa. La
@@ -219,8 +289,8 @@ nunca contra un promedio de márgenes.
 - Confundir `delivery_gross_profit` con `gross_profit`.
 - Sumar todo el staffing al costo reportado en vez de solo
   `staffed_delivery_cost_forecast`.
-- Mezclar utilización delivery con `kpis_utilization`, o reportar la delivery
-  hacia afuera.
+- Mezclar utilización delivery, delivery billable y `kpis_utilization`, o
+  reportar la delivery hacia afuera.
 - Tratar como cerrado un mes con `forecast = true` en `view_parameters`.
 - Comparar un P&L del mes en curso entre dos días distintos: el staffed forecast
   cambia a diario.

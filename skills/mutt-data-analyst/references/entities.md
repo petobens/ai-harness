@@ -2,7 +2,7 @@
 
 ## Deal (HubSpot)
 
-- **Tabla**: `hubspot.deals` — 1.471 filas
+- **Tabla**: `hubspot.deals` — 1.571 filas al 2026-10-06
 - **ID**: `deal_id` (bigint, id nativo de HubSpot)
 - **Qué es**: una oportunidad comercial. Es la fuente del revenue proyectado.
 - **Columnas relevantes**: `dealname`, `amount`, `closedate`, `createdate`,
@@ -14,6 +14,11 @@
   `sls_lead_identified`, `sls_lead_prospected`, `sls_meeting_scheduled`,
   `sls_meeting_completed`, `sls_meeting_source`, `sls_mkt_driven`, `sls_sdr`,
   `sls_type_of_meeting`. Sirven para funnel de generación de demanda.
+- **`sls_deal_region`** [VERIFICADO 2026-10-06]: región comercial que carga
+  sales en el deal. Valores: `North America`, `LATAM`, `Mexico`, `Other` y NULL
+  (~11% de los deals creados en 2026). Es región, no país, y
+  **no es el criterio del P&L by Geo** (ver `control-center-pnl.md` § País y
+  región).
 - **Joins**: `hubspot_owner_id` → `deals_owners.owner_id`; `company_id` →
   `deals_companies.company_id`; `dealstage` → `deals_stages.hubspot`; `dealtype`
   → `deals_types.hubspot`
@@ -38,6 +43,49 @@ se deriva de sus line items, no del `amount` del deal.
   proyecto y deal.
 - `oas_views.client_revenue_mix` liga `client_id` + `year` a un `mix_id` (mix de
   revenue por cliente).
+
+### Cuenta por defecto de los deals [VERIFICADO 2026-10-30]
+
+El trigger `set_default_account_id` de `hubspot.deals` completa `account_id`
+cuando el deal llega sin cuenta:
+
+1. Si tiene `portfoliobu`, le asigna la cuenta principal del portfolio
+   (`oas.areas.main_account_id`).
+2. Si no, según el pipeline de HubSpot: `93958000` → cuenta 103 "Deals Mixilo";
+   `853792142` → cuenta 196 "Deals Porfolio 5"; cualquier otro (`default`) →
+   cuenta 26 "Deals PS". Las tres son del cliente 44.
+
+`follow_hubspot_portfolio` mueve el deal si cambia de portfolio mientras está en
+una cuenta genérica. Estas cuentas genéricas son las que `deals_resolved` trata
+como "deal HS". **Ojo con los IDs:** la *cuenta* 26 ("Deals PS") no es el
+*cliente* 26 ("Target Leads").
+
+- **La región no tiene versionado.** Se deriva en vivo (cuenta → cliente → país
+  → continente), así que un cambio de `client_id` o del país del cliente
+  reescribe toda la historia de reportes de esa cuenta.
+
+### Auditoría de cuentas, clientes y proyectos [VERIFICADO 2026-10-06]
+
+`oas.accounts_audit_log`, `oas.clients_audit_log` y `oas.projects_audit_log`,
+con datos desde 2026-06-11. Columnas: `audit_id`, el ID de la entidad, `action`,
+`changed_at`, `changed_by_email`, `old_data`, `new_data` y `changed_fields`
+(jsonb). Es donde terminan las escrituras con
+`set_config('app.user_email', ...)` de las apps.
+
+```sql
+SELECT changed_at, changed_by_email, old_data->>'client_id' AS old_client, new_data->>'client_id' AS new_client
+FROM oas.accounts_audit_log
+WHERE changed_fields ? 'client_id'
+ORDER BY changed_at DESC;
+```
+
+## Employee [CONFIRMADO POR AUGUSTO + VERIFICADO 2026-10-30]
+
+- **Lectura**: `bamboo.employees_joined`; fechas en `bamboo.employees`
+  (`hire_date`, `termination_date`).
+- **`termination_date` es el último día trabajado.** La persona cuenta como
+  activa ese día: activa en la fecha `d` si
+  `hire_date <= d AND (termination_date IS NULL OR termination_date >= d)`.
 
 ## Company (firmográficos)
 

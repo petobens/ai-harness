@@ -67,7 +67,7 @@ committee (por ciclo) 1─N committee_member
 - **"Compartido" se lee de `review_cycle_employees.final_review_shared`, no de
   `shared_at`.** `shared_at` existe en `lead_reviews` y `committee_reviews`,
   pero está vacío en todas las filas (0 de 155). En el ciclo 7,
-  `final_review_shared = true` en 129 de 155 participaciones.
+  `final_review_shared = true` en 147 de 155 participaciones al 2026-10-06.
 - **Comité: usar `review_cycle_employees.committee_id`.** Existe también
   `review_committee_id`, pero está vacío (0 de 155). `committee_id` está
   completo (155 de 155) y une con `development.committee` (9 comités).

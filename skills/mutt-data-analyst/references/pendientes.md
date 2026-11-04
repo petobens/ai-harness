@@ -5,23 +5,17 @@
 Estas quedan pendientes solo por tiempo. La forma de resolverlas es
 `pg_get_viewdef('schema.objeto'::regclass, true)`.
 
-- Fórmula interna de las columnas `_weighted` de
-  `oas_views.deals_assignments_metrics`.
-- Definición de `time_tracking.delivery_cost_by_employee_monthly_mv` (19k de
-  SQL): cómo arma `delivery_cost` y `staffing_delivery_cost` por empleado.
-- Definición de `time_tracking.company_delivery_utilization_employee_monthly_mv`
-  (11k): cuál de las dos utilizaciones precalcula.
-- Definición de `time_tracking.mv_master`: de dónde salen `salary_cost`,
-  `standard_cost`, `weekly_days` y `working_hours`, que son los insumos de todo
-  el costo imputado.
-- Cómo `view_project_metrics_monthly` calcula `cor_revenue_share` y
-  `operating_revenue_share`, y si coincide con el prorrateo por participación de
-  ingreso del Power BI.
 - Definiciones completas de las vistas de compensaciones: qué componentes
   integran `total_compensation_cost`.
 
-- Fórmulas de `compensations.view_headcount_plan`, `finance.view_salary_cost` y
-  `parameters_info` (existencia ya verificada 2026-09-28).
+**Resueltos 2026-11-04:** `delivery_cost_by_employee_monthly_mv` y los shares de
+prorrateo (ver `control-center-pnl.md`), `view_headcount_plan` y
+`parameters_info` (ver `dominios-sin-verificar.md`).
+
+**Resueltos 2026-10-06:** `_weighted` de `deals_assignments_metrics` (ver
+`staffing.md`), `company_delivery_utilization_employee_monthly_mv` (no
+precalcula utilización, ver `control-center-pnl.md`), insumos de `mv_master` y
+`finance.view_salary_cost` (ver `time-tracking.md`).
 
 - ~~Reconciliación del pool de HR en la MV~~ — **resuelto 2026-10-01**: cierra
   exacto, ver `control-center-pnl.md`.
@@ -40,13 +34,29 @@ Decisiones de negocio o conocimiento que no está en la base.
 
 ### Vigencia
 
-
 - ¿Sigue vigente la equivalencia FEMSA/KOF y el recorte a Portfolio 1–5 en la
   pantalla de alineación?
 - ¿Qué versión del Power BI y de las apps es la de referencia cuando dos
   fórmulas difieren?
-- Baseline de commit para Q4 2026: todavía no está cargado (al 28/09 solo existe
-  `revenue_commit_q3`).
+- ¿Las apps (Revenue Commit Control y el Control Center) ya leen el commit desde
+  `simulation_revenue.revenue_plans`, o todavía desde `revenue_commit_q3`?
+- `delivery_cost_by_employee_monthly_mv` todavía deja los deals HS en el país de
+  la cuenta genérica (Argentina). ¿Se alinea con `deals_resolved`, como la vista
+  del P&L?
+- **Fuera de la skill por decisión de Augusto (2026-10-30), hasta que estén
+  validados:** el contenido de los targets del Scorecard
+  (`scorecard.kpi_targets`, `manual_targets`) y el tiering de cuentas
+  (`oas.account_tiers` y tablas relacionadas). No documentarlos ni usarlos.
+
+**Resuelta 2026-11-04:** la vista del P&L ya asigna país y región de los deals
+HS con `deals_resolved`; revenue y márgenes por región cuadran.
+
+**Resuelta 2026-10-30:** el commit de Q4 existe (planes de
+`simulation_revenue`); los snapshots corren los jueves.
+
+**Resueltas 2026-10-06:** los deals con stage sin mapear quedan fuera a
+propósito (etapas muy tempranas); criterio de país del P&L by Geo; definición de
+utilización delivery billable.
 
 ### Semántica
 
@@ -80,3 +90,17 @@ pregunta, hay que escribirlo a mano.
   dominios.
 - No hay archivo de golden questions: diez preguntas con su número correcto,
   para correr después de cada cambio grande y detectar regresiones.
+- Los conteos de filas están fechados pero se vencen. Al actualizar la skill,
+  reconsultarlos o borrarlos.
+- **Modelo nuevo de posiciones (schema `staffing`)**, en construcción. Cuando
+  reemplace a `oas.deals_assignments`, reescribir `staffing.md`,
+  `deals_assignments_metrics` y `scorecard.mv_staffing_weekly`.
+- **Rediseño del modelo de compensaciones** (en curso, nov 2026): la idea es un
+  SSOT de salarios pagados que cargue Finance y que el forecast se alinee con
+  eso. Cuando se implemente, revisar `finance.view_salary_cost`,
+  `paid_and_payroll_salaries`, el cierre de mes (`view_parameters`) y
+  `time-tracking.md` § insumos de `mv_master`.
+- `view_headcount_plan` tiene 2026 fijo: en 2027 no va a generar meses (ni el
+  cálculo de Operations) hasta que se actualice.
+- Falta un mapa de qué objetos lee y escribe cada app de Appsmith. Necesita los
+  exports o los repos.

@@ -84,6 +84,12 @@ Puntos clave de esa cadena:
 - **Closed Lost nunca entra.** `stage_id = 7` y `stage_id IS NULL` se filtran
   aguas arriba, así que `view_revenue` ya viene limpia. No hace falta volver a
   filtrarlo.
+- **Los deals en stages de HubSpot no mapeados quedan afuera a propósito.** Si
+  el `dealstage` no aparece en `hubspot.deals_stages` (columnas `hubspot`,
+  `mixilo`, `north_america`), el deal queda con `stage_id` NULL y no genera
+  revenue. Son etapas muy tempranas [CONFIRMADO POR AUGUSTO 2026-10-06]. Al
+  2026-10-06: 425 deals en 6 stages, del pipeline `default` y del `853792142`,
+  ~20M de `amount`. No reportarlos como error ni sumarlos al pipeline.
 - **Deals con `line_item_revenue = true`** se calculan desde sus line items, no
   desde el monto del deal. Se excluyen del camino de `deals_info` para no
   duplicar.
@@ -196,7 +202,7 @@ Ordenar siempre por `stage_order`, nunca por `stage_id`.
 | Dashboards, exploración, queries grandes | `pipeline.view_revenue_mv` | Materializada, ~40k filas. Puede estar desactualizada. |
 | Agregado mensual listo | `pipeline.revenue_monthly_mv` | `revenue` = realista, `unweighted_revenue` = sin ponderar. |
 | Comparar versiones en el tiempo | `pipeline.revenue_versions` | Snapshots por `version_date`; la usa Pipeline Evolution. Filtrar `version_date` y `date`. |
-| Comparar forecast vs commit | `pipeline.revenue_commit_q3` | Baseline congelado. Usar esta para comparaciones. |
+| Comparar forecast vs commit | `simulation_revenue.revenue_plans` + `revenue_plan_months` + `revenue_plan_lines` | Commit de cada trimestre de 2026, incluido Q4. Ver `metrics.md` § Forecast vs commit. |
 | Retention target (Ops) | `pipeline.retention_target` / `retention_target_monthly_mv` | **En uso** en Ops Retention Target y Control Center. Ver `metrics.md`. |
 | Budget | `pipeline.budget_revenue`, `pipeline.budget` | **No usar por ahora.** |
 | Simulaciones | schema `simulation_revenue` | Commit Simulation. Ver `tables/revenue.md` § Simulación. |
@@ -238,9 +244,6 @@ presentación, usar `view_revenue`; para explorar, la MV.
 
 ---
 
-
----
-
 ## Decisiones confirmadas [SQL APP + confirmado por Augusto]
 
 - `realistic_amount` **es** el forecast: todo lo que pondera 60% o más.
@@ -254,13 +257,16 @@ presentación, usar `view_revenue`; para explorar, la MV.
   `revenue_commit` (rolling) ya no existen en la base.
 - `Target Leads` con tasa 100 es **intencional**: son cargas manuales, entran a
   valor pleno.
-- Para comparar forecast contra compromiso, usar **`revenue_commit_q3`** (es la
-  única tabla de commit).
+- Para comparar forecast contra compromiso, usar
+  **los planes `commit` de `simulation_revenue`** [VERIFICADO 2026-10-30].
+  `revenue_commit_q3` sigue existiendo y coincide al peso con el plan de Q3,
+  pero solo cubre ese trimestre.
 - **HABIT ya tiene revenue.** [VERIFICADO 2026-09-28] HABIT Services (BU 5) suma
   en 2026 un forecast de ~59K y ~575K unweighted, sobre 27 fuentes (casi todo
   deals). Las filas en 0 de `manual_revenue` **siguen vigentes**: existen para
   prorratear costos de HABIT Internal (BU 6) [confirmado por Augusto
   2026-09-28]. No son errores de carga, pero ya no vale "HABIT no tiene
   revenue".
-- El **baseline de Q4 2026 todavía no está cargado**. Hasta que exista,
-  `revenue_commit_q3` es el único congelado.
+- El **commit de Q4 2026 existe** [VERIFICADO 2026-10-30]: plan "Q4 2026 Commit
+  V2", promovido el 2026-10-20 desde la simulación "Q4 Commit". Reemplazó al
+  plan "Q4 2026".

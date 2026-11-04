@@ -92,20 +92,43 @@ ORDER BY revenue DESC;
 
 ## Forecast vs commit
 
-- **Baseline**: `pipeline.revenue_commit_q3` — número comprometido, congelado.
-  **Esta es la tabla de comparación.**
-- `pipeline.revenue_commit` (la versión rolling) **ya no existe**. [VERIFICADO
-  2026-09-28]
+**Fuente: los planes `commit` de `simulation_revenue`** [VERIFICADO 2026-10-30].
+Cubren todos los trimestres de 2026:
+
+| Objeto | Qué tiene |
+|---|---|
+| `revenue_plans` | Cabecera: `plan_id`, `kind` (`commit`), `label`, `source` (`dynamic_target`, `legacy`, `simulation`), `simulation_name`, `snapshot_at`, `promoted_at`, `promoted_by` |
+| `revenue_plan_months` | Qué plan rige cada mes: `plan_id`, `kind`, `period`, `replaced_by`, `replaced_at` |
+| `revenue_plan_lines` | Líneas: `period` (date), `source_type`, `deal_id`, `project_id`, `account_id`, `business_unit`, `portfolio`, `type`, `stage`, `amount`, `snapshot_amount`, `snapshot_unweighted`, `revenue_mode`, `origin`, `is_removed`, `is_user_edited` |
+
+- **El commit vigente de un mes** es el plan cuya fila en `revenue_plan_months`
+  tiene `kind = 'commit'` y `replaced_by IS NULL`. Hay uno por mes. Un plan
+  reemplazado (`replaced_by` con valor) es historia: no sumarlo.
+- **`amount` es el número comprometido.** `snapshot_amount` es el realista al
+  momento del snapshot y `snapshot_unweighted` el unweighted. Pueden diferir
+  porque el commit se edita a mano (`revenue_mode = 'manual'`,
+  `is_user_edited`).
+- Filtrar `NOT is_removed`.
+- **El grano cambia por trimestre**: Q1 y Q2 (`dynamic_target`) vienen agrupados
+  por BU × tipo, sin deal; Q3 (`legacy`) por cuenta y deal; Q4 (`simulation`)
+  por deal y proyecto. **La comparación por deal solo es posible desde Q3.**
+- El plan de Q3 coincide al peso con `pipeline.revenue_commit_q3`, que sigue
+  existiendo. `pipeline.revenue_commit` (rolling) ya no existe.
+- `revenue_admins` y `revenue_viewers` son las listas de acceso de la app; no
+  son datos de revenue.
 
 ```sql
 WITH commit AS (
-  SELECT date_trunc('month', period)::date AS month, SUM(amount) AS committed
-  FROM pipeline.revenue_commit_q3
+  SELECT l.period AS month, SUM(l.amount) AS committed
+  FROM simulation_revenue.revenue_plan_lines l
+  JOIN simulation_revenue.revenue_plan_months m ON m.plan_id = l.plan_id AND m.period = l.period
+  WHERE m.kind = 'commit' AND m.replaced_by IS NULL AND NOT l.is_removed
+    AND l.period >= DATE '2026-01-01' AND l.period < DATE '2027-01-01'
   GROUP BY 1
 ), forecast AS (
   SELECT date_trunc('month', date)::date AS month, SUM(realistic_amount) AS forecast
   FROM pipeline.view_revenue
-  WHERE date >= (SELECT MIN(period) FROM pipeline.revenue_commit_q3)
+  WHERE date >= '2026-01-01' AND date < '2027-01-01'
   GROUP BY 1
 )
 SELECT c.month, c.committed, f.forecast,
@@ -115,11 +138,11 @@ FROM commit c JOIN forecast f USING (month)
 ORDER BY c.month;
 ```
 
-`revenue_commit_q3` cubre Jul–Sep 2026 (66/66/64 filas). Al cerrar ese trimestre
-hay que verificar qué tabla congelada la reemplaza.
-
-También se puede comparar a nivel deal, ambas tablas tienen `deal_id`,
-`account_id` y `project_id`.
+Para comparar por deal (desde Q3), filtrar primero el commit vigente y excluir
+las líneas removidas, como en el SQL anterior. Agregar cada fuente por
+`deal_id` o `project_id` y mes antes de unirlas: `view_revenue` es diaria y
+un join directo multiplicaría el commit mensual. Para Q1 y Q2, agregar ambas
+fuentes por BU, tipo y mes.
 
 ## Retention target (Ops)
 
@@ -142,8 +165,11 @@ los consulta. No incluirlos salvo pedido explícito.
 ## Evolución del forecast (snapshots)
 
 - **Fuente: `pipeline.revenue_versions`**, un snapshot de `view_revenue` por
-  `version_date`. Es la que usa Pipeline Evolution. [VERIFICADO 2026-09-28] ~40k
-  filas por versión: filtrar `version_date` siempre.
+  `version_date`. Es la que usa Pipeline Evolution. [VERIFICADO 2026-10-30]
+  Snapshots semanales, **los jueves** (11 h de Buenos Aires, guardado 14:00
+  UTC), ~40–45k filas por versión: filtrar `version_date` siempre.
+  `version_date` es **timestamp**: para filtrar por día, castear
+  `version_date::date`.
 - `pipeline.revenue_versions_weekly` **ya no existe en la base** [VERIFICADO
   2026-09-28]; era solo un depósito de datos y nunca fue la tabla de análisis.
 
@@ -190,9 +216,9 @@ Filtrar siempre `version_date` y rango de `date`.
 (Tasas realistas. Pesimista y optimista difieren; consultar
 `hubspot.conversion_rates` directo si hacen falta.)
 
-Con el umbral de 60, aportan 0 al revenue realista: New hasta Proposal Sent
-inclusive, XSell hasta Decision Maker Bought-In, Renewal y Upsell solo en Open
-Deal.
+Con el umbral de 60, aportan 0 al revenue realista [VERIFICADO 2026-10-06]: New
+y XSell hasta Proposal Sent inclusive, Renewal solo en Open Deal, Upsell en Open
+Deal e In Analysis (55).
 
 `Target Leads` (stage 10) está en 100 a propósito: son cargas manuales y entran
 al forecast a valor pleno. No tratarlo como dato sospechoso ni excluirlo.

@@ -1,10 +1,10 @@
 # Dominios con nombres verificados y fórmulas sin verificar
 
-Material extraído del SQL de las apps y del Power BI. **Todos los nombres de
-objetos de este archivo fueron chequeados contra la base y existen** (verificado
-2026-09). Las fórmulas y reglas **no** fueron verificadas contra la definición
-de las vistas: usarlas para orientarse, no para un número que va a una
-presentacion sin confirmarlas antes.
+Material extraído del SQL de las apps y del Power BI, con verificaciones
+posteriores indicadas en cada sección. Salvo marca explícita de verificación,
+las fórmulas y reglas sirven para orientarse: confirmarlas contra la definición
+de las vistas antes de usarlas en una presentación. Las fechas de evidencia
+corresponden a cada sección, no al archivo completo.
 
 ---
 
@@ -32,15 +32,40 @@ comparacion une por `employee_id` y `period`.
 - No hay imputacion directa de payroll a deal o cuenta: la conexion pasa por
   dedicaciones o asignaciones.
 
-**Objetos que usa Compensation Center [VERIFICADO 2026-09-28] (existencia;
-fórmulas sin leer):** `compensations.headcount_plan` / `view_headcount_plan`
+**`compensations.view_headcount_plan` [VERIFICADO 2026-11-04]:** plan de
+headcount por mes y departamento contra el payroll.
+
+- Los departamentos que no son Operations salen tal cual de
+  `compensations.headcount_plan` (carga manual).
+- **Operations (departamento 1) se calcula**:
+  `ceil(revenue realista del mes de la BU 3 / target_revenue_per_headcount / target_utilization_percentage)`,
+  con los parámetros de `compensations.parameters` del mes. El revenue sale de
+  `view_revenue` unido a `oas.accounts` **por nombre de cuenta**.
+- `payroll_headcount` = empleados distintos en `compensations.payroll` del mes y
+  departamento; `headcount_diff` = plan − payroll.
+- **Solo genera 2026** (el rango de meses está fijo en la vista).
+- Los parámetros de 2026 son revenue por HC 8.500 y utilización 0,8 en
+  enero–marzo y 0,9 desde abril. Son supuestos de este plan, no targets de la
+  compañía.
+
+**`compensations.parameters_info` [VERIFICADO 2026-11-04]:** no es una vista
+sino el diccionario de los parámetros mensuales de `compensations.parameters`
+(`parameter`, `description`): fee de contractors, ganancias y su umbral, ajuste
+por inflación, dólar oficial, beneficios RDD (gym, PeYa, prepaga, internet),
+aportes y contribuciones, y bono variable. No describe los dos parámetros del
+plan de headcount.
+
+**Otros objetos que usa Compensation Center [VERIFICADO 2026-09-28]:** existencia
+verificada; fórmulas pendientes salvo las documentadas arriba o en
+[time-tracking.md](time-tracking.md). `compensations.headcount_plan` / `view_headcount_plan`
 (plan de headcount, con upsert y delete desde Parameters), `salary_band`,
 `payroll_restriction`, `contractor_special_fees`,
 `employee_extra_compensations`, `working_hour_adjustments`, `parameters_info`, y
 `finance.view_salary_cost` (vista con `employee_id`, `month`, `salary_cost`:
-salario mensual por empleado, usado en Dedication Control). Filas aproximadas:
-`headcount_plan` 72, `salary_band` 26, `contractor_special_fees` 2,
-`payroll_restriction` 1, `employee_extra_compensations` 0.
+salario mensual por empleado, usado en Dedication Control; definición verificada
+en `time-tracking.md`). Filas aproximadas: `headcount_plan` 72, `salary_band`
+26, `contractor_special_fees` 2, `payroll_restriction` 1,
+`employee_extra_compensations` 0.
 
 **Dedication Control** compara `finance.view_salary_cost` contra el costo
 imputado, uniendo dos fuentes de dedicaciones: `time_tracking.view_master_final`
@@ -91,8 +116,9 @@ La cuenta tiene `business_unit_id`, `area_id` y responsables: `account_lead_id`,
 `slack_channel_id`.
 
 Las altas ejecutan `set_config('app.user_email', ...)`, lo que indica contexto
-de usuario en las escrituras. Que tabla guarda esa auditoria no esta
-identificado.
+de usuario en las escrituras. La auditoría queda en `oas.accounts_audit_log`,
+`clients_audit_log` y `projects_audit_log` [VERIFICADO 2026-10-06]; ver
+`entities.md`.
 
 ## People: directorio y seguimiento
 
@@ -112,6 +138,16 @@ Lectura central `bamboo.employees_joined`; historiales en
   objetos de PostgreSQL.
 - `GetOneToOneHistory` incluye reuniones donde la persona es empleado **o**
   supervisor.
+- `people.status` no deja borrar un status ya enviado (trigger).
+- **Voice of Mutters** [VERIFICADO 2026-10-30]: encuesta de clima en
+  `people.vom_*`, con ciclos trimestrales (`vom_survey_cycles`), dimensiones y
+  preguntas bilingües (una marcada `is_enps`). **Separa por diseño quién
+  participó (`vom_participations`, con `employee_id`) de qué respondió
+  (`vom_responses` + `vom_answers`, sin `employee_id`)**; las respuestas solo
+  traen departamento, área, cliente, step y antigüedad. No cruzar esas dos
+  tablas ni intentar identificar a nadie con cortes demográficos chicos. Al
+  2026-10-30 hay un solo ciclo, en borrador y sin respuestas. Las tablas
+  `people.pulse_survey*` son del modelo anterior.
 - Los checkups distinguen 3m y 6m con campos distintos en cada uno.
 
 **Objetos que usa People Center [SQL APP, 2026-09-28]:**
@@ -173,12 +209,14 @@ schema del equipo tech.
 - Toma un agente por persona con `last_keep_alive DESC LIMIT 1`.
   **Sin dato no es incumplimiento**, y un agente no es el inventario completo.
 
-## Scorecard financiero manual
+## Scorecard financiero manual (Power BI)
 
-`oas.scorecard_manual`. Las medidas `Cash to Expenses`,
-`Delayed Invoicing Over 30 Days` y `Overdue Payments` son
-**promedios de valores cargados a mano**, no calculos sobre facturas. Un
-promedio de porcentajes reportados no equivale al porcentaje recalculado sobre
-importes. No hay una fuente vigente de caja, facturas o cobranzas para
-reconciliarlos. `sas` (`view_facturas_final`, `view_cobros`) y
+Hoy los KPIs manuales viven en el schema `scorecard` (ver `scorecard.md`) y
+`oas.scorecard_manual` es una vista de compatibilidad. En la app nueva, los de
+Finance se agregan al mes con la **última semana**, no con promedio. En el Power
+BI, las medidas `Cash to Expenses`, `Delayed Invoicing Over 30 Days` y
+`Overdue Payments` eran **promedios de valores cargados a mano**, no calculos
+sobre facturas. Un promedio de porcentajes reportados no equivale al porcentaje
+recalculado sobre importes. No hay una fuente vigente de caja, facturas o
+cobranzas para reconciliarlos. `sas` (`view_facturas_final`, `view_cobros`) y
 `vuriltek.cashflow` son del billing viejo, que ya está muerto: no usarlos.
