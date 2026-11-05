@@ -55,6 +55,10 @@ formatting and layout unless the user requests a restyle.
   companion deck in scope for stale figures and conclusions, not just formula
   errors. Derive embedded figures from model cells where practical; review
   qualitative claims separately.
+- For workbook-wide reviews or structural edits, the read-only
+  [audit helper](references/auditing.md) can capture snapshots, scan formula
+  errors, compare metadata, and run declared reconciliation checks. It does not
+  validate source data, model assumptions, or visual fit.
 - Before a final readiness verdict, use a fresh live read of the relevant scope.
   If concurrent edits appear, preserve them and verify affected outputs; render
   any changed layout or text whose fit is uncertain.
@@ -118,16 +122,8 @@ formatting and layout unless the user requests a restyle.
   relevant case against the recorded invariants and reconcile detail tables,
   summaries, and outputs.
 
-When you explain a formula to the user, structure it as:
-
-**1. Assumptions:** cell references and whether they are absolute (`$A$1`) or
-relative (`A1`), and why.
-
-**2. Formula:** in an `excel` code block.
-
-**3. Explanation:** what each part does and the logic flow.
-
-**4. Implementation:** step-by-step application, including formatting tips.
+Explain inputs, assumptions, and non-obvious formula logic when useful. Match
+the explanation to the question rather than a fixed response template.
 
 ### Use `LET` for readability
 
