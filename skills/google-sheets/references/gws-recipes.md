@@ -100,14 +100,19 @@ Prefer the `values` endpoints for content-only edits because they preserve
 existing cell formatting. They do not preserve rich text: writing a cell through
 `values` replaces its `textFormatRuns`, so in-cell bold, colors, and links are
 lost. Before rewriting a cell, check it for runs; if it has any, follow the
-rich-text guidance in [Raw batchUpdate](#raw-batchupdate). With `updateCells`
+rich-text guidance in [Raw batchUpdate](#raw-batchupdate). Formula cells cannot
+carry `textFormatRuns` at all; put emphasis in a separate cell instead. With
+`updateCells`
 or `repeatCell`, use the narrowest possible `fields` mask and include
 `userEnteredFormat` only when intentionally changing formatting.
 
 ## Raw batchUpdate
 
 `spreadsheets.batchUpdate` applies requests atomically: if one is invalid, none
-apply. Validate layout-sensitive bodies locally first with `--dry-run`.
+apply. Validate layout-sensitive bodies locally first with `--dry-run`. A
+request or `values` write that addresses rows or columns beyond the sheet's
+`gridProperties.rowCount` or `columnCount` fails; add space first with
+`appendDimension` or `insertDimension`, placed before the requests that use it.
 Structural mutations shift the coordinates used by later requests in the same
 batch. Process row and column deletions from bottom to top, account for the new
 coordinates in subsequent requests, and re-inspect the affected layout after

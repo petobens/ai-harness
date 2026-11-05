@@ -25,10 +25,12 @@ Use the corresponding Google Sheets variants consistently.
 - **Dark gray 1** (`#b7b7b7`) for top-level **table title cells** or compact
   title blocks, merged only when the structure rules below allow it.
 - **Light gray 1** (`#d9d9d9`) for populated **title-row totals** beside a dark
-  gray title cell or block. Within consecutive emphasized body rows, it may
-  also distinguish primary rows from supporting rows.
+  gray title cell or block, and for README section headers. Within consecutive
+  emphasized body rows, it may also distinguish primary rows from supporting
+  rows.
 - **Soft gray** (`#efefef`) as the default for emphasized calculated totals,
-  subtotals, reconciliation rows, and KPIs within a table body.
+  subtotals, reconciliation rows, and KPIs within a table body, and for README
+  subsection headers.
 - **Light green 2** (`#b6d7a8`) for **field-style headers** and, in wider data
   tables, typically the first column or first two columns. In compact two-column
   tables, use it only for the field/metric column header.
@@ -227,25 +229,41 @@ and important caveats. Keep it readable and polished, but do not over-design it.
 
 ### README layout and formatting
 
-- Use **11 pt Arial** for README section headers and body content.
-- Keep the README content no wider than columns A:E. Do not widen column A to
-  fit narrative content; merge across the content width instead.
+- Use **Arial** throughout the README, sized by level so headings stand out
+  from the text: **14 pt** title, **13 pt** section headers, **12 pt**
+  subsection headers, and **11 pt** labels and body text.
+- Keep the README content no wider than columns A:E. Size column A for the
+  body-row labels (at most two wrapped lines); never widen it to fit body text.
 - Put the README title in its own merged row across A:E. Use dark gray 1
-  (`#b7b7b7`), 12 pt bold text, horizontal and vertical centering, and wrapping.
+  (`#b7b7b7`), bold text, horizontal and vertical centering, and wrapping.
 - Start the first section immediately below the title, with no blank row between
   them. Build every section from three parts:
   1. A merged A:E section-header row with light gray 1 (`#d9d9d9`), bold text,
-     left alignment, vertical centering, and wrapping.
-  2. A merged A:E unfilled body row directly below it, with regular text, left
-     and top alignment, wrapping, and enough row height to show all content.
+     left alignment, vertical centering, and wrapping. With six or more
+     sections, number the headers (`1. Scope`, `2. ...`).
+  2. One or more unfilled body rows directly below it. Use a single merged A:E
+     row only for a short paragraph. When a section covers several
+     sub-topics, items, terms, or steps, give each its own labeled row: a short
+     bold label in column A and the text merged across B:E. The label column
+     provides emphasis even when the text is a live formula, because formula
+     cells cannot carry rich text. Body text is regular weight; labels and text
+     are unfilled, left- and top-aligned, and wrapped.
   3. Exactly one blank, unfilled, non-bold spacer row after the body, including
      after the final section.
+- To group closely related sections, typically the model mechanics, use one
+  numbered parent header (`5. Model mechanics`) with no body of its own,
+  followed directly by numbered subsections (`5.1 Revenue`, `5.2 Cost`). Each
+  subsection has a merged A:E header row with soft gray (`#efefef`), bold text,
+  left alignment, vertical centering, and wrapping, then its body rows. Leave no
+  spacer rows inside the group; one spacer follows the whole group.
 - Keep each section independently editable. Do not collapse multiple sections
-  into one large rich-text narrative block. A long body may span multiple rows
-  only when needed; merge the full A:E body area vertically and horizontally.
+  into one large rich-text narrative block.
+- Sheets does not auto-fit rows with merged wrapped cells. Set every body row's
+  height explicitly: count wrapped lines with real font metrics (about 18 px per
+  11 pt line plus 8 px), then confirm in the render that no text is clipped.
 - When inserting or moving README rows, inspect the full A:E range afterward.
   Reset inherited fill, bold, alignment, and wrapping on spacer rows, and verify
-  every section header and body retained its intended formatting.
+  every header, label, and body row retained its intended formatting.
 - Keep the workbook map synchronized with the actual tabs and remove stale
   references. Prefer shortening the narrative before increasing its footprint.
 
@@ -255,6 +273,12 @@ and important caveats. Keep it readable and polished, but do not over-design it.
   `$850k`, `$1.15M`, instead of `$14,000,000`, `$850,000`, `$1,150,000`.
 - Keep prose direct, concrete, and useful. Avoid generic AI-written framing,
   hype, filler, or content-marketing language.
+- Do not write a body cell longer than about two sentences as one unbroken
+  paragraph. Break it with line breaks (`CHAR(10)` inside formulas, a literal
+  newline in plain text): use `•` bullets for parallel points, `1.` numbering
+  for sequences or steps, and keep each item to one or two sentences. Do not
+  start a bullet with `-`, `+`, or `=`, which `USER_ENTERED` parses as a
+  formula.
 
 ### Suggested README content structure
 
@@ -262,8 +286,8 @@ Treat this as a suggestion, not a required template:
 
 - Initial summary of what the workbook does.
 - Key takeaways.
-- One or more sections explaining model mechanics, logic, assumptions, and
-  approach.
+- Model mechanics, logic, assumptions, and approach, grouped into numbered
+  subsections when there are several areas (revenue, capacity, cost).
 - Definitions, when terms or abbreviations may not be obvious.
 - How to use the sheet, including which inputs the user should change.
 - Limitations, caveats, and known exclusions.
