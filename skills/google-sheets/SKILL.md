@@ -72,6 +72,8 @@ formatting and layout unless the user requests a restyle.
   [formatting.md](references/formatting.md); do not rewrite visually equivalent
   colors or style ordinary body rows as titles or totals.
 - Make the smallest safe change that achieves the user's goal.
+- Add cell notes only when they clarify a non-obvious assumption, formula, or
+  behavior. Omit notes that merely repeat labels, values, or obvious information.
 - Never clear or reapply formatting across a whole target area by default.
   Preserve existing formats and change only cells confirmed to be inconsistent;
   when extending a table, copy formatting from the nearest matching row or

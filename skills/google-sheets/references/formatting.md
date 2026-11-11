@@ -178,17 +178,19 @@ is genuinely a different color, not to chase this drift.
 - Leave exactly one empty spacer between distinct subtables on the same tab: one
   blank column for side-by-side, one blank row for stacked. Do not add blank rows
   inside a table, e.g. between a title or total row and its column headers.
-- Give every table of imported or pasted data a source footnote in the row
-  directly below its last row, before the spacer: column A of the table, 9 pt
-  italic, dark gray 3 (`#666666`) text, no fill, not wrapped, so it overflows
-  across the empty cells to the right. Start with `Source:` and name the system
-  or file, the table or query and its filters, and the snapshot date, plus any
-  definition a reader needs to reproduce the numbers. Keep every line within the
-  table's own columns, never overflowing past its last column; break long
+- Source footnotes and input-basis notes are optional, including for imported or
+  pasted data. Add them only when provenance, timing, or definitions provide
+  useful context that is not already clear from the table. When adding one, place
+  it directly below the table's last row, before the spacer: column A of the
+  table, 9 pt italic, dark gray 3 (`#666666`) text, no fill, not wrapped, so it
+  overflows across the empty cells to the right. Start source footnotes with
+  `Source:` and include only relevant details: system or file, table or query,
+  filters, snapshot date, or definitions needed to interpret the numbers.
+  Keep every line within the table's own columns, never overflowing past its
+  last column; break long
   notes into extra rows (measure the text against the summed column widths)
-  rather than wrapping or merging. Use the same
-  style for a short basis note under an input table whose defaults come from
-  data. Formula-only tables need no footnote.
+  rather than wrapping or merging. Use the same style for an optional short
+  basis note under an input table whose defaults come from data.
 - When the user specifies a starting row, place the table title on that row. If
   the table has totals, put the title and total values on that same row, then
   column headers on the next row and body rows below.
