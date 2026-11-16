@@ -55,6 +55,14 @@ formatting and layout unless the user requests a restyle.
   companion deck in scope for stale figures and conclusions, not just formula
   errors. Derive embedded figures from model cells where practical; review
   qualitative claims separately.
+- Before explaining what an input or toggle affects, trace its formula
+  dependents through the relevant outputs. Do not infer its scope from its label
+  or a nearby reference-only calculation.
+- When explaining scenarios or adding narrative figures, state the assumptions
+  that determine the result, including any scenario-specific inputs absent from
+  the active model. Distinguish modeled assumptions from confirmed terms, and
+  check whether the formulas implement the behavior claimed across the discussed
+  range; a passing model check does not establish that coverage.
 - For workbook-wide reviews or structural edits, the read-only
   [audit helper](references/auditing.md) can capture snapshots, scan formula
   errors, compare metadata, and run declared reconciliation checks. It does not
