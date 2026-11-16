@@ -82,6 +82,24 @@ Consecuencias:
   `employee_cost_of_revenue` queda NULL y esas horas salen de las cuatro
   categorías de delivery.
 
+## Qué deals puede reportar cada uno en Muttito
+
+[SQL APP Muttito `GetTimeDeals`, 2026-11-05]
+
+Un Mutter puede cargar horas en un deal (todavía sin proyecto) si se cumple
+alguna de estas:
+
+1. Tiene una asignación en ese deal (`oas_views.deals_assignments`).
+2. Puede reportar **todos** los deals abiertos: departamento `Sales%`, step
+   M2–M6 o E1–E3, división `BizOps`, o PMO (Augusto Peña, Giuliano Faggiani).
+3. Es del equipo de HABIT (departamento `Habit` o la lista de Mati Vila en la
+   query): puede reportar **solo deals de HABIT Services**.
+
+- Por eso hay horas de no asignados en deals de HABIT, de BizOps y de managers.
+  **No son un error de carga.**
+- El selector de deals se parte por business unit. Los deals (HS) muestran el
+  logo de su compañía de HubSpot.
+
 ## Reglas del workflow [SQL APP]
 
 - El envío exige `SUM(dedication) = 100` por formulario, y exactamente uno de

@@ -26,9 +26,11 @@ Decisiones de negocio o conocimiento que no está en la base.
 
 ### Definiciones en disputa
 
-- **Bench.** Hay tres definiciones conviviendo: umbral 70 en Staffing Center,
-  0,70 con población distinta en el Power BI, y el bench de recruiting del
-  scorecard. ¿Cuál es la oficial, o cada una tiene su uso legítimo?
+- **Bench.** Hay cuatro definiciones conviviendo (ver `staffing.md` §
+  Definiciones): umbral 70 en Staffing Center, 0,70 por utilización en el Power
+  BI y MBR, el bench de recruiting del Scorecard (120 días) y el Current Bench
+  de Lever (Talent Center). ¿Cuál es la oficial para Mutters contratados? ¿El
+  Scorecard pasa al Current Bench de Talent Center?
 - **El factor 2,5 de `target_revenue`** está hardcodeado en
   `view_project_metrics_monthly`. ¿De dónde sale y cada cuánto se revisa?
 
@@ -38,8 +40,11 @@ Decisiones de negocio o conocimiento que no está en la base.
   pantalla de alineación?
 - ¿Qué versión del Power BI y de las apps es la de referencia cuando dos
   fórmulas difieren?
-- ¿Las apps (Revenue Commit Control y el Control Center) ya leen el commit desde
-  `simulation_revenue.revenue_plans`, o todavía desde `revenue_commit_q3`?
+- **Lever:** las reglas de `lever.md` están acordadas con Talent, no validadas
+  por Augusto. ¿Pasan a ser las oficiales para el MBR (Hiring engine) y el
+  Scorecard?
+- **Completion y realization 80%** del deck: en revisión por el nuevo framework
+  de Delivery. ¿Cuándo y con qué valor?
 - `delivery_cost_by_employee_monthly_mv` todavía deja los deals HS en el país de
   la cuenta genérica (Argentina). ¿Se alinea con `deals_resolved`, como la vista
   del P&L?
@@ -47,6 +52,10 @@ Decisiones de negocio o conocimiento que no está en la base.
   validados:** el contenido de los targets del Scorecard
   (`scorecard.kpi_targets`, `manual_targets`) y el tiering de cuentas
   (`oas.account_tiers` y tablas relacionadas). No documentarlos ni usarlos.
+
+**Resuelta 2026-11-06:** Commit Control (Revenue Center) lee el commit oficial
+de cada mes de `revenue_plan_months` (kind `commit`, `replaced_by IS NULL`).
+Control Center no lee commit. Ninguna app lee `revenue_commit_q3`.
 
 **Resuelta 2026-11-04:** la vista del P&L ya asigna país y región de los deals
 HS con `deals_resolved`; revenue y márgenes por región cuadran.
@@ -66,7 +75,9 @@ utilización delivery billable.
   `promotion_readiness` (`not_ready` / `ready_soon` / `ready_now`), y si
   committee es la evaluación final. Los valores ya están verificados; falta la
   definición de negocio.
-- Qué define cada color de `people.status` y quién resuelve las acciones.
+- Qué define cada color de `people.status` y quién resuelve las acciones. (La
+  fórmula del eNPS ya está en `people.md`; falta qué significa cada color para
+  el Mutter.)
 - Qué son en el negocio la capitalización (`employee_salary_impact_recovery`) y
   el bonus reversal (`employee_bonus_recovery`), y qué representa un cost
   transfer. **El cálculo ya está verificado**: entran a `hr_costs_monthly` con
@@ -88,8 +99,11 @@ pregunta, hay que escribirlo a mano.
 - `references/metrics.md` y `references/entities.md` vienen de la versión
   anterior y todavía cubren solo revenue. Conviene revisarlos ahora que hay más
   dominios.
-- No hay archivo de golden questions: diez preguntas con su número correcto,
-  para correr después de cada cambio grande y detectar regresiones.
+- Golden questions: hay un primer set en `golden-questions.md` (People, Lever y
+  P&L contra los decks de agosto y septiembre 2026). Faltan revenue / forecast /
+  commit y staffing.
+- Time to hire / time to fill y women hire rate del People Monthly Report no
+  están en la base (ver `lever.md`).
 - Los conteos de filas están fechados pero se vencen. Al actualizar la skill,
   reconsultarlos o borrarlos.
 - **Modelo nuevo de posiciones (schema `staffing`)**, en construcción. Cuando
@@ -100,7 +114,11 @@ pregunta, hay que escribirlo a mano.
   eso. Cuando se implemente, revisar `finance.view_salary_cost`,
   `paid_and_payroll_salaries`, el cierre de mes (`view_parameters`) y
   `time-tracking.md` § insumos de `mv_master`.
+- **Budget 2027** (`revenue_budget`): en armado. Cuando las partes estén
+  `locked`, decidir si pasa a ser el target de 2027 (reemplazando a
+  `pipeline.retention_target` para Ops) y documentarlo.
 - `view_headcount_plan` tiene 2026 fijo: en 2027 no va a generar meses (ni el
   cálculo de Operations) hasta que se actualice.
-- Falta un mapa de qué objetos lee y escribe cada app de Appsmith. Necesita los
-  exports o los repos.
+- Falta un mapa de qué objetos lee y escribe cada app de Appsmith. Los repos ya
+  están clonados (`appsmith-*`): se puede armar leyendo los `.txt` de las
+  queries.

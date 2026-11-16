@@ -1,6 +1,6 @@
 ---
 name: "mutt-data-analyst"
-description: "Contexto de la base PostgreSQL de Mutt Data: revenue y pipeline de HubSpot, dedicaciones y time tracking, staffing y bench, costos de delivery, utilización, P&L por proyecto, compensaciones, people y development. Define entidades, métricas canónicas con su fórmula real y los errores frecuentes. Usar para cualquier consulta, análisis, KPI, dashboard o presentación sobre datos de Mutt Data — revenue, forecast, commit, horas, dedicaciones, costos, márgenes, headcount, bench, reviews o payroll."
+description: "Contexto de la base PostgreSQL de Mutt Data: revenue y pipeline de HubSpot, dedicaciones y time tracking, staffing y bench, costos de delivery, utilización, P&L por proyecto, compensaciones, people (headcount, turnover, exits, eNPS, 1:1s, organigrama), recruiting de Lever y development. Define entidades, métricas canónicas con su fórmula real y los errores frecuentes. Usar para cualquier consulta, análisis, KPI, dashboard o presentación sobre datos de Mutt Data — revenue, forecast, commit, horas, dedicaciones, costos, márgenes, headcount, turnover, eNPS, hiring, bench, reviews o payroll."
 ---
 
 # Mutt Data — contexto de datos
@@ -12,12 +12,15 @@ dominio está en `references/`: abrir el que corresponda antes de escribir SQL.
 
 | Si la pregunta es sobre | Abrir |
 |---|---|
-| Revenue, forecast, pipeline, commit, deals, tasas de conversión | `references/revenue.md` |
+| Revenue, forecast, pipeline, commit, budget 2027, deals, tasas de conversión | `references/revenue.md` |
 | Horas reportadas, dedicaciones, formularios, costo imputado | `references/time-tracking.md` |
-| Costo de delivery, utilización, márgenes, P&L por proyecto, completion | `references/control-center-pnl.md` |
+| Costo de delivery, utilización, márgenes, P&L por proyecto y por departamento, completion | `references/control-center-pnl.md` |
 | Staffing, asignaciones, headcount planificado, bench, vacantes | `references/staffing.md` |
 | Performance reviews, skills por práctica (schema `development`) | `references/development.md` |
-| Compensaciones, payroll, distribución de costos a áreas, people | `references/dominios-sin-verificar.md` |
+| Headcount, turnover, exits, eNPS / status, 1:1s, organigrama, people talks | `references/people.md` |
+| Recruiting: hires, starts, ofertas, funnel, time to hire, bench de candidatos (schema `lever`) | `references/lever.md` |
+| Compensaciones, payroll, payout variable y waivers, distribución de costos a áreas, Voice of Mutters, RDG | `references/dominios-sin-verificar.md` |
+| Números de referencia para chequear una query o un cambio de la skill | `references/golden-questions.md` |
 | Joins y catálogos entre entidades | `references/entities.md` |
 | Fórmula SQL de un KPI puntual | `references/metrics.md` |
 | Columnas de una tabla concreta | `references/tables/` |
@@ -130,15 +133,18 @@ dependencias sobre `sas` y `vuriltek` (`vuriltek.cashflow` sobre
 `sas.view_cobros` / `view_facturas_final`, `sas.view_facturas` sobre `monedas`)
 quedan todas dentro del billing muerto.
 
-**`lever` (recruiting) está en uso, pero todavía no es fuente confiable de
-métricas.** Hoy es muy difícil sacar KPIs de ahí. No construir métricas de
-recruiting sobre `lever` sin validarlas antes con Augusto, y decirlo en la
-respuesta.
+**`lever` (recruiting): usar solo las reglas de `references/lever.md`.** Son las
+de Talent Center (Lever Pipeline), acordadas con Talent en 2026-10/11. Con otras
+reglas, Lever da números distintos para la misma pregunta: el Power BI "Talent"
+y las versiones de `mbr_hiring` anteriores al 2026-11-06 usaban otras reglas.
+`mbr_hiring` ya usa las de Talent Center desde esa fecha. No inventar una
+métrica de recruiting que no esté ahí, y al citar una decir que sale de las
+reglas de Talent Center.
 
 Los schemas de análisis son `bamboo`, `compensations`, `development`, `finance`,
-`hubspot`, `muttito`, `oas`, `oas_views`, `people`, `pipeline`, `scorecard`,
-`simulation_revenue`, `time_tracking` y `time_tracking_old`. El schema `archive`
-ya no existe [VERIFICADO 2026-10-30].
+`hubspot`, `lever`, `muttito`, `oas`, `oas_views`, `people`, `pipeline`,
+`revenue_budget`, `scorecard`, `simulation_revenue`, `time_tracking` y
+`time_tracking_old`. El schema `archive` ya no existe [VERIFICADO 2026-10-30].
 
 **`staffing` es el modelo nuevo de posiciones** y está en construcción
 [VERIFICADO 2026-10-30]: su estructura cambió por completo en dos semanas. No
@@ -167,6 +173,9 @@ Coincide con el calendario.
   existen: los snapshots están en `pipeline.revenue_versions` y el commit en los
   planes de `simulation_revenue` (ver `references/metrics.md` § Forecast vs
   commit).
+- **Usar `pipeline.budget` / `budget_revenue` como budget 2027**, o sumar el
+  budget 2027 con las líneas `reference` o sin aclarar que está en draft. Ver
+  `references/revenue.md` § Budget 2027.
 - **Decir que no hay commit de Q4.** Existe desde el 2026-10-20, en
   `simulation_revenue.revenue_plans`.
 - **Agrupar por cuenta sin la regla de deals (HS)** de
@@ -196,6 +205,15 @@ Coincide con el calendario.
 - **Dar un número sin chequear la frescura** de la carga que lo alimenta, si la
   pregunta es sobre hoy o esta semana. Ver `references/workflows.md`.
 - **Usar el schema `staffing` para métricas** mientras esté en construcción.
+- **Contar Mutters activos con `status = 'Active'`.** `bamboo.employees_joined`
+  incluye ingresos futuros (7 al 2026-11-06). Filtrar por
+  `hire_date <= d AND (termination_date IS NULL OR termination_date >= d)`. Ver
+  `references/people.md`.
+- **Cortar headcount o turnover por departamento con el historial de
+  `job_information`.** Los tableros usan el departamento y el step actuales.
+- **Decir "bench" sin decir cuál.** Hay cuatro: Staffing Center, MBR / Power BI
+  (utilización), recruiting del Scorecard (120 días) y Current Bench de Lever.
+  Ver `references/staffing.md` § Definiciones.
 - **Cruzar respuestas de Voice of Mutters con personas.** La encuesta es anónima
   por diseño (ver `references/dominios-sin-verificar.md`).
 - **Tomar los conteos de esta skill como dato actual.** Llevan fecha y son

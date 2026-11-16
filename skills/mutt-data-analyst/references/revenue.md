@@ -204,12 +204,62 @@ Ordenar siempre por `stage_order`, nunca por `stage_id`.
 | Comparar versiones en el tiempo | `pipeline.revenue_versions` | Snapshots por `version_date`; la usa Pipeline Evolution. Filtrar `version_date` y `date`. |
 | Comparar forecast vs commit | `simulation_revenue.revenue_plans` + `revenue_plan_months` + `revenue_plan_lines` | Commit de cada trimestre de 2026, incluido Q4. Ver `metrics.md` § Forecast vs commit. |
 | Retention target (Ops) | `pipeline.retention_target` / `retention_target_monthly_mv` | **En uso** en Ops Retention Target y Control Center. Ver `metrics.md`. |
-| Budget | `pipeline.budget_revenue`, `pipeline.budget` | **No usar por ahora.** |
+| Budget anual (2027) | schema `revenue_budget` (`line_monthly`) | **En armado** (todas las partes en draft al 2026-11-06). Ver § Budget 2027. |
+| Budget viejo | `pipeline.budget_revenue`, `pipeline.budget` | **No usar.** No es el budget 2027. |
 | Simulaciones | schema `simulation_revenue` | Commit Simulation. Ver `tables/revenue.md` § Simulación. |
 
 La materializada puede diferir de la vista si no se refrescó. Verificado en
 septiembre 2026: MV 1.142.010 vs vista 1.142.910. Para un número que va a una
 presentación, usar `view_revenue`; para explorar, la MV.
+
+---
+
+## Budget 2027: schema `revenue_budget`
+
+[SQL APP Revenue Center · Budget Simulation + VERIFICADO 2026-11-06]
+
+Budget anual de revenue, con modelo propio (no usa `simulation_revenue` ni
+`pipeline.budget`). Hoy existe solo **Budget 2027** (`budgets`, `budget_id` 1),
+**en armado**: las 8 partes están en `draft` y los montos cambian todos los
+días. No presentarlo como budget aprobado mientras una parte no esté `locked`.
+
+| Objeto | Qué tiene |
+|---|---|
+| `budgets` | Un budget por año |
+| `parts` | **8 partes fijas**: PS · Portfolio 1 / Portfolio 2 / Portfolios 3 & 4 / Portfolio 5 · Retention; PS · Origination · North America / LATAM; Mixilo · Origination + Retention; Habit · Origination + Retention. `status` draft → submitted → locked. Una parte "PS · Origination · Rest of world" se crea sola el día que un deal la necesite |
+| `lines` / `line_months` | Una línea por deal, proyecto o deal nuevo, con sus meses |
+| **`line_monthly`** (vista) | **La de análisis**: línea × mes, con `part_name`, `status`, `origin` (`pipeline` / `added`), `mode` (Manual / Params), `budget_amount`, `manual_amount`, `pipeline_amount`, `removed`, `reference` y los atributos de la cuenta |
+| `events` | Historial de cambios |
+| `portfolio_admins` | Quién edita qué parte (acceso, no datos) |
+
+- **Total del budget** = `sum(budget_amount)` de 2027 con
+  `NOT removed AND NOT reference`. El **general** es la suma de las partes: un
+  deal está en una sola parte.
+- **Líneas `reference`** = deals New / XSell presupuestados en Origination que
+  se muestran en \$0 y bloqueados en la Retention de su portfolio.
+  **Excluirlas siempre**: duplican la línea de Origination.
+- **Retention** = Renewal + Upsell; **Origination** = New + XSell. Retention de
+  PS va por portfolio; Origination de PS va por región.
+- **Región de Origination** = la del deal en HubSpot
+  (`hubspot.deals.sls_deal_region`: North America; LATAM y Mexico → LATAM). Si
+  el deal no tiene región, se usa el continente de la cuenta (en deals (HS), el
+  de la compañía de HubSpot). México es LATAM.
+- **Mode Params**: revenue = unweighted × tasa realista / 100. La tasa sale del
+  par (stage, type) en `hubspot.conversion_rates` y viene en escala 0–100;
+  si es menor a 60, el mes cuenta 0. **Manual**: el monto cargado, al 100%.
+- **Origin `added`**: deals que no están en HubSpot. Son "Existing client"
+  (cuenta de la parte, en la base `planned_deal`) o "Target (generic)" (sin
+  cliente ni cuenta, `target_deal`).
+- Las partes incluyen como referencia el revenue de **Q4 2026** del pipeline
+  (Oct–Dec, solo lectura). No es parte del budget.
+- Deals (HS) toman cliente, cuenta y logo de su compañía de HubSpot (trigger
+  `lines_hubspot_company`), como `deals_resolved`.
+- Last year = Current Revenue (`view_revenue`) de los mismos meses del año
+  anterior, con el alcance de la parte.
+
+Al 2026-11-06, en draft: Portfolios 3 & 4 ~4,2M, Portfolio 1 ~3,0M, Mixilo
+~1,4M, Portfolio 2 ~1,1M; Origination NA y LATAM ~0,3M cada una. Son
+orientativos: reconsultar.
 
 ---
 
@@ -248,7 +298,8 @@ presentación, usar `view_revenue`; para explorar, la MV.
 
 - `realistic_amount` **es** el forecast: todo lo que pondera 60% o más.
   `realistic_amount_old` es el full weighted y `amount` el unweighted.
-- El **budget no se usa por ahora** (`budget_revenue`, `budget`). El
+- El **budget viejo de `pipeline` no se usa** (`budget_revenue`, `budget`); el
+  budget 2027 vive en `revenue_budget` (ver § Budget 2027). El
   **retention target sí**: es **solo de Ops** (Professional Services, BU 3)
   [confirmado por Augusto 2026-09-28]; Mixilo Services y HABIT Services no
   tienen target. Lo usan Ops Retention Target y Control Center. [actualizado

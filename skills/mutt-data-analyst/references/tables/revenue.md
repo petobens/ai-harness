@@ -88,6 +88,8 @@ en lugar de NULL para agrupar.
   [VERIFICADO 2026-09-28] Ver `metrics.md`.
 - `budget_revenue` (120 filas), `budget` (vacía), `view_budget_revenue_daily`:
   sin uso. No incluirlos salvo pedido explícito.
+- **El budget 2027 está en otro schema, `revenue_budget`** (vista
+  `line_monthly`). Ver `revenue.md` § Budget 2027.
 
 ## Commit
 

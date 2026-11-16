@@ -55,11 +55,11 @@ por inflación, dólar oficial, beneficios RDD (gym, PeYa, prepaga, internet),
 aportes y contribuciones, y bono variable. No describe los dos parámetros del
 plan de headcount.
 
-**Otros objetos que usa Compensation Center [VERIFICADO 2026-09-28]:** existencia
-verificada; fórmulas pendientes salvo las documentadas arriba o en
-[time-tracking.md](time-tracking.md). `compensations.headcount_plan` / `view_headcount_plan`
-(plan de headcount, con upsert y delete desde Parameters), `salary_band`,
-`payroll_restriction`, `contractor_special_fees`,
+**Otros objetos que usa Compensation Center [VERIFICADO 2026-09-28]:**
+existencia verificada; fórmulas pendientes salvo las documentadas arriba o en
+[time-tracking.md](time-tracking.md). `compensations.headcount_plan` /
+`view_headcount_plan` (plan de headcount, con upsert y delete desde Parameters),
+`salary_band`, `payroll_restriction`, `contractor_special_fees`,
 `employee_extra_compensations`, `working_hour_adjustments`, `parameters_info`, y
 `finance.view_salary_cost` (vista con `employee_id`, `month`, `salary_cost`:
 salario mensual por empleado, usado en Dedication Control; definición verificada
@@ -82,6 +82,34 @@ anterior a 2025, la fuente es `time_tracking_old` (`view_master_final`,
 columna, `form_id` (~140 filas): es la lista de formularios marcados como
 iniciativa interna. Muttito la escribe con el flag `internal_initiatives` al
 enviar. Las líneas del formulario siguen teniendo `project_id` o `deal_id`.
+
+## Payout variable FY2026 de M2 / M3 de Operations [SQL APP Payout Simulator, 2026-11-05]
+
+La app Payout Simulator calcula el payout variable de los M2 / M3 de Operations
+sobre las cuentas que cada uno ve en Control Center (sin los accesos manuales).
+
+- **Retention Revenue** = Renewal + Upsell, todos los stages menos Closed Lost.
+- **Eligible Closed Origination** = New + XSell, solo Closed Won.
+- **Pipeline TCV** = New + XSell en Committed / Proposal Sent / Contract
+  Negotiation, con start en 2026.
+- **Gross Margin** = Σ gross profit ÷ Σ revenue del P&L
+  (`mv_project_metrics_monthly`), recalculado sobre totales.
+- Si el GM paga 0, se aplica un −25% al revenue (guardrail).
+- **Waivers** (`compensations.payout_waivers`, VERIFICADO 2026-11-06): ajustes
+  auditados por año fiscal, por sección (`retention`, `pnl`, `guardrail`) y por
+  nivel (`project`, `account`, `employee`).
+  - Los montos **reemplazan** al valor real (`revenue_override`,
+    `cost_override`, `gm_pct_override`) o lo sacan (`omit`).
+  - En P&L solo cambian el GM%, no el GM.
+  - `guardrail` (solo nivel employee, `omit = true`) no aplica el −25% a esa
+    persona; su GM sigue en 0.
+  - Al 2026-11-06 hay 1 waiver (guardrail, FY2026).
+  - `compensations.margin_waivers` es el modelo anterior y está vacía.
+- **El target de Retention nunca se ajusta con waivers.**
+- `GetPayoutActuals` tiene hardcodes: salario base fijo de `employee_id` 117 y
+  exclusión del 407.
+- Es dato de compensación: no exponer payouts por persona en salidas de alcance
+  amplio.
 
 ## P&L: distribucion de costos a areas
 
@@ -122,23 +150,19 @@ de usuario en las escrituras. La auditoría queda en `oas.accounts_audit_log`,
 
 ## People: directorio y seguimiento
 
+**Headcount, turnover, exits, eNPS del status, 1:1s, people talks, Pulse viejo y
+organigrama se movieron a `references/people.md`** (2026-11-06), con las
+definiciones de People Analytics y MBR Report. Acá queda lo que todavía no está
+verificado.
+
 Lectura central `bamboo.employees_joined`; historiales en
 `bamboo.job_information`, `employment_status`, `compensation_scheme`,
 `development`, `view_career_path`. Seguimiento en `people.status` /
 `view_status`, `one_to_one` / `view_one_to_one`, `talks` / `view_talks`,
 `view_exit_interviews`, `hiring_checkup`.
 
-- **Headcount del PBIX:** promedio de la cantidad diaria de empleados distintos.
-  **No es dotacion al cierre.**
-- **Turnover:** bajas / headcount promedio. Altas cuenta empleados distintos;
-  bajas cuenta filas.
-- **NPS Status:** `(Green - Red) / formularios enviados x 100`. Es el nombre
-  interno de esa medida; no es una encuesta 0-10.
-- `hires_terminations` y `employees_per_day` son tablas calculadas DAX, no
-  objetos de PostgreSQL.
-- `GetOneToOneHistory` incluye reuniones donde la persona es empleado **o**
-  supervisor.
-- `people.status` no deja borrar un status ya enviado (trigger).
+- `hires_terminations` y `employees_per_day` eran tablas calculadas DAX del
+  Power BI, no objetos de PostgreSQL.
 - **Voice of Mutters** [VERIFICADO 2026-10-30]: encuesta de clima en
   `people.vom_*`, con ciclos trimestrales (`vom_survey_cycles`), dimensiones y
   preguntas bilingües (una marcada `is_enps`). **Separa por diseño quién
@@ -159,7 +183,12 @@ Lectura central `bamboo.employees_joined`; historiales en
   `oas.accounts.hrbp_id`.
 - **Mutters Directory** lee `bamboo.employees_joined`, `job_information`,
   `employment_status`, `compensation_scheme`, `view_career_path` y
-  `development.*` (ver `references/development.md`).
+  `development.*` (ver `references/development.md`). Desde el 2026-11-05 es una
+  tab de **People Analytics** (página Analytics); la página original se borró.
+- **People Analytics** (2026-11-06 en `master`) lee `bamboo.employees_joined` +
+  `people.view_hrbp`, `people.view_status`, `view_one_to_one`, `talks`,
+  `view_exit_interviews` y las `pulse_survey*`. Solo lectura. Definiciones en
+  `references/people.md`.
 - **La lista de cuentas del HRBP excluye `client_id` 26 y 44 [VERIFICADO].** No
   son clientes reales: son los contenedores "Target Leads" y "Hubspot Deals".
   Excluirlos también en cualquier conteo de cuentas o clientes.

@@ -173,6 +173,43 @@ una captura anterior a ese cambio puede mostrar esa diferencia.
   márgenes de oct–dic. Para un P&L by Geo, usar meses cerrados.
 - `delivery_expenses` vale 0 en todo 2026 [VERIFICADO 2026-10-06].
 
+## P&L por departamento (Company P&L) [SQL APP P&L Center + VERIFICADO 2026-11-06]
+
+El Company PnL del Power BI (tabla `PNL Rows`) se arma por departamento, no por
+proyecto. Está en P&L Center › P&L › By department (solo admins), desde enero
+2026, con meses cerrados y forecast.
+
+| Línea | Fuente |
+|---|---|
+| Revenue | `pipeline.view_revenue.realistic_amount`, toda la compañía (una sola línea, sin departamento) |
+| HR por departamento | `finance.hr_costs_monthly`: `total_compensation_cost`, `cost_transfer`, `bonus_reversal`, `capitalization`, `adjustment`, `sales_commissions` (y `finance_salaries` para el % del adjustment) |
+| Expenses por departamento | `finance.expenses` → `oas.accounts` → `oas.areas.department_id`: **el departamento del área de la cuenta del gasto**, como el Power BI. En 2026 no queda ningún gasto sin departamento |
+| Headcount por departamento | personas distintas con fila en `compensations.paid_and_payroll_salaries` en el mes. **No es el headcount de Bamboo** (`people.md`) |
+
+- **Cost of Revenue** = departamentos con
+  `oas.departments.cost_of_revenue = true`: Operations, Mixilo y Habit.
+  **Operating expenses** = S&M, R&D, G&A, Finance, People y, si tienen costo,
+  Tech y Unassigned.
+- **Cierra con la vista del P&L por proyecto, al peso** (verificado en la app en
+  todos los meses de 2025 y 2026):
+  - Gross profit y operating income = los de `mv_project_metrics_monthly`.
+  - CoR HR =
+    `delivery_cost + staffed_delivery_cost_forecast + cor_hr_cost_allocated`.
+  - CoR expenses = delivery expenses + CoR expenses allocated.
+  - Opex HR = `overhead_cost + operating_hr_cost_allocated`; Opex expenses =
+    `operating_expenses_allocated` (columnas de la vista del P&L por proyecto).
+  - Si no cierra, una fuente cambió entre cargas: no es una fórmula distinta.
+- En meses forecast el `adjustment` es 0 hasta que se cargan los salarios
+  pagados.
+- **2025 no coincide con el Power BI** y no se corrige, por decisión de Augusto
+  (el Company P&L mira 2026 en adelante). El Power BI asigna compensaciones por
+  el departamento del área de la persona y `hr_costs_monthly` por
+  `department_id`: 5 personas del área Tech (de R&D) quedaron en Tech, y el opex
+  2025 de la base da 239.774 más que el del Power BI.
+- El detalle por empleado del costo HR (asignaciones, recuperos, adjustment)
+  está en Compensation Center › P&L Allocation Cost, sobre la misma
+  `finance.hr_costs_monthly`.
+
 ## Costo delivery por empleado [VERIFICADO 2026-11-04]
 
 `time_tracking.delivery_cost_by_employee_monthly_mv` compara lo reportado contra
@@ -278,11 +315,21 @@ esa diferencia / `ABS(staffing_delivery_cost)`, `NULL` si el plan es cero.
 |---|---|---|
 | Gross margin (`gross_profit_margin`) | 41% | **Target de la compañía** [CONFIRMADO POR AUGUSTO 2026-10-01] |
 | Delivery gross margin | 60% | **Target de la compañía** [CONFIRMADO POR AUGUSTO 2026-10-01] |
-| Utilización | 80% | **Solo semáforo de la app.** No reportarlo como objetivo. |
+| Utilización | 80% | **Solo semáforo de la app** (Control Center). No reportarlo como objetivo. |
+| Completion y realization | 80% | **Target del deck MBR / QBR Leadership.** En revisión por el nuevo framework de Delivery |
+| PS delivery utilization | 90% | **Target del deck MBR / QBR Leadership** |
+| Revenue / delivery cost | 2,5 | Factor de Full Targeted Revenue ("Total PS CoR × 2.5"), el mismo que `target_revenue` |
 
-Los tres están hardcodeados en el JavaScript del Control Center para pintar
-semáforos. Un target se compara contra el margen recalculado sobre los totales,
-nunca contra un promedio de márgenes.
+Los tres primeros están hardcodeados en el JavaScript del Control Center para
+pintar semáforos. Los del deck están en `SETTINGS.targets` de MBR Report. Si
+piden "el target de utilización" para el MBR, es el 90% del deck. Para el
+Control Center, el 80% es solo semáforo.
+
+**Full Completion y Full Realization en MBR** usan el CoR de Operations
+(departamento 1): Full Targeted Revenue = CoR de PS × 2,5. Completion y
+realization salen de la vista del P&L, no del DAX por dedicaciones del Power BI.
+Un target se compara contra el margen recalculado sobre los totales, nunca
+contra un promedio de márgenes.
 
 ## Riesgos
 

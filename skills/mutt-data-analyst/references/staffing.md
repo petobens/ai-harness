@@ -47,9 +47,17 @@ Forecast. Un deal con tasa 25 aporta 25% de su costo aunque aporte 0 al
 - **Bench operativo en Power BI:** empleados billable de Operations con
   `kpis_utilization` no vacía, ≥ 0 y < 0,70. **Es otra definición**: distinta
   medida, distinta población, distinto período.
-- **Bench de recruiting** (`scorecard_people_kpis[Bench]`): candidatos
-  archivados por motivo Bench en los últimos 120 días. No mide disponibilidad
-  del personal contratado.
+  - **MBR Report** (2026-10) usa la misma idea: utilización < 70% del mes, Ops
+    billable activos a fin de mes, **M3 y S3 excluidos**, con el departamento y
+    el billable actuales (como el Power BI). Agosto 2026 daba 13 contra 9 del
+    deck, por reclasificaciones posteriores al freeze.
+- **Bench de recruiting del Scorecard** (`scorecard_people_kpis[Bench]`, hoy
+  sobre `lever.pbi_scorecard_opportunities`): candidatos distintos archivados
+  por motivo `Bench` en los 120 días hasta el cierre. No mide disponibilidad del
+  personal contratado.
+- **Current Bench de Lever** (Talent Center, acordado con Talent): candidatos
+  cuyo último archivo de bench tiene motivo `Bench`, sin ventana de fecha. Una
+  oportunidad posterior no los saca. Ver `lever.md` § Bench.
 - **Brecha de cobertura:**
   `MAX(deal_headcount) - SUM(headcount de asignaciones con persona real)`,
   excluyendo nombres `Vacant%`. `COUNT(DISTINCT employee_id)` es cantidad de
@@ -58,8 +66,10 @@ Forecast. Un deal con tasa 25 aporta 25% de su costo aunque aporte 0 al
   vigente contra el último día reportado; **no compara los porcentajes**.
   `overstaffed` es dedicación asignada > 100.
 
-**Tres definiciones de bench conviviendo.** Antes de reportar un número de
-bench, decir cuál de las tres.
+**Cuatro definiciones de bench conviviendo**: dos de Mutters contratados
+(Staffing Center por asignación; Power BI / MBR por utilización) y dos de
+candidatos (Scorecard 120 días; Current Bench de Lever). Antes de reportar un
+número de bench, decir cuál.
 
 ## Reglas no obvias [SQL APP]
 
@@ -76,6 +86,25 @@ bench, decir cuál de las tres.
   pantalla, no una equivalencia general.
 - La asignación comercial se actualiza en `hubspot.deals`, columnas `account_id`
   y **`projectid`** (sin guion bajo).
+
+## Foto de staffing de hoy
+
+[SQL APP MBR Report · Presentation › Ops, VERIFICADO 2026-11-06]
+
+Asientos de trabajo con clientes a hoy: asignaciones + vacantes próximas.
+
+- **Asignaciones**: `oas_views.deals_assignments` con `status = 'Active'`,
+  `stage <> 'Closed Lost'`, `start_date <= hoy` (o NULL) y `end_date >= hoy` (o
+  NULL).
+- **Vacantes**: `oas_views.deals_vacants` (unido a `oas_views.deals`) sin Closed
+  Lost, que arrancan en ≤ 30 días y no terminaron.
+- **Portfolio y director**: `oas_views.accounts_joined.area` y `director`.
+  **`director` es un nombre**: se resuelve contra
+  `bamboo.employees_joined.employee`. La mayoría de los directores reporta al
+  COO; hay excepciones (p. ej. Portfolio 4 → Marian, HABIT / Mixilo → CEO).
+- Al 2026-11-06: 136 Mutters, 136,2 FTE, 31 cuentas, 47 deals, 27 vacantes.
+- Es información interna de staffing: no sumarla a un organigrama abierto a toda
+  la empresa (ver `people.md` § Organigrama).
 
 ## Modelo nuevo: schema `staffing` [EN CONSTRUCCIÓN — VERIFICADO 2026-10-30]
 
@@ -106,7 +135,7 @@ Conceptos a hoy:
 ## Riesgos
 
 - Usar el schema `staffing` como fuente vigente.
-- Equiparar los tres benches.
+- Equiparar las cuatro definiciones de bench.
 - Contar vacantes como personas.
 - Leer `Match` como igualdad de dedicación.
 - Sumar asignaciones de intervalos distintos como si fueran simultáneas.
