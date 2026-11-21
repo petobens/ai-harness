@@ -84,7 +84,10 @@ below apply only to the alternative template.
   `ROUND_RECTANGLE` gives a much smaller default radius that looks square.
   When a slide lacks the marker, start from a template slide that already has
   one. The [copy service](#copying-a-template-slide-across-decks) copies whole
-  slides, not individual elements.
+  slides, not individual elements. To repair a square marker in place, look
+  for a fully rounded pill on the same slide: `duplicateObject` it, apply the
+  marker's transform and outline, delete the square shape, and bring the dot
+  to the front. The corner rounding scales with the shape.
   Check the corners on a zoomed render; full-slide thumbnails hide the
   difference.
 - For the alternative template, preserve the original rounded title-marker
@@ -131,6 +134,13 @@ within the requested scope:
 
 ## Rules
 
+- Use the Google Slides API through `gws` for reads and edits, and the documented
+  Apps Script copy service for cross-deck copies. Do not use desktop or browser
+  UI automation, simulated keyboard/mouse input, or clipboard-based editing
+  (including `wdotool`) unless the user explicitly requests that approach.
+  If an API operation is unavailable, try an API-supported alternative and
+  verify its render; otherwise report the limitation instead of switching to
+  UI automation.
 - Creating a presentation, copying a slide into a deck, or trashing a
   presentation requires user authorization. Use authorization already given in
   the request or conversation; ask only when the action is outside that scope.
@@ -517,15 +527,29 @@ input data as the chart, without duplicating the input table unless requested.
 ### Maintaining the template library
 
 When the user explicitly asks to expand or clean the template deck, source slides
-may come from their specified reference decks. Copy them natively, compare with
-existing layouts to avoid near-duplicates, and place additions in the matching
-section. Use structural titles so future agents can select layouts by purpose.
+may come from their specified reference decks. Select a small set of broadly
+reusable layouts that add a distinct structure to the library. Skip specialized
+business examples and near-duplicates rather than importing every source variant.
+Copy selected slides natively and place additions in the matching section.
 
-When lorem ipsum is requested, replace complete text fields or paragraphs, not
-substrings inside words. Keep numbering and use consistent dummy values for
-metrics. Inspect grouped text, table cells, speaker notes, links, and labels baked
-into images for source content. Clear or neutralize source-specific content within
-the authorized cleanup scope, preserving brand assets and reusable icons.
+Give each slide a concise, descriptive title that explains its layout or purpose,
+such as "Waterfall With Driver Annotations". By default, use lorem ipsum for body
+text, bullets, card headings, subtitles, and captions. Do not retain the source's
+argument or substitute new business advice. Preserve numbering and generic
+functional labels where needed to understand a chart or diagram. Use consistent
+dummy values for metrics, keeping chart proportions and calculations coherent.
+
+Replace complete text fields or paragraphs, not substrings inside words. Inspect
+grouped text, table cells, speaker notes, links, and labels baked into images for
+source content. Clear or neutralize source-specific content on the added slides,
+preserving brand assets and reusable icons. Leave speaker notes empty on library
+slides.
+
+Imported slides often keep the source deck's chrome. Match it to an existing
+library slide: title-marker size, outline weight, and position; the title's
+alignment with the marker; and the `>` subtitle line's font, size, and position.
+Compare both slides on a zoomed render, since text-box padding differs between
+sources even when the box coordinates match.
 
 ## Creating slides (template-first)
 
