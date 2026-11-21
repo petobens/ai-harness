@@ -90,7 +90,8 @@ formatting and layout unless the user requests a restyle.
   change, not as a follow-up round.
 - For `README` tabs, follow the dedicated section-row layout in
   [formatting.md](references/formatting.md). Do not collapse the README into one
-  large rich-text narrative cell.
+  large rich-text narrative cell. This layout applies only to README tabs;
+  preserve single merged narrative blocks on model tabs when adding emphasis.
 - For destructive edits or large rewrites, prefer copying the sheet first and
   writing to the copy.
 - Accept Google Sheets URLs or IDs from the user; always pass the bare

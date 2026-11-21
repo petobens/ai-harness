@@ -16,6 +16,7 @@ inconsistent formatting, or extending an existing table that follows them.
 - [Structure](#structure)
 - [Workbook architecture](#workbook-architecture)
 - [Side-by-side tables](#side-by-side-tables)
+- [Model-tab narratives](#model-tab-narratives)
 - [README tab](#readme-tab)
 
 ## Color palette (cell backgrounds)
@@ -217,6 +218,10 @@ is genuinely a different color, not to chase this drift.
 - Within a repeated subject area, show detailed-period tables before
   summarized-period tables, and keep the same table sequence across related
   tabs.
+- For scenario variants compared by switching tabs, preserve corresponding
+  table positions, labels and dimensions wherever practical. Put extra commentary
+  in the comparison or narrative; avoid shifting shared tables for presentation
+  alone. Allow structural differences required by the calculations or the user.
 - When presenting an aggregate and its components, show the aggregate first and
   then its components. Keep that ordering consistent across related tables.
 - Avoid hidden or far-right helper tables when formulas can live directly in the
@@ -234,6 +239,27 @@ is genuinely a different color, not to chase this drift.
   inserted columns may inherit each existing row's formatting.
 - Stack wide time-series or detail tables vertically rather than forcing them
   side by side.
+
+## Model-tab narratives
+
+The README section-row layout below applies only to README tabs. Preserve a
+single merged narrative cell on a model tab; do not split it into separate
+heading and body cells merely to add bold emphasis. Use `textFormatRuns` for
+bold headings or phrases within that cell. Match the type sizes of sibling
+narratives in the workbook; otherwise use the normal 10 pt body style.
+
+Formula cells cannot contain rich-text runs. When a merged narrative needs
+partial bolding, keep its prose qualitative and leave changing figures in live
+model or comparison cells. If the user requests figures in the narrative, make
+clear that they are a snapshot and refresh them after model changes. Do not
+replace live calculations with static values to obtain rich-text formatting.
+
+Size merged narratives using their total width, total row height and actual font
+sizes, with room for wrapping differences. Recheck after changes to text, fonts
+or shared row heights. To preserve adjacent table alignment, extend the merge
+into verified empty cells instead of increasing shared row heights. A PDF export
+does not prove the live Sheets view is unclipped; inspect that view when
+available, especially after a user reports clipping.
 
 ## README tab
 
