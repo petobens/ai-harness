@@ -23,14 +23,15 @@ def _mtime(path: Path) -> float:
         return 0
 
 
-def _output_text(output: Any) -> str:
+def _output_text(output: object) -> str:
     if isinstance(output, str):
         return output
     if isinstance(output, list):
-        parts: list[str] = []
-        for block in output:
-            if isinstance(block, dict):
-                parts.append(str(block.get("text", block.get("content", ""))))
+        parts = [
+            str(block.get("text", block.get("content", "")))
+            for block in output
+            if isinstance(block, dict)
+        ]
         return "\n".join(filter(None, parts))
     return json.dumps(output, ensure_ascii=False) if output is not None else ""
 
@@ -64,6 +65,15 @@ def _codex_events(record: dict[str, Any]) -> Iterator[dict[str, Any]]:
             "event_id": payload.get("id", record.get("timestamp")),
             "text": _output_text(payload.get("content")),
         }
+    elif kind == "agent_message":
+        yield common | {
+            "kind": "agent_message",
+            "role": "agent",
+            "event_id": payload.get("id"),
+            "author": payload.get("author"),
+            "recipient": payload.get("recipient"),
+            "text": _output_text(payload.get("content")),
+        }
     elif kind in {"function_call", "custom_tool_call"}:
         yield common | {
             "kind": "tool_call",
@@ -90,9 +100,21 @@ def _claude_events(record: dict[str, Any]) -> Iterator[dict[str, Any]]:
         return
     content = message.get("content")
     common = {"timestamp": record.get("timestamp")}
+    for source, field in (
+        ("isMeta", "is_meta"),
+        ("isCompactSummary", "is_compact_summary"),
+        ("isVisibleInTranscriptOnly", "is_visible_in_transcript_only"),
+    ):
+        if source in record:
+            common[field] = record[source]
+    message_kind = (
+        "context"
+        if record.get("isMeta") or record.get("isCompactSummary")
+        else "message"
+    )
     if isinstance(content, str):
         yield common | {
-            "kind": "message",
+            "kind": message_kind,
             "role": role,
             "event_id": record.get("uuid"),
             "text": content,
@@ -106,7 +128,7 @@ def _claude_events(record: dict[str, Any]) -> Iterator[dict[str, Any]]:
         kind = block.get("type")
         if kind == "text":
             yield common | {
-                "kind": "message",
+                "kind": message_kind,
                 "role": role,
                 "event_id": (
                     f"{record['uuid']}:{index}" if record.get("uuid") else None
@@ -192,6 +214,7 @@ def _session_info(path: Path) -> dict[str, Any]:
     info: dict[str, Any] = {
         "agent": None,
         "session_id": None,
+        "parent_session_id": None,
         "cwd": None,
         "is_subagent": False,
         "updated_at": int(_mtime(path)),
@@ -202,21 +225,30 @@ def _session_info(path: Path) -> dict[str, Any]:
             if not isinstance(payload, dict):
                 continue
             source = payload.get("source")
+            subagent = source.get("subagent") if isinstance(source, dict) else None
+            spawn = subagent.get("thread_spawn") if isinstance(subagent, dict) else None
             info |= {
                 "agent": "codex",
                 "session_id": payload.get("id", payload.get("session_id")),
                 "cwd": payload.get("cwd"),
-                "is_subagent": bool(
-                    isinstance(source, dict) and source.get("subagent")
+                "is_subagent": bool(subagent),
+                "parent_session_id": (
+                    spawn.get("parent_thread_id") if isinstance(spawn, dict) else None
                 ),
             }
             break
         if record.get("sessionId"):
+            is_subagent = bool(record.get("agentId") or record.get("isSidechain"))
             info |= {
                 "agent": "claude",
-                "session_id": record.get("sessionId", path.stem),
+                "session_id": (
+                    record.get("agentId") or path.stem.removeprefix("agent-")
+                    if is_subagent
+                    else record["sessionId"]
+                ),
+                "parent_session_id": record["sessionId"] if is_subagent else None,
                 "cwd": record.get("cwd", info["cwd"]),
-                "is_subagent": bool(record.get("isSidechain")),
+                "is_subagent": is_subagent,
             }
             if info["cwd"] is not None and record.get("isSidechain") is not None:
                 break
@@ -281,6 +313,11 @@ def _parse_args() -> argparse.Namespace:
         "--messages-only", action="store_true", help="omit tool calls and results"
     )
     parser.add_argument(
+        "--deduplicate",
+        action="store_true",
+        help="omit shared events across sessions when counting recurring activity",
+    )
+    parser.add_argument(
         "--include-subagents",
         action="store_true",
         help="include delegated sessions in broad scans",
@@ -298,17 +335,21 @@ def _parse_args() -> argparse.Namespace:
 
 def _main() -> None:
     args = _parse_args()
-    pattern = re.compile(args.pattern, re.IGNORECASE) if args.pattern else None
-    cwd_pattern = (
+    pattern: re.Pattern[str] | None = (
+        re.compile(args.pattern, re.IGNORECASE) if args.pattern else None
+    )
+    cwd_pattern: re.Pattern[str] | None = (
         re.compile(args.cwd_pattern, re.IGNORECASE) if args.cwd_pattern else None
     )
     files = _session_files(args.sessions, args.since, args.coverage)
     if args.coverage:
         _print_coverage(files)
         return
-    seen: set[tuple[str, str, str]] = set()
+    seen: set[tuple[str, str, str, str]] = set()
     matched_paths: set[Path] = set()
     for path in files:
+        if not args.deduplicate:
+            seen.clear()
         info = _session_info(path)
         agent = info["agent"]
         if not agent:
@@ -321,7 +362,11 @@ def _main() -> None:
         parser = _codex_events if agent == "codex" else _claude_events
         for record in _records(path):
             for event in parser(record):
-                if args.messages_only and event["kind"] != "message":
+                if args.messages_only and event["kind"] not in {
+                    "message",
+                    "agent_message",
+                    "context",
+                }:
                     continue
                 if pattern and not pattern.search(event.get("text", "")):
                     continue
@@ -332,7 +377,7 @@ def _main() -> None:
                     continue
                 event_id = event.get("event_id")
                 if event_id:
-                    key = (event["kind"], event["role"], str(event_id))
+                    key = (agent, event["kind"], event["role"], str(event_id))
                     if key in seen:
                         continue
                     seen.add(key)

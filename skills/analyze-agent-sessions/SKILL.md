@@ -35,12 +35,14 @@ An ID may appear in another session because it was quoted there. Prefer the file
 whose filename or session metadata owns the ID. If the same ID is supplied more
 than once, analyze it once and mention the duplication only when it matters.
 
-The extractor emits normalized JSONL for user/assistant messages, tool calls, and
-tool results, along with the session ID, cwd, mtime, and subagent status. Use
-`--messages-only` when the conversation itself is sufficient; include tools when
-the question depends on actions, artifacts, or outcomes. Narrow broad searches
-with `--cwd`, `--grep`, and `--paths-only`, then rerun the extractor on the
-relevant paths so context is not lost.
+The extractor emits normalized JSONL for user/assistant messages, agent reports,
+context, tool calls, and tool results, along with the session ID, cwd, mtime, and
+subagent status. Child sessions include their own ID and `parent_session_id`
+when available. Use `--messages-only` when the conversation itself is sufficient;
+it retains agent reports and context but omits tool calls and results. Include
+tools when the question depends on actions, artifacts, or outcomes. Narrow broad
+searches with `--cwd`, `--grep`, and `--paths-only`, then rerun the extractor on
+the relevant paths so context is not lost.
 
 Broad scans exclude subagent sessions by default so user-facing sessions remain
 the main unit of analysis. Use `--include-subagents` when the delegated process
@@ -48,6 +50,13 @@ itself is relevant, and do not automatically treat parent and subagent records a
 independent examples. An explicitly named subagent session is always read. Use
 `--coverage` before claiming a time window is comprehensive; local pruning may
 make absence of a match inconclusive.
+
+Codex `agent_message` events are reports or messages delivered between agents.
+Use their `author` and `recipient` to attribute them; they are not user requests
+or the receiving agent's own conclusions. Including these reports does not load
+the child transcript. Claude skill injections and compaction summaries are
+labeled `context`, with their original flags preserved in snake_case. Use them
+to reconstruct the discussion without treating them as fresh user instructions.
 
 ## Reconstruct a named session
 
@@ -73,10 +82,13 @@ be relevant inputs, but do not by themselves establish the user's intent. Ignore
 automated probes or housekeeping-only sessions unless the question concerns
 them.
 
-Deduplicate forked or copied transcripts by stable tool-call ID when counting or
-claiming recurrence. Do not let deduplication remove genuinely distinct uses of
-the same idea or workflow. If the extractor warns about unreadable or malformed
-records, disclose that the affected evidence may be incomplete.
+By default, each session retains its own history, including context inherited
+from a parent or fork. Use `--deduplicate` to omit shared event IDs across
+sessions when counting or claiming recurrence, not when reconstructing or
+comparing named sessions. Repeated IDs within one file are always deduplicated.
+Do not collapse distinct uses of the same idea or workflow. If the extractor
+warns about unreadable or malformed records, disclose that the affected evidence
+may be incomplete.
 
 ## Analyze failures and workarounds
 
