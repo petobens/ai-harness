@@ -456,6 +456,13 @@ highlighted. The supplement remains part of the citation link:
 Every cited key must exist. Fix missing keys in the document's bibliography
 data, not in the template.
 
+In Hayagriva YAML bibliographies, sort top-level citation keys alphabetically
+and separate entries with one blank line. Use two-space indentation and block
+sequences for lists such as multiple authors. Keep field order consistent across
+entries; follow repository YAML formatting rules when they specify otherwise.
+These are source-format conventions, not instructions to override the rendered
+bibliography's citation style.
+
 Pass bibliography filenames directly. In academic articles and Mutt slides,
 also pass a document-local reader to the template so Retrofit resolves
 bibliography files from the document rather than the package:
