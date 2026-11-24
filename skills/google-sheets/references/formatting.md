@@ -161,6 +161,10 @@ is genuinely a different color, not to chase this drift.
   span A:B or A:C only when needed for legibility; never extend it across the
   full table merely to match the table width. Compact tables of three columns or
   fewer may merge the title across their actual width.
+- Keep every label, metric, or other field column to a single column, sized to
+  fit its labels. Do not merge cells horizontally to widen a label or value
+  column. Merge across columns only for titles as allowed above, long free-text
+  columns such as `Basis / How To Use` or notes, and README rows.
 - Keep cells to the right of a title blank and unfilled unless they contain
   genuine title-row totals. When totals exist, use dark gray for the title cell
   or block and light gray for populated total cells; never shade empty cells.
@@ -232,6 +236,9 @@ is genuinely a different color, not to chase this drift.
 
 - Place small, directly comparable tables side by side when they have compatible
   structures and are meant to be read together.
+- Place a table beside another only when its single label column can be sized
+  for its labels without distorting a column that another table also uses, such
+  as a narrow period column of a time series above. Otherwise stack it.
 - Separate them with exactly one blank column; align their title and header rows;
   and match column widths, row heights, number formats, and hierarchy.
 - When inserting columns for a side table, keep the spacer and unused cells below
